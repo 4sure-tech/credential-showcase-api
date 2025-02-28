@@ -2125,10 +2125,7 @@ components:
           description: Detailed description of the scenario
           example: This scenario issues credentials to users
         type:
-          type: string
-          enum: [ISSUANCE, PRESENTATION]
-          description: Type of scenario
-          example: ISSUANCE
+          $ref: '#/components/schemas/ScenarioType'
         steps:
           type: array
           description: Ordered list of steps in the scenario
@@ -2723,6 +2720,15 @@ components:
           - ACTIVE
           - ARCHIVED
       description: Types of supported credentials
+      example: PENDING
+
+    ScenarioType:
+      type: string
+      enum:
+        - ISSUANCE
+        - PRESENTATION
+      description: Types of supported scenarios
+      example: ISSUANCE
 
   responses:
     'BadRequest':
