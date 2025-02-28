@@ -16,14 +16,21 @@ import {
     CredentialDefinitionResponseFromJSONTyped,
     CredentialDefinitionsResponse,
     CredentialDefinitionsResponseFromJSONTyped,
-    CredentialDefinitionRequestToJSONTyped
+    CredentialDefinitionRequestToJSONTyped,
+    CredentialSchemaRequest,
+    CredentialSchemaResponse,
+    CredentialSchemaResponseFromJSONTyped,
+    CredentialSchemasResponse,
+    CredentialSchemasResponseFromJSONTyped,
+    CredentialSchemaRequestToJSONTyped
 } from 'credential-showcase-openapi';
 import CredentialDefinitionService from '../services/CredentialDefinitionService';
-import { credentialDefinitionDTOFrom } from '../utils/mappers';
+import CredentialSchemaService from '../services/CredentialSchemaService';
+import { credentialDefinitionDTOFrom, credentialSchemaDTOFrom } from '../utils/mappers';
 
 @JsonController('/credential-definitions')
 @Service()
-class CredentialDefinitionController {
+export class CredentialDefinitionController {
     constructor(private credentialDefinitionService: CredentialDefinitionService) { }
 
     @Get('/')
@@ -59,4 +66,40 @@ class CredentialDefinitionController {
     }
 }
 
-export default CredentialDefinitionController
+@JsonController('/credential-schemas')
+@Service()
+export class CredentialSchemaController {
+    constructor(private credentialSchemaService: CredentialSchemaService) { }
+
+    @Get('/')
+    public async getAll(): Promise<CredentialSchemasResponse> {
+        const result = await this.credentialSchemaService.getCredentialSchemas();
+        const credentialSchemas = result.map(schema => credentialSchemaDTOFrom(schema));
+        return CredentialSchemasResponseFromJSONTyped({ credentialSchemas }, false);
+    }
+
+    @Get('/:id')
+    public async getOne(@Param('id') id: string): Promise<CredentialSchemaResponse> {
+        const result = await this.credentialSchemaService.getCredentialSchema(id);
+        return CredentialSchemaResponseFromJSONTyped({ credentialSchema: credentialSchemaDTOFrom(result) }, false);
+    }
+
+    @HttpCode(201)
+    @Post('/')
+    public async post(@Body() credentialSchemaRequest: CredentialSchemaRequest): Promise<CredentialSchemaResponse> {
+        const result = await this.credentialSchemaService.createCredentialSchema(CredentialSchemaRequestToJSONTyped(credentialSchemaRequest));
+        return CredentialSchemaResponseFromJSONTyped({ credentialSchema: credentialSchemaDTOFrom(result) }, false);
+    }
+
+    @Put('/:id')
+    public async put(@Param('id') id: string, @Body() credentialSchemaRequest: CredentialSchemaRequest): Promise<CredentialSchemaResponse> {
+        const result = await this.credentialSchemaService.updateCredentialSchema(id, CredentialSchemaRequestToJSONTyped(credentialSchemaRequest));
+        return CredentialSchemaResponseFromJSONTyped({ credentialSchema: credentialSchemaDTOFrom(result) }, false);
+    }
+
+    @OnUndefined(204)
+    @Delete('/:id')
+    public async delete(@Param('id') id: string): Promise<void> {
+        return this.credentialSchemaService.deleteCredentialSchema(id);
+    }
+}
