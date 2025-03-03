@@ -1,6 +1,6 @@
-import { pgTable, text, uuid } from 'drizzle-orm/pg-core';
-import { assets } from './asset';
-import { relations } from 'drizzle-orm';
+import { pgTable, text, uuid } from 'drizzle-orm/pg-core'
+import { assets } from './asset'
+import { relations } from 'drizzle-orm'
 
 export const personas = pgTable('persona', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -9,7 +9,7 @@ export const personas = pgTable('persona', {
   description: text().notNull(),
   headshotImage: uuid('headshot_image').references(() => assets.id),
   bodyImage: uuid('body_image').references(() => assets.id),
-});
+})
 
 export const personaRelations = relations(personas, ({ one }) => ({
   headshotImage: one(assets, {
@@ -20,4 +20,4 @@ export const personaRelations = relations(personas, ({ one }) => ({
     fields: [personas.bodyImage],
     references: [assets.id],
   }),
-}));
+}))

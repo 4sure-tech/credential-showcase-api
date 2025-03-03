@@ -2348,6 +2348,12 @@ components:
               type: string
               example: "313e4567-e89b-12d3-a456-426614174469"
 
+    IdentifierType:
+      type: string
+      enum:
+        - DID
+      description: Types of supported identifiers
+      example: DID
     IssuerType:
       type: string
       enum:
@@ -2384,6 +2390,12 @@ components:
           example: This issuer issues credentials to users
         type:
           $ref: '#/components/schemas/IssuerType'
+        identifierType:
+          $ref: '#/components/schemas/IdentifierType'
+        identifier:
+          type: string
+          description: External identifier of this issuer
+          example: did:sov:XUeUZauFLeBNofY3NhaZCB
         organization:
           type: string
           description: Organization the issuer belongs to
@@ -2412,6 +2424,12 @@ components:
           example: This issuer issues credentials to users
         type:
           $ref: '#/components/schemas/IssuerType'
+        identifierType:
+          $ref: '#/components/schemas/IdentifierType'
+        identifier:
+          type: string
+          description: External identifier of this issuer
+          example: did:sov:XUeUZauFLeBNofY3NhaZCB
         organization:
           type: string
           description: Organization the issuer belongs to
@@ -2553,11 +2571,11 @@ components:
         issuerId:
           type: string
           description: Identifier of the issuer who created this schema
-          example: did:sov:XUeUZauFLeBNofY3NhaZCB
+          example: 123e4567-e89b-12d3-a456-426614174123
         schemaId:
           type: string
-          description: Identifier of the associated credential schema
-          example: did:sov:XUeUZauFLeBNofY3NhaZCB
+          description:  Identifier of the associated credential schema
+          example:  123e4567-e89b-12d3-a456-426614174123
         version:
           type: string
           description: Version of the credential definition
@@ -2745,7 +2763,7 @@ components:
         id:
           type: string
           description: Unique identifier for the credential schema
-          example: did:sov:XUeUZauFLeBNofY3NhaZCB
+          example:  123e4567-e89b-12d3-a456-426614174123
         name:
           type: string
           description: Name of the credential schema
@@ -2758,6 +2776,12 @@ components:
           type: string
           description: Version of the credential schema
           example: '1.0'
+        identifierType:
+          $ref: '#/components/schemas/IdentifierType'
+        identifier:
+          type: string
+          description: External identifier of this schema
+          example: did:sov:XUeUZauFLeBNofY3NhaZCB
         attributes:
           type: array
           items:
@@ -2782,6 +2806,12 @@ components:
           type: string
           description: Version of the credential schema
           example: '1.0'
+        identifierType:
+          $ref: '#/components/schemas/IdentifierType'
+        identifier:
+          type: string
+          description: External identifier of this schema
+          example: did:sov:XUeUZauFLeBNofY3NhaZCB
         attributes:
           type: array
           items:

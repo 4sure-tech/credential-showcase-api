@@ -40,12 +40,8 @@
           "name": "ariesProofRequest_step_action_stepAction_id_fk",
           "tableFrom": "ariesProofRequest",
           "tableTo": "stepAction",
-          "columnsFrom": [
-            "step_action"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["step_action"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -55,9 +51,7 @@
         "ariesProofRequest_step_action_unique": {
           "name": "ariesProofRequest_step_action_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "step_action"
-          ]
+          "columns": ["step_action"]
         }
       },
       "policies": {},
@@ -151,12 +145,8 @@
           "name": "credentialAttribute_credential_definition_credentialDefinition_id_fk",
           "tableFrom": "credentialAttribute",
           "tableTo": "credentialDefinition",
-          "columnsFrom": [
-            "credential_definition"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["credential_definition"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -210,12 +200,8 @@
           "name": "credentialDefinition_icon_asset_id_fk",
           "tableFrom": "credentialDefinition",
           "tableTo": "asset",
-          "columnsFrom": [
-            "icon"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["icon"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -250,12 +236,8 @@
           "name": "credentialRepresentation_credential_definition_credentialDefinition_id_fk",
           "tableFrom": "credentialRepresentation",
           "tableTo": "credentialDefinition",
-          "columnsFrom": [
-            "credential_definition"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["credential_definition"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -289,12 +271,8 @@
           "name": "relyingPartiesToCredentialDefinitions_relying_party_relyingParty_id_fk",
           "tableFrom": "relyingPartiesToCredentialDefinitions",
           "tableTo": "relyingParty",
-          "columnsFrom": [
-            "relying_party"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["relying_party"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -302,12 +280,8 @@
           "name": "relyingPartiesToCredentialDefinitions_credential_definition_credentialDefinition_id_fk",
           "tableFrom": "relyingPartiesToCredentialDefinitions",
           "tableTo": "credentialDefinition",
-          "columnsFrom": [
-            "credential_definition"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["credential_definition"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -315,10 +289,7 @@
       "compositePrimaryKeys": {
         "relyingPartiesToCredentialDefinitions_relying_party_credential_definition_pk": {
           "name": "relyingPartiesToCredentialDefinitions_relying_party_credential_definition_pk",
-          "columns": [
-            "relying_party",
-            "credential_definition"
-          ]
+          "columns": ["relying_party", "credential_definition"]
         }
       },
       "uniqueConstraints": {},
@@ -375,12 +346,8 @@
           "name": "relyingParty_logo_asset_id_fk",
           "tableFrom": "relyingParty",
           "tableTo": "asset",
-          "columnsFrom": [
-            "logo"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["logo"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -440,12 +407,8 @@
           "name": "issuer_logo_asset_id_fk",
           "tableFrom": "issuer",
           "tableTo": "asset",
-          "columnsFrom": [
-            "logo"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["logo"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -479,12 +442,8 @@
           "name": "issuersToCredentialDefinitions_issuer_issuer_id_fk",
           "tableFrom": "issuersToCredentialDefinitions",
           "tableTo": "issuer",
-          "columnsFrom": [
-            "issuer"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["issuer"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -492,12 +451,8 @@
           "name": "issuersToCredentialDefinitions_credential_definition_credentialDefinition_id_fk",
           "tableFrom": "issuersToCredentialDefinitions",
           "tableTo": "credentialDefinition",
-          "columnsFrom": [
-            "credential_definition"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["credential_definition"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -505,10 +460,7 @@
       "compositePrimaryKeys": {
         "issuersToCredentialDefinitions_issuer_credential_definition_pk": {
           "name": "issuersToCredentialDefinitions_issuer_credential_definition_pk",
-          "columns": [
-            "issuer",
-            "credential_definition"
-          ]
+          "columns": ["issuer", "credential_definition"]
         }
       },
       "uniqueConstraints": {},
@@ -577,12 +529,8 @@
           "name": "step_sub_flow_workflow_id_fk",
           "tableFrom": "step",
           "tableTo": "workflow",
-          "columnsFrom": [
-            "sub_flow"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["sub_flow"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -590,12 +538,8 @@
           "name": "step_workflow_workflow_id_fk",
           "tableFrom": "step",
           "tableTo": "workflow",
-          "columnsFrom": [
-            "workflow"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["workflow"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -603,12 +547,8 @@
           "name": "step_asset_asset_id_fk",
           "tableFrom": "step",
           "tableTo": "asset",
-          "columnsFrom": [
-            "asset"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["asset"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -618,10 +558,7 @@
         "step_order_workflow_unique": {
           "name": "step_order_workflow_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "order",
-            "workflow"
-          ]
+          "columns": ["order", "workflow"]
         }
       },
       "policies": {},
@@ -670,12 +607,8 @@
           "name": "stepAction_step_step_id_fk",
           "tableFrom": "stepAction",
           "tableTo": "step",
-          "columnsFrom": [
-            "step"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["step"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -735,12 +668,8 @@
           "name": "workflow_issuer_issuer_id_fk",
           "tableFrom": "workflow",
           "tableTo": "issuer",
-          "columnsFrom": [
-            "issuer"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["issuer"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -748,12 +677,8 @@
           "name": "workflow_relying_party_relyingParty_id_fk",
           "tableFrom": "workflow",
           "tableTo": "relyingParty",
-          "columnsFrom": [
-            "relying_party"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["relying_party"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -805,12 +730,8 @@
           "name": "revocationInfo_credential_definition_credentialDefinition_id_fk",
           "tableFrom": "revocationInfo",
           "tableTo": "credentialDefinition",
-          "columnsFrom": [
-            "credential_definition"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["credential_definition"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -820,9 +741,7 @@
         "revocationInfo_credential_definition_unique": {
           "name": "revocationInfo_credential_definition_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "credential_definition"
-          ]
+          "columns": ["credential_definition"]
         }
       },
       "policies": {},
@@ -877,12 +796,8 @@
           "name": "persona_headshot_image_asset_id_fk",
           "tableFrom": "persona",
           "tableTo": "asset",
-          "columnsFrom": [
-            "headshot_image"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["headshot_image"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -890,12 +805,8 @@
           "name": "persona_body_image_asset_id_fk",
           "tableFrom": "persona",
           "tableTo": "asset",
-          "columnsFrom": [
-            "body_image"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["body_image"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -929,12 +840,8 @@
           "name": "workflowsToPersonas_workflow_workflow_id_fk",
           "tableFrom": "workflowsToPersonas",
           "tableTo": "workflow",
-          "columnsFrom": [
-            "workflow"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["workflow"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -942,12 +849,8 @@
           "name": "workflowsToPersonas_persona_persona_id_fk",
           "tableFrom": "workflowsToPersonas",
           "tableTo": "persona",
-          "columnsFrom": [
-            "persona"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["persona"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -955,10 +858,7 @@
       "compositePrimaryKeys": {
         "workflowsToPersonas_workflow_persona_pk": {
           "name": "workflowsToPersonas_workflow_persona_pk",
-          "columns": [
-            "workflow",
-            "persona"
-          ]
+          "columns": ["workflow", "persona"]
         }
       },
       "uniqueConstraints": {},
@@ -971,51 +871,32 @@
     "public.CredentialAttributeType": {
       "name": "CredentialAttributeType",
       "schema": "public",
-      "values": [
-        "STRING",
-        "INTEGER",
-        "FLOAT",
-        "BOOLEAN",
-        "DATE"
-      ]
+      "values": ["STRING", "INTEGER", "FLOAT", "BOOLEAN", "DATE"]
     },
     "public.CredentialType": {
       "name": "CredentialType",
       "schema": "public",
-      "values": [
-        "ANONCRED"
-      ]
+      "values": ["ANONCRED"]
     },
     "public.IssuerType": {
       "name": "IssuerType",
       "schema": "public",
-      "values": [
-        "ARIES"
-      ]
+      "values": ["ARIES"]
     },
     "public.StepType": {
       "name": "StepType",
       "schema": "public",
-      "values": [
-        "HUMAN_TASK",
-        "SERVICE",
-        "WORKFLOW"
-      ]
+      "values": ["HUMAN_TASK", "SERVICE", "WORKFLOW"]
     },
     "public.WorkflowType": {
       "name": "WorkflowType",
       "schema": "public",
-      "values": [
-        "ISSUANCE",
-        "PRESENTATION"
-      ]
+      "values": ["ISSUANCE", "PRESENTATION"]
     },
     "public.RelyingPartyType": {
       "name": "RelyingPartyType",
       "schema": "public",
-      "values": [
-        "ARIES"
-      ]
+      "values": ["ARIES"]
     }
   },
   "schemas": {},
