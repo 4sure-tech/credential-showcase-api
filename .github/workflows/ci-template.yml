@@ -85,7 +85,16 @@ jobs:
           run_install: false
 
       - name: Install Dependencies
-        run: pnpm install
+        run: |
+          pnpm install
+          # Force install in package directory to ensure node_modules exists
+          cd ${{ inputs.package_path }}/${{ inputs.package_name }}
+          pnpm install
+
+      - name: Install Trivy
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.57.1
+          trivy --version
 
       - name: Scan Dependencies
         uses: ./.github/actions/trivy-scan

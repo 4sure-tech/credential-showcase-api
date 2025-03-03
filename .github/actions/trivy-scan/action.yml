@@ -15,33 +15,28 @@ inputs:
 runs:
   using: "composite"
   steps:
-    # First scan the workspace root for dependencies
-    - name: Run Trivy Root Scan
+    # For filesystem scanning
+    - name: Run Trivy FS Scan
       if: inputs.scan-type == 'fs'
-      uses: aquasecurity/trivy-action@master
-      with:
-        scan-type: 'fs'
-        scan-ref: '.'
-        format: 'json'
-        output: 'root-scan.json'
-        severity: 'CRITICAL,HIGH,MEDIUM,LOW'
-        exit-code: '0'
-        scanners: 'vuln'
-        skip-dirs: 'node_modules,.git,dist'
+      shell: bash
+      run: |
+        # First scan the root dependencies
+        trivy fs \
+          --security-checks vuln \
+          --format json \
+          --output root-scan.json \
+          --severity CRITICAL,HIGH,MEDIUM,LOW \
+          --debug \
+          .
 
-    # Then scan the specific package
-    - name: Run Trivy Package Scan
-      if: inputs.scan-type == 'fs'
-      uses: aquasecurity/trivy-action@master
-      with:
-        scan-type: 'fs'
-        scan-ref: ${{ inputs.scan-ref }}
-        format: 'json'
-        output: 'package-scan.json'
-        severity: 'CRITICAL,HIGH,MEDIUM,LOW'
-        exit-code: '0'
-        scanners: 'vuln'
-        skip-dirs: 'node_modules,.git,dist'
+        # Then scan the specific package
+        trivy fs \
+          --security-checks vuln \
+          --format json \
+          --output package-scan.json \
+          --severity CRITICAL,HIGH,MEDIUM,LOW \
+          --debug \
+          ${{ inputs.scan-ref }}
 
     # For image scanning
     - name: Run Trivy Image Scan
@@ -70,6 +65,13 @@ runs:
         echo ""
         echo "=== pnpm-lock.yaml ==="
         cat pnpm-lock.yaml || echo "No pnpm-lock.yaml found"
+        echo ""
+        echo "=== Node Modules Structure ==="
+        echo "Root node_modules:"
+        ls -la node_modules || echo "No root node_modules found"
+        echo ""
+        echo "Package node_modules:"
+        ls -la ${{ inputs.scan-ref }}/node_modules || echo "No package node_modules found"
         echo ""
         echo "=== Scan Results ==="
         if [ "${{ inputs.scan-type }}" = "fs" ]; then
