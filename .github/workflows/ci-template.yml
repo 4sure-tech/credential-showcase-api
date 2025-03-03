@@ -83,7 +83,6 @@ jobs:
           args: >
             -Dsonar.projectKey=${{ inputs.sonar_project_key }}
             -Dsonar.sources=${{ inputs.package_path }}/${{ inputs.package_name }}/src
-            -Dsonar.tests=${{ inputs.package_path }}/${{ inputs.package_name }}/__tests__
 
   build:
     name: Build and Push Docker Image - ${{ inputs.package_name }}
