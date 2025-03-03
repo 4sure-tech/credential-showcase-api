@@ -28,7 +28,7 @@ export const credentialDefinitions = pgTable('credentialDefinition', {
 export const credentialDefinitionRelations = relations(credentialDefinitions, ({ one, many }) => ({
   credentialSchema: one(credentialSchemas, {
     fields: [credentialDefinitions.credentialSchemaId],
-    references: [credentialSchemas.id]
+    references: [credentialSchemas.id],
   }),
   icon: one(assets, {
     fields: [credentialDefinitions.icon],
