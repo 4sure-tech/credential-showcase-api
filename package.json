@@ -14,6 +14,9 @@
     "test:ci": "jest --config=jest.json",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --verbose --config=jest.json --coverage=true --detectOpenHandles"
   },
+  "dependencies": {
+    "lodash": "4.17.11"
+  },
   "publishConfig": {
     "access": "public"
   },
