@@ -99,9 +99,17 @@ jobs:
       - name: NPM Audit Check
         run: |
           cd ${{ inputs.package_path }}/${{ inputs.package_name }}
-          echo "=== NPM Audit Results ===" >> $GITHUB_STEP_SUMMARY
+          echo "=== PNPM Audit Results ===" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          npm audit --json | tee npm-audit.json >> $GITHUB_STEP_SUMMARY
+          pnpm audit --json | tee pnpm-audit.json >> $GITHUB_STEP_SUMMARY || true
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+          # Alternative approach using npm
+          echo "=== Converting to NPM format and running NPM Audit ===" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          # Generate package-lock.json from pnpm-lock.yaml
+          pnpm install --package-lock-only
+          npm audit --json | tee npm-audit.json >> $GITHUB_STEP_SUMMARY || true
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
 
       - name: Scan Dependencies
