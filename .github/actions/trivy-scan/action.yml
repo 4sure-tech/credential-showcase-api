@@ -28,21 +28,33 @@ runs:
     - name: Generate Scan Summary
       shell: bash
       run: |
-        CRITICAL_COUNT=$(jq '[.Results[].Vulnerabilities[] | select(.Severity=="CRITICAL")] | length' scan-results.json)
-        HIGH_COUNT=$(jq '[.Results[].Vulnerabilities[] | select(.Severity=="HIGH")] | length' scan-results.json)
-        MEDIUM_COUNT=$(jq '[.Results[].Vulnerabilities[] | select(.Severity=="MEDIUM")] | length' scan-results.json)
-        LOW_COUNT=$(jq '[.Results[].Vulnerabilities[] | select(.Severity=="LOW")] | length' scan-results.json)
-        UNKNOWN_COUNT=$(jq '[.Results[].Vulnerabilities[] | select(.Severity=="UNKNOWN")] | length' scan-results.json)
+        # Function to safely count vulnerabilities
+        count_vulnerabilities() {
+          local severity=$1
+          jq "([.Results[]?.Vulnerabilities[]? | select(.Severity==\"$severity\")] | length) // 0" scan-results.json
+        }
+        
+        # Get counts with null safety
+        CRITICAL_COUNT=$(count_vulnerabilities "CRITICAL")
+        HIGH_COUNT=$(count_vulnerabilities "HIGH")
+        MEDIUM_COUNT=$(count_vulnerabilities "MEDIUM")
+        LOW_COUNT=$(count_vulnerabilities "LOW")
+        UNKNOWN_COUNT=$(count_vulnerabilities "UNKNOWN")
         
         {
           echo "# ${{ inputs.scan-title }}"
-          echo "| Severity  | Count |"
-          echo "|-----------|-------|"
-          echo "| Critical  | $CRITICAL_COUNT |"
-          echo "| High      | $HIGH_COUNT |"
-          echo "| Medium    | $MEDIUM_COUNT |"
-          echo "| Low       | $LOW_COUNT |"
-          echo "| Unknown   | $UNKNOWN_COUNT |"
+          echo ""
+          if [ "$CRITICAL_COUNT" = "0" ] && [ "$HIGH_COUNT" = "0" ] && [ "$MEDIUM_COUNT" = "0" ] && [ "$LOW_COUNT" = "0" ] && [ "$UNKNOWN_COUNT" = "0" ]; then
+            echo "No vulnerabilities found"
+          else
+            echo "| Severity  | Count |"
+            echo "|-----------|-------|"
+            echo "| Critical  | $CRITICAL_COUNT |"
+            echo "| High      | $HIGH_COUNT |"
+            echo "| Medium    | $MEDIUM_COUNT |"
+            echo "| Low       | $LOW_COUNT |"
+            echo "| Unknown   | $UNKNOWN_COUNT |"
+          fi
           echo ""
           echo "---"
         } >> $GITHUB_STEP_SUMMARY 
