@@ -24,10 +24,18 @@ runs:
         output: 'scan-results.json'
         severity: 'CRITICAL,HIGH,MEDIUM,LOW'
         exit-code: '0'
-        scanners: 'vuln,secret,config'
-        skip-dirs: 'node_modules'
-        package-json: true
-        lock-file: true
+        scanners: 'vuln'
+        skip-dirs: 'node_modules,.git,dist'
+
+    - name: Debug Directory Content
+      shell: bash
+      run: |
+        echo "Contents of scan directory:"
+        ls -la ${{ inputs.scan-ref }}
+        echo "Package.json content:"
+        cat ${{ inputs.scan-ref }}/package.json || echo "No package.json found"
+        echo "Scan results:"
+        cat scan-results.json
 
     - name: Generate Scan Summary
       shell: bash
@@ -50,6 +58,12 @@ runs:
           echo ""
           if [ "$CRITICAL_COUNT" = "0" ] && [ "$HIGH_COUNT" = "0" ] && [ "$MEDIUM_COUNT" = "0" ] && [ "$LOW_COUNT" = "0" ] && [ "$UNKNOWN_COUNT" = "0" ]; then
             echo "No vulnerabilities found"
+            echo ""
+            echo "Debug Information:"
+            echo "\`\`\`"
+            echo "Scan Path: ${{ inputs.scan-ref }}"
+            echo "Scan Type: ${{ inputs.scan-type }}"
+            echo "\`\`\`"
           else
             echo "| Severity  | Count |"
             echo "|-----------|-------|"

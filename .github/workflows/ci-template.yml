@@ -6,6 +6,9 @@ on:
       package_name:
         required: true
         type: string
+      package_path:
+        required: true
+        type: string
       docker_image:
         required: true
         type: string
@@ -88,7 +91,7 @@ jobs:
         uses: ./.github/actions/trivy-scan
         with:
           scan-type: 'fs'
-          scan-ref: 'packages/${{ inputs.package_name }}'
+          scan-ref: '${{ inputs.package_path }}/${{ inputs.package_name }}'
           scan-title: 'Dependency Scan Results for ${{ inputs.package_name }}'
 
   # sonar:
