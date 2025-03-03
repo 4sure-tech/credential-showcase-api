@@ -1,0 +1,48 @@
+name: 'Trivy Security Scanner'
+description: 'Runs Trivy scanner and generates vulnerability summary'
+
+inputs:
+  scan-type:
+    description: 'Type of scan to perform (fs/image)'
+    required: true
+  scan-ref:
+    description: 'Reference to scan (path or image)'
+    required: true
+  scan-title:
+    description: 'Title for the scan summary'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: ${{ inputs.scan-type }}
+        ${{ inputs.scan-type == 'fs' && 'scan-ref' || 'image-ref' }}: ${{ inputs.scan-ref }}
+        format: 'json'
+        output: 'scan-results.json'
+        severity: 'CRITICAL,HIGH,MEDIUM,LOW'
+        exit-code: '0'
+
+    - name: Generate Scan Summary
+      shell: bash
+      run: |
+        CRITICAL_COUNT=$(jq '[.Results[].Vulnerabilities[] | select(.Severity=="CRITICAL")] | length' scan-results.json)
+        HIGH_COUNT=$(jq '[.Results[].Vulnerabilities[] | select(.Severity=="HIGH")] | length' scan-results.json)
+        MEDIUM_COUNT=$(jq '[.Results[].Vulnerabilities[] | select(.Severity=="MEDIUM")] | length' scan-results.json)
+        LOW_COUNT=$(jq '[.Results[].Vulnerabilities[] | select(.Severity=="LOW")] | length' scan-results.json)
+        UNKNOWN_COUNT=$(jq '[.Results[].Vulnerabilities[] | select(.Severity=="UNKNOWN")] | length' scan-results.json)
+        
+        {
+          echo "# ${{ inputs.scan-title }}"
+          echo "| Severity  | Count |"
+          echo "|-----------|-------|"
+          echo "| Critical  | $CRITICAL_COUNT |"
+          echo "| High      | $HIGH_COUNT |"
+          echo "| Medium    | $MEDIUM_COUNT |"
+          echo "| Low       | $LOW_COUNT |"
+          echo "| Unknown   | $UNKNOWN_COUNT |"
+          echo ""
+          echo "---"
+        } >> $GITHUB_STEP_SUMMARY 
