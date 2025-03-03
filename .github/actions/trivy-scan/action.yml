@@ -24,6 +24,10 @@ runs:
         output: 'scan-results.json'
         severity: 'CRITICAL,HIGH,MEDIUM,LOW'
         exit-code: '0'
+        scanners: 'vuln,secret,config'
+        skip-dirs: 'node_modules'
+        package-json: true
+        lock-file: true
 
     - name: Generate Scan Summary
       shell: bash
