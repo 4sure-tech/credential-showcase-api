@@ -80,10 +80,10 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         with:
           projectBaseDir: .
-          projectKey: ${{ inputs.sonar_project_key }}
           args: >
-            -Dsonar.sources=${{ inputs.package_path }}/${{ inputs.package_name }}/src
-            -Dsonar.tests=${{ inputs.package_path }}/${{ inputs.package_name }}/__tests__
+            -Dsonar.projectKey=${{ inputs.sonar_project_key }}
+            -Dsonar.sources=${{ inputs.package_path }}/src
+            -Dsonar.tests=${{ inputs.package_path }}/__tests__
 
   build:
     name: Build and Push Docker Image - ${{ inputs.package_name }}
