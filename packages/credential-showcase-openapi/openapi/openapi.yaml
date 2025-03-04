@@ -2066,6 +2066,18 @@ components:
           $ref: '#/components/schemas/Asset'
         bodyImage:
           $ref: '#/components/schemas/Asset'
+        hidden:
+          type: boolean
+          description: Whether the persona is hidden from the user
+          example: false
+        createdAt:
+          type: string
+          description: Date and time the persona was created
+          example: 2021-01-01T00:00:00Z
+        updatedAt:
+          type: string
+          description: Date and time the persona was last updated
+          example: 2021-01-01T00:00:00Z
     PersonaRequest:
       type: object
       required:
@@ -2090,6 +2102,10 @@ components:
         bodyImage:
           type: string
           example: 123e4567-e89b-12d3-a456-426614174877
+        hidden:
+          type: boolean
+          description: Whether the persona is hidden from the user
+          example: false
     PersonasResponse:
       properties:
         personas:
@@ -2135,6 +2151,17 @@ components:
           description: References to personas used in this workflow
           items:
             $ref: '#/components/schemas/Persona'
+        hidden:
+          type: boolean
+          description: Whether the workflow is hidden from the user
+          example: false
+        createdAt:
+          type: string
+          description: Date and time the workflow was created
+          example: 2021-01-01T00:00:00Z
+        updatedAt:
+          type: string
+          description: Date and time the workflow was last updated
     WorkflowRequest:
       type: object
       required:
@@ -2160,6 +2187,10 @@ components:
           items:
             type: string
             example: 123e4567-e89b-12d3-a456-426614174456
+        hidden:
+          type: boolean
+          description: Whether the workflow is hidden from the user
+          example: false
 
     IssuanceFlowsResponse:
       type: object
@@ -2452,6 +2483,13 @@ components:
             - $ref: '#/components/schemas/AnonCredRevocation'
         icon:
           $ref: '#/components/schemas/Asset'
+        createdAt:
+          type: string
+          description: Date and time the credential definition was created
+          example: 2021-01-01T00:00:00Z
+        updatedAt:
+          type: string
+          description: Date and time the credential definition was last updated
     CredentialDefinitionRequest:
       type: object
       required:
@@ -2653,6 +2691,20 @@ components:
           description: List of personas involved in this showcase
           items:
             $ref: '#/components/schemas/Persona'
+        asset:
+          $ref: '#/components/schemas/Asset'
+        completionMessage:
+          type: string
+          description: Message to display when the showcase is completed
+          example: "You have successfully completed the showcase"
+        createdAt:
+          type: string
+          description: Date and time the showcase was created
+          example: 2021-01-01T00:00:00Z
+        updatedAt:
+          type: string
+          description: Date and time the showcase was last updated
+          example: 2021-01-01T00:00:00Z
     ShowcasesResponse:
       type: object
       properties:
@@ -2708,6 +2760,12 @@ components:
           items:
             type: string
             example: 123e4567-e89b-12d3-a456-426614174469
+        asset:
+          type: string
+          example: 123e4567-e89b-12d3-a456-426614174469
+        completionMessage:
+          type: string
+          example: "You have successfully completed the showcase" 
 
     ShowcaseStatus:
       type: string
@@ -2716,69 +2774,6 @@ components:
           - ACTIVE
           - ARCHIVED
       description: Types of supported credentials
-
-    # Scenario:
-    #   type: object
-    #   required:
-    #     - name
-    #     - description
-    #   properties:
-    #     id:
-    #       type: string
-    #       description: Unique identifier for the scenario
-    #       example: 123e4567-e89b-12d3-a456-426614174456
-    #     name:
-    #       type: string
-    #       description: Name of the scenario
-    #       example: University Parking Journey
-    #     description:
-    #       type: string
-    #       description: Description of the scenario
-    #       example: Student obtaining and using parking credentials
-    #     workflows:
-    #       type: array
-    #       description: References to workflows used in this scenario
-    #       items:
-    #         type: string
-    #       example: ['123e4567-e89b-12d3-a456-426614174456', '123e4567-e89b-12d3-a456-426614174456']
-    #     personas:
-    #       type: array
-    #       description: References to personas involved in this scenario
-    #       items:
-    #         type: string
-    #       example: ['123e4567-e89b-12d3-a456-426614174456', '123e4567-e89b-12d3-a456-426614174456']
-    # ScenarioRequest:
-    #   type: object
-    #   required:
-    #     - name
-    #     - description
-    #   properties:
-    #     name:
-    #       type: string
-    #       description: Name of the scenario
-    #       example: University Parking Journey
-    #     description:
-    #       type: string
-    #       description: Description of the scenario
-    #       example: Student obtaining and using parking credentials
-    #     workflows:
-    #       type: array
-    #       description: References to workflows used in this scenario
-    #       items:
-    #         type: string
-    #       example: ['123e4567-e89b-12d3-a456-426614174456', '123e4567-e89b-12d3-a456-426614174456']
-    #     personas:
-    #       type: array
-    #       description: References to personas involved in this scenario
-    #       items:
-    #         type: string
-    #       example: ['123e4567-e89b-12d3-a456-426614174456', '123e4567-e89b-12d3-a456-426614174456']
-    # ScenarioResponse:
-    #   properties:
-    #     assets:
-    #       type: array
-    #       items:
-    #         $ref: '#/components/schemas/Scenario'
 
   responses:
     'BadRequest':
