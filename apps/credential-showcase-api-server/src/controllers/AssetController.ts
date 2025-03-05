@@ -53,7 +53,7 @@ class AssetController {
 
     @OnUndefined(204)
     @Delete('/:id')
-    public async delete(@Param('id') id: string) {
+    public async delete(@Param('id') id: string): Promise<void> {
         return this.assetService.deleteAsset(id);
     }
 }

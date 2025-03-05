@@ -11,7 +11,7 @@ export const steps = pgTable('step', {
     title: text().notNull(),
     description: text().notNull(),
     order: integer().notNull(),
-    type: StepTypePg('step_type').notNull().$type<StepType>(),
+    type: StepTypePg().notNull().$type<StepType>(),
     subFlow: uuid('sub_flow').references(() => workflows.id),
     workflow: uuid().references(() => workflows.id,{ onDelete: 'cascade' }).notNull(),
     asset: uuid().references(() => assets.id)

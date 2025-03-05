@@ -10,7 +10,7 @@ import {
     Put
 } from 'routing-controllers';
 import { Service } from 'typedi';
-import PresentationFlowService from '../services/PresentationFlowService';
+import ScenarioService from '../services/ScenarioService';
 import {
     PresentationFlowRequest,
     PresentationFlowRequestToJSONTyped,
@@ -32,17 +32,16 @@ import {
     StepActionRequestToJSONTyped
 } from 'credential-showcase-openapi';
 import { presentationFlowDTOFrom, stepDTOFrom } from '../utils/mappers';
+import { WorkflowType } from '../types';
 
 @JsonController('/workflows/presentations')
 @Service()
 class PresentationFlowController {
-    constructor(private presentationFlowService: PresentationFlowService) { }
-
-    // PRESENTATION FLOW
+    constructor(private scenarioService: ScenarioService) { }
 
     @Get('/')
     public async getAllPresentationFlows(): Promise<PresentationFlowsResponse> {
-        const result = await this.presentationFlowService.getPresentationFlows();
+        const result = await this.scenarioService.getScenarios({ filter: { scenarioType: WorkflowType.ISSUANCE } });
         const presentationFlows = result.map(presentationFlow => presentationFlowDTOFrom(presentationFlow));
         return PresentationFlowsResponseFromJSONTyped({ presentationFlows }, false);
     }
@@ -51,7 +50,7 @@ class PresentationFlowController {
     public async getOnePresentationFlow(
         @Param('presentationFlowId') presentationFlowId: string
     ): Promise<PresentationFlowResponse> {
-        const result = await this.presentationFlowService.getPresentationFlow(presentationFlowId);
+        const result = await this.scenarioService.getScenario(presentationFlowId);
         return PresentationFlowResponseFromJSONTyped({ presentationFlow: presentationFlowDTOFrom(result) }, false);
     }
 
@@ -60,7 +59,7 @@ class PresentationFlowController {
     public async postPresentationFlow(
         @Body() presentationFlowRequest: PresentationFlowRequest
     ): Promise<PresentationFlowResponse> {
-        const result = await this.presentationFlowService.createPresentationFlow(PresentationFlowRequestToJSONTyped(presentationFlowRequest));
+        const result = await this.scenarioService.createScenario(PresentationFlowRequestToJSONTyped(presentationFlowRequest));
         return PresentationFlowResponseFromJSONTyped({ presentationFlow: presentationFlowDTOFrom(result) }, false);
     }
 
@@ -69,7 +68,7 @@ class PresentationFlowController {
         @Param('presentationFlowId') presentationFlowId: string,
         @Body() presentationFlowRequest: PresentationFlowRequest
     ): Promise<PresentationFlowResponse> {
-        const result = await this.presentationFlowService.updatePresentationFlow(presentationFlowId, PresentationFlowRequestToJSONTyped(presentationFlowRequest));
+        const result = await this.scenarioService.updateScenario(presentationFlowId, PresentationFlowRequestToJSONTyped(presentationFlowRequest));
         return PresentationFlowResponseFromJSONTyped({ presentationFlow: presentationFlowDTOFrom(result) }, false);
     }
 
@@ -78,16 +77,14 @@ class PresentationFlowController {
     public async deletePresentationFlow(
         @Param('presentationFlowId') presentationFlowId: string
     ): Promise<void> {
-        return await this.presentationFlowService.deletePresentationFlow(presentationFlowId);
+        return await this.scenarioService.deleteScenario(presentationFlowId);
     }
-
-    // PRESENTATION FLOW STEP
 
     @Get('/:presentationFlowId/steps')
     public async getAllSteps(
         @Param('presentationFlowId') presentationFlowId: string
     ): Promise<StepsResponse> {
-        const result = await this.presentationFlowService.getPresentationFlowSteps(presentationFlowId)
+        const result = await this.scenarioService.getScenarioSteps(presentationFlowId)
         const steps = result.map(step => stepDTOFrom(step));
         return StepsResponseFromJSONTyped({ steps }, false);
     }
@@ -97,7 +94,7 @@ class PresentationFlowController {
         @Param('presentationFlowId') presentationFlowId: string,
         @Param('stepId') stepId: string
     ): Promise<StepResponse> {
-        const result = await this.presentationFlowService.getPresentationFlowStep(presentationFlowId, stepId);
+        const result = await this.scenarioService.getScenarioStep(presentationFlowId, stepId);
         return StepResponseFromJSONTyped({ step: stepDTOFrom(result) }, false);
     }
 
@@ -107,7 +104,7 @@ class PresentationFlowController {
         @Param('presentationFlowId') presentationFlowId: string,
         @Body() stepRequest: StepRequest
     ): Promise<StepResponse> {
-        const result = await this.presentationFlowService.createPresentationFlowStep(presentationFlowId, StepRequestToJSONTyped(stepRequest));
+        const result = await this.scenarioService.createScenarioStep(presentationFlowId, StepRequestToJSONTyped(stepRequest));
         return StepResponseFromJSONTyped({ step: stepDTOFrom(result) }, false);
     }
 
@@ -117,7 +114,7 @@ class PresentationFlowController {
         @Param('stepId') stepId: string,
         @Body() stepRequest: StepRequest
     ): Promise<StepResponse> {
-        const result = await this.presentationFlowService.updatePresentationFlowStep(presentationFlowId, stepId, StepRequestToJSONTyped(stepRequest))
+        const result = await this.scenarioService.updateScenarioStep(presentationFlowId, stepId, StepRequestToJSONTyped(stepRequest))
         return StepResponseFromJSONTyped({ step: stepDTOFrom(result) }, false);
     }
 
@@ -127,17 +124,15 @@ class PresentationFlowController {
         @Param('presentationFlowId') presentationFlowId: string,
         @Param('stepId') stepId: string
     ): Promise<void> {
-        return this.presentationFlowService.deletePresentationFlowStep(presentationFlowId, stepId);
+        return this.scenarioService.deleteScenarioStep(presentationFlowId, stepId);
     }
-
-    // PRESENTATION FLOW STEP ACTION
 
     @Get('/:presentationFlowId/steps/:stepId/actions')
     public async getAllPresentationFlowStepActions(
         @Param('presentationFlowId') presentationFlowId: string,
         @Param('stepId') stepId: string
     ): Promise<StepActionsResponse> {
-        const result = await this.presentationFlowService.getPresentationFlowStepActions(presentationFlowId, stepId)
+        const result = await this.scenarioService.getScenarioStepActions(presentationFlowId, stepId)
         const actions = result.map(action => action);
         return StepActionsResponseFromJSONTyped({ actions }, false);
     }
@@ -148,7 +143,7 @@ class PresentationFlowController {
         @Param('stepId') stepId: string,
         @Param('actionId') actionId: string
     ): Promise<StepActionResponse> {
-        const result = await this.presentationFlowService.getPresentationFlowStepAction(presentationFlowId, stepId, actionId);
+        const result = await this.scenarioService.getScenarioStepAction(presentationFlowId, stepId, actionId);
         return StepActionResponseFromJSONTyped({ action: result }, false);
     }
 
@@ -159,7 +154,7 @@ class PresentationFlowController {
         @Param('stepId') stepId: string,
         @Body() actionRequest: StepActionRequest
     ): Promise<StepActionResponse> {
-        const result = await this.presentationFlowService.createPresentationFlowStepAction(presentationFlowId, stepId, StepActionRequestToJSONTyped(actionRequest));
+        const result = await this.scenarioService.createScenarioStepAction(presentationFlowId, stepId, StepActionRequestToJSONTyped(actionRequest));
         return StepActionResponseFromJSONTyped({ action: result }, false);
     }
 
@@ -170,7 +165,7 @@ class PresentationFlowController {
         @Param('actionId') actionId: string,
         @Body() actionRequest: StepActionRequest
     ): Promise<StepActionResponse> {
-        const result = await this.presentationFlowService.updatePresentationFlowStepAction(presentationFlowId, stepId, actionId, StepActionRequestToJSONTyped(actionRequest))
+        const result = await this.scenarioService.updateScenarioStepAction(presentationFlowId, stepId, actionId, StepActionRequestToJSONTyped(actionRequest))
         return StepActionResponseFromJSONTyped({ action: result }, false);
     }
 
@@ -181,7 +176,7 @@ class PresentationFlowController {
         @Param('stepId') stepId: string,
         @Param('actionId') actionId: string
     ): Promise<void> {
-        return this.presentationFlowService.deletePresentationFlowStepAction(presentationFlowId, stepId, actionId);
+        return this.scenarioService.deleteScenarioStepAction(presentationFlowId, stepId, actionId);
     }
 }
 

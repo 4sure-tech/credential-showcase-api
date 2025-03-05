@@ -13,7 +13,7 @@ export const credentialDefinitions = pgTable('credentialDefinition', {
     name: text().notNull(),
     version: text().notNull(),
     icon: uuid().references(() => assets.id).notNull(),
-    type: CredentialTypePg('credential_type').notNull().$type<CredentialType>()
+    type: CredentialTypePg().notNull().$type<CredentialType>()
 });
 
 export const credentialDefinitionRelations = relations(credentialDefinitions, ({ one, many }) => ({

@@ -8,7 +8,7 @@ export const credentialAttributes = pgTable('credentialAttribute', {
     id: uuid('id').notNull().primaryKey().defaultRandom(),
     name: text().notNull(),
     value: text().notNull(),
-    type: CredentialAttributeTypePg('credential_attribute_type').notNull().$type<CredentialAttributeType>(),
+    type: CredentialAttributeTypePg().notNull().$type<CredentialAttributeType>(),
     credentialDefinition: uuid('credential_definition').references(() => credentialDefinitions.id,{ onDelete: 'cascade' }).notNull()
 });
 

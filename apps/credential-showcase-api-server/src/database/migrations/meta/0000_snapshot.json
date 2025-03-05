@@ -1,5 +1,5 @@
 {
-  "id": "a148d5f1-a241-4bde-8330-65c488b13b82",
+  "id": "30fff8ac-7a57-46f6-ba21-f24f518c9b86",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -131,8 +131,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "credential_attribute_type": {
-          "name": "credential_attribute_type",
+        "type": {
+          "name": "type",
           "type": "CredentialAttributeType",
           "typeSchema": "public",
           "primaryKey": false,
@@ -196,8 +196,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "credential_type": {
-          "name": "credential_type",
+        "type": {
+          "name": "type",
           "type": "CredentialType",
           "typeSchema": "public",
           "primaryKey": false,
@@ -343,8 +343,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "relying_party_type": {
-          "name": "relying_party_type",
+        "type": {
+          "name": "type",
           "type": "RelyingPartyType",
           "typeSchema": "public",
           "primaryKey": false,
@@ -408,8 +408,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "issuer_type": {
-          "name": "issuer_type",
+        "type": {
+          "name": "type",
           "type": "IssuerType",
           "typeSchema": "public",
           "primaryKey": false,
@@ -545,8 +545,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "step_type": {
-          "name": "step_type",
+        "type": {
+          "name": "type",
           "type": "StepType",
           "typeSchema": "public",
           "primaryKey": false,
@@ -965,6 +965,231 @@
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
+    },
+    "public.showcase": {
+      "name": "showcase",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "ShowcaseStatus",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hidden": {
+          "name": "hidden",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.showcasesToCredentialDefinitions": {
+      "name": "showcasesToCredentialDefinitions",
+      "schema": "",
+      "columns": {
+        "showcase": {
+          "name": "showcase",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "credential_definition": {
+          "name": "credential_definition",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "showcasesToCredentialDefinitions_showcase_showcase_id_fk": {
+          "name": "showcasesToCredentialDefinitions_showcase_showcase_id_fk",
+          "tableFrom": "showcasesToCredentialDefinitions",
+          "tableTo": "showcase",
+          "columnsFrom": [
+            "showcase"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "showcasesToCredentialDefinitions_credential_definition_credentialDefinition_id_fk": {
+          "name": "showcasesToCredentialDefinitions_credential_definition_credentialDefinition_id_fk",
+          "tableFrom": "showcasesToCredentialDefinitions",
+          "tableTo": "credentialDefinition",
+          "columnsFrom": [
+            "credential_definition"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "showcasesToCredentialDefinitions_showcase_credential_definition_pk": {
+          "name": "showcasesToCredentialDefinitions_showcase_credential_definition_pk",
+          "columns": [
+            "showcase",
+            "credential_definition"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.showcasesToPersonas": {
+      "name": "showcasesToPersonas",
+      "schema": "",
+      "columns": {
+        "showcase": {
+          "name": "showcase",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "persona": {
+          "name": "persona",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "showcasesToPersonas_showcase_showcase_id_fk": {
+          "name": "showcasesToPersonas_showcase_showcase_id_fk",
+          "tableFrom": "showcasesToPersonas",
+          "tableTo": "showcase",
+          "columnsFrom": [
+            "showcase"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "showcasesToPersonas_persona_persona_id_fk": {
+          "name": "showcasesToPersonas_persona_persona_id_fk",
+          "tableFrom": "showcasesToPersonas",
+          "tableTo": "persona",
+          "columnsFrom": [
+            "persona"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "showcasesToPersonas_showcase_persona_pk": {
+          "name": "showcasesToPersonas_showcase_persona_pk",
+          "columns": [
+            "showcase",
+            "persona"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.showcasesToScenarios": {
+      "name": "showcasesToScenarios",
+      "schema": "",
+      "columns": {
+        "showcase": {
+          "name": "showcase",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "scenario": {
+          "name": "scenario",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "showcasesToScenarios_showcase_showcase_id_fk": {
+          "name": "showcasesToScenarios_showcase_showcase_id_fk",
+          "tableFrom": "showcasesToScenarios",
+          "tableTo": "showcase",
+          "columnsFrom": [
+            "showcase"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "showcasesToScenarios_scenario_workflow_id_fk": {
+          "name": "showcasesToScenarios_scenario_workflow_id_fk",
+          "tableFrom": "showcasesToScenarios",
+          "tableTo": "workflow",
+          "columnsFrom": [
+            "scenario"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "showcasesToScenarios_showcase_scenario_pk": {
+          "name": "showcasesToScenarios_showcase_scenario_pk",
+          "columns": [
+            "showcase",
+            "scenario"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     }
   },
   "enums": {
@@ -1008,6 +1233,15 @@
       "values": [
         "ISSUANCE",
         "PRESENTATION"
+      ]
+    },
+    "public.ShowcaseStatus": {
+      "name": "ShowcaseStatus",
+      "schema": "public",
+      "values": [
+        "PENDING",
+        "ACTIVE",
+        "ARCHIVED"
       ]
     },
     "public.RelyingPartyType": {

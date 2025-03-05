@@ -3,6 +3,7 @@ CREATE TYPE "public"."CredentialType" AS ENUM('ANONCRED');--> statement-breakpoi
 CREATE TYPE "public"."IssuerType" AS ENUM('ARIES');--> statement-breakpoint
 CREATE TYPE "public"."StepType" AS ENUM('HUMAN_TASK', 'SERVICE', 'WORKFLOW');--> statement-breakpoint
 CREATE TYPE "public"."WorkflowType" AS ENUM('ISSUANCE', 'PRESENTATION');--> statement-breakpoint
+CREATE TYPE "public"."ShowcaseStatus" AS ENUM('PENDING', 'ACTIVE', 'ARCHIVED');--> statement-breakpoint
 CREATE TYPE "public"."RelyingPartyType" AS ENUM('ARIES');--> statement-breakpoint
 CREATE TABLE "ariesProofRequest" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
@@ -24,7 +25,7 @@ CREATE TABLE "credentialAttribute" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
 	"value" text NOT NULL,
-	"credential_attribute_type" "CredentialAttributeType" NOT NULL,
+	"type" "CredentialAttributeType" NOT NULL,
 	"credential_definition" uuid NOT NULL
 );
 --> statement-breakpoint
@@ -33,7 +34,7 @@ CREATE TABLE "credentialDefinition" (
 	"name" text NOT NULL,
 	"version" text NOT NULL,
 	"icon" uuid NOT NULL,
-	"credential_type" "CredentialType" NOT NULL
+	"type" "CredentialType" NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "credentialRepresentation" (
@@ -50,7 +51,7 @@ CREATE TABLE "relyingPartiesToCredentialDefinitions" (
 CREATE TABLE "relyingParty" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
-	"relying_party_type" "RelyingPartyType" NOT NULL,
+	"type" "RelyingPartyType" NOT NULL,
 	"description" text NOT NULL,
 	"organization" text,
 	"logo" uuid
@@ -59,7 +60,7 @@ CREATE TABLE "relyingParty" (
 CREATE TABLE "issuer" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
-	"issuer_type" "IssuerType" NOT NULL,
+	"type" "IssuerType" NOT NULL,
 	"description" text NOT NULL,
 	"organization" text,
 	"logo" uuid
@@ -76,7 +77,7 @@ CREATE TABLE "step" (
 	"title" text NOT NULL,
 	"description" text NOT NULL,
 	"order" integer NOT NULL,
-	"step_type" "StepType" NOT NULL,
+	"type" "StepType" NOT NULL,
 	"sub_flow" uuid,
 	"workflow" uuid NOT NULL,
 	"asset" uuid,
@@ -127,6 +128,32 @@ CREATE TABLE "workflowsToPersonas" (
 	CONSTRAINT "workflowsToPersonas_workflow_persona_pk" PRIMARY KEY("workflow","persona")
 );
 --> statement-breakpoint
+CREATE TABLE "showcase" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"name" text NOT NULL,
+	"description" text NOT NULL,
+	"status" "ShowcaseStatus" NOT NULL,
+	"hidden" boolean NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "showcasesToCredentialDefinitions" (
+	"showcase" uuid NOT NULL,
+	"credential_definition" uuid NOT NULL,
+	CONSTRAINT "showcasesToCredentialDefinitions_showcase_credential_definition_pk" PRIMARY KEY("showcase","credential_definition")
+);
+--> statement-breakpoint
+CREATE TABLE "showcasesToPersonas" (
+	"showcase" uuid NOT NULL,
+	"persona" uuid NOT NULL,
+	CONSTRAINT "showcasesToPersonas_showcase_persona_pk" PRIMARY KEY("showcase","persona")
+);
+--> statement-breakpoint
+CREATE TABLE "showcasesToScenarios" (
+	"showcase" uuid NOT NULL,
+	"scenario" uuid NOT NULL,
+	CONSTRAINT "showcasesToScenarios_showcase_scenario_pk" PRIMARY KEY("showcase","scenario")
+);
+--> statement-breakpoint
 ALTER TABLE "ariesProofRequest" ADD CONSTRAINT "ariesProofRequest_step_action_stepAction_id_fk" FOREIGN KEY ("step_action") REFERENCES "public"."stepAction"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "credentialAttribute" ADD CONSTRAINT "credentialAttribute_credential_definition_credentialDefinition_id_fk" FOREIGN KEY ("credential_definition") REFERENCES "public"."credentialDefinition"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "credentialDefinition" ADD CONSTRAINT "credentialDefinition_icon_asset_id_fk" FOREIGN KEY ("icon") REFERENCES "public"."asset"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
@@ -147,4 +174,10 @@ ALTER TABLE "revocationInfo" ADD CONSTRAINT "revocationInfo_credential_definitio
 ALTER TABLE "persona" ADD CONSTRAINT "persona_headshot_image_asset_id_fk" FOREIGN KEY ("headshot_image") REFERENCES "public"."asset"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "persona" ADD CONSTRAINT "persona_body_image_asset_id_fk" FOREIGN KEY ("body_image") REFERENCES "public"."asset"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "workflowsToPersonas" ADD CONSTRAINT "workflowsToPersonas_workflow_workflow_id_fk" FOREIGN KEY ("workflow") REFERENCES "public"."workflow"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "workflowsToPersonas" ADD CONSTRAINT "workflowsToPersonas_persona_persona_id_fk" FOREIGN KEY ("persona") REFERENCES "public"."persona"("id") ON DELETE cascade ON UPDATE no action;
+ALTER TABLE "workflowsToPersonas" ADD CONSTRAINT "workflowsToPersonas_persona_persona_id_fk" FOREIGN KEY ("persona") REFERENCES "public"."persona"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "showcasesToCredentialDefinitions" ADD CONSTRAINT "showcasesToCredentialDefinitions_showcase_showcase_id_fk" FOREIGN KEY ("showcase") REFERENCES "public"."showcase"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "showcasesToCredentialDefinitions" ADD CONSTRAINT "showcasesToCredentialDefinitions_credential_definition_credentialDefinition_id_fk" FOREIGN KEY ("credential_definition") REFERENCES "public"."credentialDefinition"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "showcasesToPersonas" ADD CONSTRAINT "showcasesToPersonas_showcase_showcase_id_fk" FOREIGN KEY ("showcase") REFERENCES "public"."showcase"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "showcasesToPersonas" ADD CONSTRAINT "showcasesToPersonas_persona_persona_id_fk" FOREIGN KEY ("persona") REFERENCES "public"."persona"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "showcasesToScenarios" ADD CONSTRAINT "showcasesToScenarios_showcase_showcase_id_fk" FOREIGN KEY ("showcase") REFERENCES "public"."showcase"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "showcasesToScenarios" ADD CONSTRAINT "showcasesToScenarios_scenario_workflow_id_fk" FOREIGN KEY ("scenario") REFERENCES "public"."workflow"("id") ON DELETE cascade ON UPDATE no action;

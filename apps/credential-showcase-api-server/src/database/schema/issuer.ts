@@ -8,14 +8,14 @@ import { IssuerType } from '../../types';
 export const issuers = pgTable('issuer', {
     id: uuid('id').notNull().primaryKey().defaultRandom(),
     name: text().notNull(),
-    type: IssuerTypePg('issuer_type').notNull().$type<IssuerType>(),
+    type: IssuerTypePg().notNull().$type<IssuerType>(),
     description: text().notNull(),
     organization: text(),
     logo: uuid().references(() => assets.id),
 })
 
 export const issuerRelations = relations(issuers, ({ one, many }) => ({
-    credentialDefinitions: many(issuersToCredentialDefinitions),
+    cds: many(issuersToCredentialDefinitions),
     logo: one(assets, {
         fields: [issuers.logo],
         references: [assets.id],

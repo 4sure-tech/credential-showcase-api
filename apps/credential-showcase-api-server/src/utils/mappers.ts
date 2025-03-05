@@ -7,6 +7,7 @@ import {
     PresentationFlow as PresentationFlowDTO,
     Step as StepDTO,
     Persona as PersonaDTO,
+    Showcase as ShowcaseDTO,
     AssetRequest,
 } from 'credential-showcase-openapi';
 import {
@@ -19,7 +20,10 @@ import {
     PresentationFlow,
     Step,
     WorkflowType,
-    Persona
+    Persona,
+    Showcase,
+    Scenario,
+    NewScenario
 } from '../types';
 
 export const newAssetFrom = (asset: AssetRequest): NewAsset => {
@@ -92,6 +96,17 @@ export const presentationFlowDTOFrom = (presentationFlow: PresentationFlow): Pre
     }
 }
 
+export const scenarioDTOFrom = (scenario: Scenario): IssuanceFlowDTO | PresentationFlowDTO => {
+    switch (scenario.workflowType) {
+        case WorkflowType.PRESENTATION:
+            return presentationFlowDTOFrom(scenario)
+        case WorkflowType.ISSUANCE:
+            return issuanceFlowDTOFrom(scenario)
+        default:
+            throw Error(`Unsupported scenario type ${scenario.workflowType}`)
+    }
+}
+
 export const stepDTOFrom = (step: Step): StepDTO => {
     return {
         ...step,
@@ -106,4 +121,21 @@ export const personaDTOFrom = (persona: Persona): PersonaDTO => {
         headshotImage: persona.headshotImage ? assetDTOFrom(persona.headshotImage) : undefined,
         bodyImage: persona.bodyImage ? assetDTOFrom(persona.bodyImage) : undefined,
     }
+}
+
+export const showcaseDTOFrom = (showcase: Showcase): ShowcaseDTO => {
+    return {
+        ...showcase,
+        personas: showcase.personas.map(persona => personaDTOFrom(persona)),
+        credentialDefinitions: showcase.credentialDefinitions.map(credentialsDefinition => credentialDefinitionDTOFrom(credentialsDefinition)),
+        scenarios: showcase.scenarios.map(scenario => scenarioDTOFrom(scenario)),
+    }
+}
+
+export const isPresentationScenario = (scenario: Scenario | NewScenario): boolean => {
+    return 'relyingParty' in scenario
+}
+
+export const isIssuanceScenario = (scenario: Scenario | NewScenario): boolean => {
+    return 'issuer' in scenario
 }

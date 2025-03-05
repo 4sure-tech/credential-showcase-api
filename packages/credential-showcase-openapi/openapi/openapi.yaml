@@ -27,8 +27,8 @@ tags:
     description: Endpoints for managing showcases
 
 security:
-  - OAuth2: [ ]
-  - OIDC: [ ]
+  - OAuth2: []
+  - OIDC: []
 
 paths:
   /workflows/issuances:

@@ -13,7 +13,7 @@ export const workflows = pgTable('workflow', {
     description: text().notNull(),
     workflowType: WorkflowTypePg('workflow_type').notNull().$type<WorkflowType>(),
     issuer: uuid().references(() => issuers.id),
-    relyingParty: uuid('relying_party').references(() => relyingParties.id)
+    relyingParty: uuid('relying_party').references(() => relyingParties.id),
     },
     () => [
         check('workflow_type_check', sql`

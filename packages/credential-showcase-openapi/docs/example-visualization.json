@@ -4,6 +4,15 @@
   "description": "Collection of credential usage scenarios",
   "status": "pending",
   "hidden": false,
+  "scenarios": [
+    {
+      "id": "university-parking-scenario",
+      "name": "University Parking Journey",
+      "description": "Student obtaining and using parking credentials",
+      "workflowRefs": ["issuance-flow-123", "presentation-flow-123"],
+      "personaRefs": ["issuer-persona-123", "holder-persona-123", "verifier-persona-123"]
+    }
+  ],
   "credentials": [
     {
       "id": "university-parking-123",

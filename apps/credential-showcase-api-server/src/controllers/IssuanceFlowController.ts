@@ -10,7 +10,7 @@ import {
     Put
 } from 'routing-controllers';
 import { Service } from 'typedi';
-import IssuanceFlowService from '../services/IssuanceFlowService';
+import ScenarioService from '../services/ScenarioService';
 import {
     IssuanceFlowRequest,
     IssuanceFlowRequestToJSONTyped,
@@ -32,17 +32,16 @@ import {
     StepActionRequestToJSONTyped
 } from 'credential-showcase-openapi';
 import { issuanceFlowDTOFrom, stepDTOFrom } from '../utils/mappers';
+import { WorkflowType } from '../types';
 
 @JsonController('/workflows/issuances')
 @Service()
 class IssuanceFlowController {
-    constructor(private issuanceFlowService: IssuanceFlowService) { }
-
-    // ISSUANCE FLOW
+    constructor(private scenarioService: ScenarioService) { }
 
     @Get('/')
     public async getAllIssuanceFlows(): Promise<IssuanceFlowsResponse> {
-        const result = await this.issuanceFlowService.getIssuanceFlows();
+        const result = await this.scenarioService.getScenarios({ filter: { scenarioType: WorkflowType.ISSUANCE } });
         const issuanceFlows = result.map(issuanceFlow => issuanceFlowDTOFrom(issuanceFlow));
         return IssuanceFlowsResponseFromJSONTyped({ issuanceFlows }, false);
     }
@@ -51,7 +50,7 @@ class IssuanceFlowController {
     public async getOneIssuanceFlow(
         @Param('issuanceFlowId') issuanceFlowId: string
     ): Promise<IssuanceFlowResponse> {
-        const result = await this.issuanceFlowService.getIssuanceFlow(issuanceFlowId);
+        const result = await this.scenarioService.getScenario(issuanceFlowId);
         return IssuanceFlowResponseFromJSONTyped({ issuanceFlow: issuanceFlowDTOFrom(result) }, false);
     }
 
@@ -60,7 +59,7 @@ class IssuanceFlowController {
     public async postIssuanceFlow(
         @Body() issuanceFlowRequest: IssuanceFlowRequest
     ): Promise<IssuanceFlowResponse> {
-        const result = await this.issuanceFlowService.createIssuanceFlow(IssuanceFlowRequestToJSONTyped(issuanceFlowRequest));
+        const result = await this.scenarioService.createScenario(IssuanceFlowRequestToJSONTyped(issuanceFlowRequest));
         return IssuanceFlowResponseFromJSONTyped({ issuanceFlow: issuanceFlowDTOFrom(result) }, false);
     }
 
@@ -69,7 +68,7 @@ class IssuanceFlowController {
         @Param('issuanceFlowId') issuanceFlowId: string,
         @Body() issuanceFlowRequest: IssuanceFlowRequest
     ): Promise<IssuanceFlowResponse> {
-        const result = await this.issuanceFlowService.updateIssuanceFlow(issuanceFlowId, IssuanceFlowRequestToJSONTyped(issuanceFlowRequest));
+        const result = await this.scenarioService.updateScenario(issuanceFlowId, IssuanceFlowRequestToJSONTyped(issuanceFlowRequest));
         return IssuanceFlowResponseFromJSONTyped({ issuanceFlow: issuanceFlowDTOFrom(result) }, false);
     }
 
@@ -78,16 +77,14 @@ class IssuanceFlowController {
     public async deleteIssuanceFlow(
         @Param('issuanceFlowId') issuanceFlowId: string
     ): Promise<void> {
-        return await this.issuanceFlowService.deleteIssuanceFlow(issuanceFlowId);
+        return await this.scenarioService.deleteScenario(issuanceFlowId);
     }
-
-    // ISSUANCE FLOW STEP
 
     @Get('/:issuanceFlowId/steps')
     public async getAllSteps(
         @Param('issuanceFlowId') issuanceFlowId: string
     ): Promise<StepsResponse> {
-        const result = await this.issuanceFlowService.getIssuanceFlowSteps(issuanceFlowId)
+        const result = await this.scenarioService.getScenarioSteps(issuanceFlowId)
         const steps = result.map(step => stepDTOFrom(step));
         return StepsResponseFromJSONTyped({ steps }, false);
     }
@@ -97,7 +94,7 @@ class IssuanceFlowController {
         @Param('issuanceFlowId') issuanceFlowId: string,
         @Param('stepId') stepId: string
     ): Promise<StepResponse> {
-        const result = await this.issuanceFlowService.getIssuanceFlowStep(issuanceFlowId, stepId);
+        const result = await this.scenarioService.getScenarioStep(issuanceFlowId, stepId);
         return StepResponseFromJSONTyped({ step: stepDTOFrom(result) }, false);
     }
 
@@ -107,7 +104,7 @@ class IssuanceFlowController {
         @Param('issuanceFlowId') issuanceFlowId: string,
         @Body() stepRequest: StepRequest
     ): Promise<StepResponse> {
-        const result = await this.issuanceFlowService.createIssuanceFlowStep(issuanceFlowId, StepRequestToJSONTyped(stepRequest));
+        const result = await this.scenarioService.createScenarioStep(issuanceFlowId, StepRequestToJSONTyped(stepRequest));
         return StepResponseFromJSONTyped({ step: stepDTOFrom(result) }, false);
     }
 
@@ -117,7 +114,7 @@ class IssuanceFlowController {
         @Param('stepId') stepId: string,
         @Body() stepRequest: StepRequest
     ): Promise<StepResponse> {
-        const result = await this.issuanceFlowService.updateIssuanceFlowStep(issuanceFlowId, stepId, StepRequestToJSONTyped(stepRequest))
+        const result = await this.scenarioService.updateScenarioStep(issuanceFlowId, stepId, StepRequestToJSONTyped(stepRequest))
         return StepResponseFromJSONTyped({ step: stepDTOFrom(result) }, false);
     }
 
@@ -127,17 +124,15 @@ class IssuanceFlowController {
         @Param('issuanceFlowId') issuanceFlowId: string,
         @Param('stepId') stepId: string
     ): Promise<void> {
-        return this.issuanceFlowService.deleteIssuanceFlowStep(issuanceFlowId, stepId);
+        return this.scenarioService.deleteScenarioStep(issuanceFlowId, stepId);
     }
-
-    // ISSUANCE FLOW STEP ACTION
 
     @Get('/:issuanceFlowId/steps/:stepId/actions')
     public async getAllIssuanceFlowStepActions(
         @Param('issuanceFlowId') issuanceFlowId: string,
         @Param('stepId') stepId: string
     ): Promise<StepActionsResponse> {
-        const result = await this.issuanceFlowService.getIssuanceFlowStepActions(issuanceFlowId, stepId)
+        const result = await this.scenarioService.getScenarioStepActions(issuanceFlowId, stepId)
         const actions = result.map(action => action);
         return StepActionsResponseFromJSONTyped({ actions }, false);
     }
@@ -148,7 +143,7 @@ class IssuanceFlowController {
         @Param('stepId') stepId: string,
         @Param('actionId') actionId: string
     ): Promise<StepActionResponse> {
-        const result = await this.issuanceFlowService.getIssuanceFlowStepAction(issuanceFlowId, stepId, actionId);
+        const result = await this.scenarioService.getScenarioStepAction(issuanceFlowId, stepId, actionId);
         return StepActionResponseFromJSONTyped({ action: result }, false);
     }
 
@@ -159,7 +154,7 @@ class IssuanceFlowController {
         @Param('stepId') stepId: string,
         @Body() actionRequest: StepActionRequest
     ): Promise<StepActionResponse> {
-        const result = await this.issuanceFlowService.createIssuanceFlowStepAction(issuanceFlowId, stepId, StepActionRequestToJSONTyped(actionRequest));
+        const result = await this.scenarioService.createScenarioStepAction(issuanceFlowId, stepId, StepActionRequestToJSONTyped(actionRequest));
         return StepActionResponseFromJSONTyped({ action: result }, false);
     }
 
@@ -170,7 +165,7 @@ class IssuanceFlowController {
         @Param('actionId') actionId: string,
         @Body() actionRequest: StepActionRequest
     ): Promise<StepActionResponse> {
-        const result = await this.issuanceFlowService.updateIssuanceFlowStepAction(issuanceFlowId, stepId, actionId, StepActionRequestToJSONTyped(actionRequest))
+        const result = await this.scenarioService.updateScenarioStepAction(issuanceFlowId, stepId, actionId, StepActionRequestToJSONTyped(actionRequest))
         return StepActionResponseFromJSONTyped({ action: result }, false);
     }
 
@@ -181,7 +176,7 @@ class IssuanceFlowController {
         @Param('stepId') stepId: string,
         @Param('actionId') actionId: string
     ): Promise<void> {
-        return this.issuanceFlowService.deleteIssuanceFlowStepAction(issuanceFlowId, stepId, actionId);
+        return this.scenarioService.deleteScenarioStepAction(issuanceFlowId, stepId, actionId);
     }
 }
 
