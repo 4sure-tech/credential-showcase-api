@@ -2376,7 +2376,7 @@ components:
         id:
           type: string
           description: Unique identifier for the issuer
-          example: 313e4567-e89b-12d3-a456-426614174469
+          example: 123e4567-e89b-12d3-abcd-426614174456
         name:
           type: string
           description: Name of the issuer
@@ -2824,7 +2824,7 @@ components:
         - status
         - scenarios
         - personas
-        - credentials
+        - credentialDefinitions
         - hidden
       properties:
         id:
@@ -2840,10 +2840,7 @@ components:
           description: Description of the showcase
           example: Collection of credential usage scenarios
         status:
-          type: string
-          enum: [ pending, active, archived ]
-          description: Current status of the showcase
-          example: pending
+          $ref: '#/components/schemas/ShowcaseStatus'
         hidden:
           type: boolean
           description: Whether the showcase is hidden from public view
@@ -2853,7 +2850,7 @@ components:
           description: List of scenarios in this showcase
           items:
             $ref: '#/components/schemas/Workflow'
-        credentials:
+        credentialDefinitions:
           type: array
           description: List of credential definitions used in this showcase
           items:
@@ -2883,7 +2880,7 @@ components:
         - status
         - scenarios
         - personas
-        - credentials
+        - credentialDefinitions
         - hidden
       properties:
         name:
@@ -2895,10 +2892,7 @@ components:
           description: Description of the showcase
           example: Collection of credential usage scenarios
         status:
-          type: string
-          enum: [ pending, active, archived ]
-          description: Current status of the showcase
-          example: pending
+          $ref: '#/components/schemas/ShowcaseStatus'
         hidden:
           type: boolean
           description: Whether the showcase is hidden from public view
@@ -2909,7 +2903,7 @@ components:
           items:
             type: string
             example: 123e4567-e89b-12d3-a456-426614174469
-        credentials:
+        credentialDefinitions:
           type: array
           description: List of credential definitions used in this showcase
           items:
@@ -2921,6 +2915,14 @@ components:
           items:
             type: string
             example: 123e4567-e89b-12d3-a456-426614174469
+
+    ShowcaseStatus:
+      type: string
+      enum:
+          - PENDING
+          - ACTIVE
+          - ARCHIVED
+      description: Types of supported credentials
 
     # Scenario:
     #   type: object
