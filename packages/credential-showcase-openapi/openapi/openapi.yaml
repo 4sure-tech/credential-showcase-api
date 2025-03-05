@@ -2569,8 +2569,8 @@ components:
           example: Credential Definition Name
         issuerId:
           type: string
-          description: Identifier of the issuer who created this schema
-          example: did:sov:XUeUZauFLeBNofY3NhaZCB
+          description: Unique identifier of the issuer who created this schema
+          example: 123e4567-e89b-12d3-a456-426614174123
         schemaId:
           type: string
           description: Identifier of the associated credential schema
@@ -2767,7 +2767,7 @@ components:
           example: Diploma Schema
         issuerId:
           type: string
-          description: Identifier of the issuer who created this schema
+          description: Unique identifier of the issuer who created this schema
           example: 123e4567-e89b-12d3-a456-426614174123
         version:
           type: string
@@ -2786,7 +2786,7 @@ components:
       properties:
         issuerId:
           type: string
-          description: Identifier of the issuer creating the schema
+          description: Unique identifier of the issuer creating the schema
           example: 123e4567-e89b-12d3-a456-426614174123
         name:
           type: string
