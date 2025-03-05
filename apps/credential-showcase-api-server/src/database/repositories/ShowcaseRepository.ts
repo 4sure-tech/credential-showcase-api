@@ -15,7 +15,7 @@ import {
     showcasesToPersonas,
     showcasesToScenarios,
 } from '../schema';
-import { Showcase, NewShowcase, RepositoryDefinition, Asset } from '../../types';
+import { Showcase, NewShowcase, RepositoryDefinition } from '../../types';
 import AssetRepository from './AssetRepository';
 
 @Service()
