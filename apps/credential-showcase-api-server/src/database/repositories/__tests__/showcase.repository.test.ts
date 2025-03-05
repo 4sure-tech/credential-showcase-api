@@ -406,7 +406,8 @@ describe('Database showcase repository tests', (): void => {
             name: newName,
             scenarios: [issuanceFlow1.id, issuanceFlow2.id],
             credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
-            personas: [persona1.id, persona2.id]
+            personas: [persona1.id, persona2.id],
+            bannerImage: null
         })
 
         expect(updatedShowcase).toBeDefined()
@@ -436,7 +437,8 @@ describe('Database showcase repository tests', (): void => {
             ...savedShowcase,
             scenarios: [issuanceFlow1.id, issuanceFlow2.id],
             credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
-            personas: []
+            personas: [],
+            bannerImage: null
         }
 
         await expect(repository.update(savedShowcase.id, updatedShowcase)).rejects.toThrowError(`At least one persona is required`)
@@ -459,7 +461,8 @@ describe('Database showcase repository tests', (): void => {
             ...savedShowcase,
             scenarios: [issuanceFlow1.id, issuanceFlow2.id],
             credentialDefinitions: [],
-            personas: [persona1.id, persona2.id]
+            personas: [persona1.id, persona2.id],
+            bannerImage: null
         }
 
         await expect(repository.update(savedShowcase.id, updatedShowcase)).rejects.toThrowError(`At least one credential definition is required`)
@@ -482,8 +485,9 @@ describe('Database showcase repository tests', (): void => {
             ...savedShowcase,
             scenarios: [],
             credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
-            personas: [persona1.id, persona2.id]
-        }
+            personas: [persona1.id, persona2.id],
+            bannerImage: null
+            }
 
         await expect(repository.update(savedShowcase.id, updatedShowcase)).rejects.toThrowError(`At least one scenario is required`)
     })
@@ -506,7 +510,8 @@ describe('Database showcase repository tests', (): void => {
             ...savedShowcase,
             scenarios: [issuanceFlow1.id, issuanceFlow2.id],
             credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
-            personas: [unknownPersonaId]
+            personas: [unknownPersonaId],
+            bannerImage: null
         }
 
         await expect(repository.update(savedShowcase.id, updatedShowcase)).rejects.toThrowError(`No persona found for id: ${unknownPersonaId}`)
@@ -530,7 +535,8 @@ describe('Database showcase repository tests', (): void => {
             ...savedShowcase,
             scenarios: [issuanceFlow1.id, issuanceFlow2.id],
             credentialDefinitions: [unknownCredentialDefinitionId],
-            personas: [persona1.id, persona2.id]
+            personas: [persona1.id, persona2.id],
+            bannerImage: null
         }
 
         await expect(repository.update(savedShowcase.id, updatedShowcase)).rejects.toThrowError(`No credential definition found for id: ${unknownCredentialDefinitionId}`)
@@ -554,7 +560,8 @@ describe('Database showcase repository tests', (): void => {
             ...savedShowcase,
             scenarios: [unknownScenarioId],
             credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
-            personas: [persona1.id, persona2.id]
+            personas: [persona1.id, persona2.id],
+            bannerImage: null
         }
 
         await expect(repository.update(savedShowcase.id, updatedShowcase)).rejects.toThrowError(`No scenario found for id: ${unknownScenarioId}`)
