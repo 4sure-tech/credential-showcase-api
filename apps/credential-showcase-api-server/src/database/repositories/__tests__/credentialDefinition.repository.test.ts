@@ -14,7 +14,7 @@ import { CredentialSchemaRepository } from '../CredentialSchemaRepository'
 describe('Database credential definition repository tests', (): void => {
   let client: PGlite
   let credentialDefinitionRepository: CredentialDefinitionRepository
-  let credentialSchemaRepository:CredentialSchemaRepository
+  let credentialSchemaRepository: CredentialSchemaRepository
   let asset: Asset
 
   beforeEach(async (): Promise<void> => {
@@ -133,7 +133,6 @@ describe('Database credential definition repository tests', (): void => {
     }
     const savedCredentialSchema = await credentialSchemaRepository.create(newCredentialSchema)
 
-
     const credentialDefinition: NewCredentialDefinition = {
       name: 'example_name',
       version: 'example_version',
@@ -141,7 +140,7 @@ describe('Database credential definition repository tests', (): void => {
       identifier: 'did:sov:XUeUZauFLeBNofY3NhaZCB',
       icon: unknownIconId,
       type: CredentialType.ANONCRED,
-      credentialSchemaId: savedCredentialSchema.id
+      credentialSchemaId: savedCredentialSchema.id,
       // representations: [
       //     { // TODO SHOWCASE-81 OCARepresentation
       //
@@ -172,7 +171,6 @@ describe('Database credential definition repository tests', (): void => {
       ],
     }
     const savedCredentialSchema = await credentialSchemaRepository.create(newCredentialSchema)
-
 
     const credentialDefinition: NewCredentialDefinition = {
       name: 'example_name',
@@ -393,7 +391,6 @@ describe('Database credential definition repository tests', (): void => {
       ],
     }
     const credentialSchema = await credentialSchemaRepository.create(newCredentialSchema)
-
 
     const credentialDefinition: NewCredentialDefinition = {
       name: 'example_name',
