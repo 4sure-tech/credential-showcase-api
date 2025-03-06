@@ -6,14 +6,12 @@ import { NotFoundError } from '../../errors'
 import { credentialDefinitions, credentialRepresentations, revocationInfo } from '../schema'
 import { CredentialDefinition, NewCredentialDefinition, NewCredentialRepresentation, RepositoryDefinition } from '../../types'
 import { CredentialSchemaRepository } from './CredentialSchemaRepository'
-import IssuerRepository from './IssuerRepository'
 
 @Service()
 class CredentialDefinitionRepository implements RepositoryDefinition<CredentialDefinition, NewCredentialDefinition> {
   constructor(
     private readonly databaseService: DatabaseService,
     private readonly assetRepository: AssetRepository,
-    private readonly issuerRepository: IssuerRepository,
     private readonly credentialSchemaRepository: CredentialSchemaRepository,
   ) {}
 
@@ -26,7 +24,9 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
         .values({
           name: credentialDefinition.name,
           version: credentialDefinition.version,
-          issuerId: credentialDefinition.issuerId,
+          //          issuerId: credentialDefinition.issuerId,
+          identifierType: credentialDefinition.identifierType,
+          identifier: credentialDefinition.identifier,
           credentialSchemaId: credentialDefinition.credentialSchemaId,
           icon: iconResult.id,
           type: credentialDefinition.type,
@@ -54,12 +54,10 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
           .returning()
       }
 
-      const issuerResult = await this.issuerRepository.findById(credentialDefinition.issuerId)
       const credentialSchemaResult = await this.credentialSchemaRepository.findById(credentialDefinition.credentialSchemaId)
 
       return {
         ...credentialDefinitionResult,
-        issuer: issuerResult,
         credentialSchema: credentialSchemaResult,
         icon: iconResult,
         representations: credentialRepresentationsResult,
@@ -113,12 +111,10 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
           .returning()
       }
 
-      const issuerResult = await this.issuerRepository.findById(credentialDefinition.issuerId)
       const credentialSchemaResult = await this.credentialSchemaRepository.findById(credentialDefinition.credentialSchemaId)
 
       return {
         ...credentialDefinitionResult,
-        issuer: issuerResult,
         credentialSchema: credentialSchemaResult,
         icon: iconResult,
         representations: credentialRepresentationsResult,
@@ -134,7 +130,11 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
       where: eq(credentialDefinitions.id, id),
       with: {
         icon: true,
-        credentialSchema: true,
+        credentialSchema: {
+          with: {
+            attributes: true,
+          },
+        },
         representations: true,
         revocation: true,
       },
@@ -143,7 +143,6 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
     if (!result) {
       return Promise.reject(new NotFoundError(`No credential definition found for id: ${id}`))
     }
-
     return result
   }
 
@@ -151,8 +150,11 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
     return (await this.databaseService.getConnection()).query.credentialDefinitions.findMany({
       with: {
         icon: true,
-        issuer: true,
-        credentialSchema: true,
+        credentialSchema: {
+          with: {
+            attributes: true,
+          },
+        },
         representations: true,
         revocation: true,
       },

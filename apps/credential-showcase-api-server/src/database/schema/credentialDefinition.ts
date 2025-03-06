@@ -6,16 +6,16 @@ import { credentialRepresentations } from './credentialRepresentation'
 import { revocationInfo } from './revocationInfo'
 import { relyingPartiesToCredentialDefinitions } from './relyingPartiesToCredentialDefinitions'
 import { CredentialType } from '../../types'
-import { issuers } from './issuer'
 import { credentialSchemas } from './credentialSchema'
+import { IdentifierTypePg } from './identifierType'
+import { IdentifierType } from 'credential-showcase-openapi'
 
 export const credentialDefinitions = pgTable('credentialDefinition', {
   id: uuid('id').notNull().primaryKey().defaultRandom(),
   name: text().notNull(),
   version: text().notNull(),
-  issuerId: uuid()
-    .references(() => issuers.id)
-    .notNull(),
+  identifierType: IdentifierTypePg('identifier_type').notNull().$type<IdentifierType>(),
+  identifier: text().notNull(),
   credentialSchemaId: uuid()
     .references(() => credentialSchemas.id)
     .notNull(),

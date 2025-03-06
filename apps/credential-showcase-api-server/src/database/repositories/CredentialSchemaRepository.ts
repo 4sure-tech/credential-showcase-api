@@ -14,10 +14,11 @@ export class CredentialSchemaRepository implements RepositoryDefinition<Credenti
       const [credentialSchemaResult] = await tx
         .insert(credentialSchemas)
         .values({
-          extId: credentialSchema.extId,
+          identifierType: credentialSchema.identifierType,
+          identifier: credentialSchema.identifier,
           name: credentialSchema.name,
           version: credentialSchema.version,
-          issuerId: credentialSchema.issuerId,
+          // issuerId: credentialSchema.issuerId,
         })
         .returning()
 
@@ -50,10 +51,10 @@ export class CredentialSchemaRepository implements RepositoryDefinition<Credenti
       const [credentialSchemaResult] = await tx
         .update(credentialSchemas)
         .set({
-          extId: credentialSchemas.extId,
           name: credentialSchema.name,
           version: credentialSchema.version,
-          issuerId: credentialSchema.issuerId,
+          identifierType: credentialSchema.identifierType,
+          identifier: credentialSchema.identifier,
         })
         .where(eq(credentialSchemas.id, id))
         .returning()
@@ -94,18 +95,18 @@ export class CredentialSchemaRepository implements RepositoryDefinition<Credenti
     return result
   }
 
-  async findByExtId(extId: string): Promise<CredentialSchema> {
+  async findByIdentifier(identifier: string): Promise<CredentialSchema> {
     const result = await (
       await this.databaseService.getConnection()
     ).query.credentialSchemas.findFirst({
-      where: eq(credentialSchemas.extId, extId),
+      where: eq(credentialSchemas.identifier, identifier),
       with: {
         attributes: true,
       },
     })
 
     if (!result) {
-      return Promise.reject(new NotFoundError(`No credential schema found for extId: ${identextIdifier}`))
+      return Promise.reject(new NotFoundError(`No credential schema found for identifier: ${identifier}`))
     }
 
     return result

@@ -320,7 +320,11 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
                 cd: {
                   with: {
                     icon: true,
-                    attributes: true,
+                    credentialSchema: {
+                      with: {
+                        attributes: true,
+                      },
+                    },
                     representations: true,
                     revocation: true,
                   },
@@ -337,7 +341,11 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
                 cd: {
                   with: {
                     icon: true,
-                    attributes: true,
+                    credentialSchema: {
+                      with: {
+                        attributes: true,
+                      },
+                    },
                     representations: true,
                     revocation: true,
                   },
@@ -407,7 +415,11 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
                 cd: {
                   with: {
                     icon: true,
-                    attributes: true,
+                    credentialSchema: {
+                      with: {
+                        attributes: true,
+                      },
+                    },
                     representations: true,
                     revocation: true,
                   },
@@ -424,7 +436,11 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
                 cd: {
                   with: {
                     icon: true,
-                    attributes: true,
+                    credentialSchema: {
+                      with: {
+                        attributes: true,
+                      },
+                    },
                     representations: true,
                     revocation: true,
                   },

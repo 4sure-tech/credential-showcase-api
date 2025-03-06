@@ -54,7 +54,11 @@ class RelyingPartyRepository implements RepositoryDefinition<RelyingParty, NewRe
           relyingPartiesToCredentialDefinitionsResult.map((item) => item.credentialDefinition),
         ),
         with: {
-          attributes: true,
+          credentialSchema: {
+            with: {
+              attributes: true,
+            },
+          },
           representations: true,
           revocation: true,
           icon: true,
@@ -118,7 +122,11 @@ class RelyingPartyRepository implements RepositoryDefinition<RelyingParty, NewRe
           relyingPartiesToCredentialDefinitionsResult.map((item) => item.credentialDefinition),
         ),
         with: {
-          attributes: true,
+          credentialSchema: {
+            with: {
+              attributes: true,
+            },
+          },
           representations: true,
           revocation: true,
           icon: true,
@@ -144,7 +152,11 @@ class RelyingPartyRepository implements RepositoryDefinition<RelyingParty, NewRe
             cd: {
               with: {
                 icon: true,
-                attributes: true,
+                credentialSchema: {
+                  with: {
+                    attributes: true,
+                  },
+                },
                 representations: true,
                 revocation: true,
               },
@@ -175,7 +187,11 @@ class RelyingPartyRepository implements RepositoryDefinition<RelyingParty, NewRe
             cd: {
               with: {
                 icon: true,
-                attributes: true,
+                credentialSchema: {
+                  with: {
+                    attributes: true,
+                  },
+                },
                 representations: true,
                 revocation: true,
               },

@@ -2387,12 +2387,6 @@ components:
           example: This issuer issues credentials to users
         type:
           $ref: '#/components/schemas/IssuerType'
-        identifierType:
-          $ref: '#/components/schemas/IdentifierType'
-        identifier:
-          type: string
-          description: External identifier of this issuer
-          example: did:sov:XUeUZauFLeBNofY3NhaZCB
         organization:
           type: string
           description: Organization the issuer belongs to
@@ -2403,7 +2397,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CredentialDefinition'
-        credentialSchema:
+        credentialSchemas:
           type: array
           items:
             $ref: '#/components/schemas/CredentialSchema'
@@ -2576,6 +2570,12 @@ components:
           type: string
           description:  Identifier of the associated credential schema
           example:  123e4567-e89b-12d3-a456-426614174123
+        identifierType:
+          $ref: '#/components/schemas/IdentifierType'
+        identifier:
+          type: string
+          description: External identifier of this issuer
+          example: did:sov:XUeUZauFLeBNofY3NhaZCB
         version:
           type: string
           description: Version of the credential definition

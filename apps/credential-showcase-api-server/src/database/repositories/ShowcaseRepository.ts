@@ -82,7 +82,11 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                   cd: {
                     with: {
                       icon: true,
-                      attributes: true,
+                      credentialSchema: {
+                        with: {
+                          attributes: true,
+                        },
+                      },
                       representations: true,
                       revocation: true,
                     },
@@ -99,11 +103,20 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                   cd: {
                     with: {
                       icon: true,
-                      attributes: true,
+                      credentialSchema: {
+                        with: {
+                          attributes: true,
+                        },
+                      },
                       representations: true,
                       revocation: true,
                     },
                   },
+                },
+              },
+              css: {
+                with: {
+                  attributes: true,
                 },
               },
               logo: true,
@@ -138,7 +151,11 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
           showcasesToCredentialDefinitionsResult.map((item) => item.credentialDefinition),
         ),
         with: {
-          attributes: true,
+          credentialSchema: {
+            with: {
+              attributes: true,
+            },
+          },
           representations: true,
           revocation: true,
           icon: true,
@@ -181,6 +198,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
             issuer: {
               ...(scenario.issuer as any), // TODO check this typing issue at a later point in time
               credentialDefinitions: scenario.issuer!.cds.map((credentialDefinition) => credentialDefinition.cd),
+              credentialSchemas: scenario.issuer!.css.map((credentialSchema) => credentialSchema.cs),
             },
           }),
           personas: scenario.personas.map((item) => item.persona),
@@ -257,7 +275,11 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                   cd: {
                     with: {
                       icon: true,
-                      attributes: true,
+                      credentialSchema: {
+                        with: {
+                          attributes: true,
+                        },
+                      },
                       representations: true,
                       revocation: true,
                     },
@@ -274,7 +296,11 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                   cd: {
                     with: {
                       icon: true,
-                      attributes: true,
+                      credentialSchema: {
+                        with: {
+                          attributes: true,
+                        },
+                      },
                       representations: true,
                       revocation: true,
                     },
@@ -313,7 +339,11 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
           showcasesToCredentialDefinitionsResult.map((item) => item.credentialDefinition),
         ),
         with: {
-          attributes: true,
+          credentialSchema: {
+            with: {
+              attributes: true,
+            },
+          },
           representations: true,
           revocation: true,
           icon: true,
@@ -377,7 +407,11 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
             credentialDefinition: {
               with: {
                 icon: true,
-                attributes: true,
+                credentialSchema: {
+                  with: {
+                    attributes: true,
+                  },
+                },
                 representations: true,
                 revocation: true,
               },
@@ -405,7 +439,11 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                         cd: {
                           with: {
                             icon: true,
-                            attributes: true,
+                            credentialSchema: {
+                              with: {
+                                attributes: true,
+                              },
+                            },
                             representations: true,
                             revocation: true,
                           },
@@ -422,7 +460,11 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                         cd: {
                           with: {
                             icon: true,
-                            attributes: true,
+                            credentialSchema: {
+                              with: {
+                                attributes: true,
+                              },
+                            },
                             representations: true,
                             revocation: true,
                           },
@@ -497,7 +539,11 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
             credentialDefinition: {
               with: {
                 icon: true,
-                attributes: true,
+                credentialSchema: {
+                  with: {
+                    attributes: true,
+                  },
+                },
                 representations: true,
                 revocation: true,
               },
@@ -525,7 +571,11 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                         cd: {
                           with: {
                             icon: true,
-                            attributes: true,
+                            credentialSchema: {
+                              with: {
+                                attributes: true,
+                              },
+                            },
                             representations: true,
                             revocation: true,
                           },
@@ -542,7 +592,11 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                         cd: {
                           with: {
                             icon: true,
-                            attributes: true,
+                            credentialSchema: {
+                              with: {
+                                attributes: true,
+                              },
+                            },
                             representations: true,
                             revocation: true,
                           },

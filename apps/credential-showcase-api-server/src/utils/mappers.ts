@@ -1,6 +1,7 @@
 import {
   Asset as AssetDTO,
   CredentialDefinition as CredentialDefinitionDTO,
+  CredentialSchema as CredentialSchemaDTO,
   RelyingParty as RelyingPartyDTO,
   Issuer as IssuerDTO,
   IssuanceFlow as IssuanceFlowDTO,
@@ -9,6 +10,7 @@ import {
   Persona as PersonaDTO,
   Showcase as ShowcaseDTO,
   AssetRequest,
+  CredentialSchema,
 } from 'credential-showcase-openapi'
 import {
   Asset,
@@ -45,8 +47,15 @@ export const assetDTOFrom = (asset: Asset): AssetDTO => {
 export const credentialDefinitionDTOFrom = (credentialDefinition: CredentialDefinition): CredentialDefinitionDTO => {
   return {
     ...credentialDefinition,
+    schemaId: credentialDefinition.credentialSchema.id,
     revocation: credentialDefinition.revocation ? credentialDefinition.revocation : undefined,
     icon: assetDTOFrom(credentialDefinition.icon),
+  }
+}
+
+export const credentialSchemaDTOFrom = (credentialSchema: CredentialSchema): CredentialSchemaDTO => {
+  return {
+    ...credentialSchema,
   }
 }
 

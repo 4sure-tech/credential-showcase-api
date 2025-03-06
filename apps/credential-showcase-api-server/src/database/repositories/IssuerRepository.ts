@@ -4,8 +4,9 @@ import DatabaseService from '../../services/DatabaseService'
 import CredentialDefinitionRepository from './CredentialDefinitionRepository'
 import AssetRepository from './AssetRepository'
 import { NotFoundError } from '../../errors'
-import { credentialDefinitions, issuers, issuersToCredentialDefinitions } from '../schema'
+import { credentialDefinitions, credentialSchemas, issuers, issuersToCredentialDefinitions } from '../schema'
 import { Issuer, NewIssuer, RepositoryDefinition } from '../../types'
+import { issuersToCredentialSchemas } from '../schema/issuersToCredentialSchemas'
 
 @Service()
 class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
@@ -54,10 +55,34 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
           issuersToCredentialDefinitionsResult.map((item) => item.credentialDefinition),
         ),
         with: {
-          attributes: true,
+          credentialSchema: {
+            with: {
+              attributes: true,
+            },
+          },
           representations: true,
           revocation: true,
           icon: true,
+        },
+      })
+
+      const issuersToCredentialSchemasResult = await tx
+        .insert(issuersToCredentialSchemas)
+        .values(
+          issuer.credentialSchemas.map((credentialSchemaId: string) => ({
+            issuer: issuerResult.id,
+            credentialSchema: credentialSchemaId,
+          })),
+        )
+        .returning()
+
+      const credentialSchemasResult = await tx.query.credentialSchemas.findMany({
+        where: inArray(
+          credentialSchemas.id,
+          issuersToCredentialSchemasResult.map((item) => item.credentialSchema),
+        ),
+        with: {
+          attributes: true,
         },
       })
 
@@ -65,6 +90,7 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
         ...issuerResult,
         logo: logoResult,
         credentialDefinitions: credentialDefinitionsResult,
+        credentialSchemas: credentialSchemasResult,
       }
     })
   }
@@ -118,10 +144,34 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
           issuersToCredentialDefinitionsResult.map((item) => item.credentialDefinition),
         ),
         with: {
-          attributes: true,
+          credentialSchema: {
+            with: {
+              attributes: true,
+            },
+          },
           representations: true,
           revocation: true,
           icon: true,
+        },
+      })
+
+      const issuersToCredentialSchemasResult = await tx
+        .insert(issuersToCredentialSchemas)
+        .values(
+          issuer.credentialSchemas.map((credentialSchemaId: string) => ({
+            issuer: issuerResult.id,
+            credentialSchema: credentialSchemaId,
+          })),
+        )
+        .returning()
+
+      const credentialSchemasResult = await tx.query.credentialSchemas.findMany({
+        where: inArray(
+          credentialSchemas.id,
+          issuersToCredentialSchemasResult.map((item) => item.credentialSchema),
+        ),
+        with: {
+          attributes: true,
         },
       })
 
@@ -129,6 +179,7 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
         ...issuerResult,
         logo: logoResult,
         credentialDefinitions: credentialDefinitionsResult,
+        credentialSchemas: credentialSchemasResult,
       }
     })
   }
@@ -144,11 +195,20 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
             cd: {
               with: {
                 icon: true,
-                attributes: true,
+                credentialSchema: {
+                  with: {
+                    attributes: true,
+                  },
+                },
                 representations: true,
                 revocation: true,
               },
             },
+          },
+        },
+        css: {
+          with: {
+            attributes: true,
           },
         },
         logo: true,
@@ -162,6 +222,7 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
     return {
       ...result,
       credentialDefinitions: result.cds.map((item) => item.cd),
+      credentialSchemas: result.css.map((item) => item.cs),
     }
   }
 
@@ -175,11 +236,20 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
             cd: {
               with: {
                 icon: true,
-                attributes: true,
+                credentialSchema: {
+                  with: {
+                    attributes: true,
+                  },
+                },
                 representations: true,
                 revocation: true,
               },
             },
+          },
+        },
+        css: {
+          with: {
+            attributes: true,
           },
         },
         logo: true,
@@ -189,6 +259,7 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
     return result.map((issuer) => ({
       ...issuer,
       credentialDefinitions: issuer.cds.map((item) => item.cd),
+      credentialSchemas: issuer.css.map((item) => item.cs),
     }))
   }
 }
