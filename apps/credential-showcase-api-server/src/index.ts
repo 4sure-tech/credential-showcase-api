@@ -9,6 +9,7 @@ import RelyingPartyController from './controllers/RelyingPartyController'
 import IssuerController from './controllers/IssuerController'
 import IssuanceFlowController from './controllers/IssuanceFlowController'
 import PresentationFlowController from './controllers/PresentationFlowController'
+import ShowcaseController from './controllers/ShowcaseController'
 
 require('dotenv-flow').config()
 
@@ -24,6 +25,7 @@ const app = createExpressServer({
     IssuerController,
     IssuanceFlowController,
     PresentationFlowController,
+    ShowcaseController,
   ],
   middlewares: [ExpressErrorHandler],
   defaultErrorHandler: false,

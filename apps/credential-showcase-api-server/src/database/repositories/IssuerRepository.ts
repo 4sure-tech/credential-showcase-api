@@ -139,7 +139,7 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
     ).query.issuers.findFirst({
       where: eq(issuers.id, id),
       with: {
-        credentialDefinitions: {
+        cds: {
           with: {
             cd: {
               with: {
@@ -161,7 +161,7 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
 
     return {
       ...result,
-      credentialDefinitions: result.credentialDefinitions.map((item) => item.cd),
+      credentialDefinitions: result.cds.map((item) => item.cd),
     }
   }
 
@@ -170,7 +170,7 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
       await this.databaseService.getConnection()
     ).query.issuers.findMany({
       with: {
-        credentialDefinitions: {
+        cds: {
           with: {
             cd: {
               with: {
@@ -188,7 +188,7 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
 
     return result.map((issuer) => ({
       ...issuer,
-      credentialDefinitions: issuer.credentialDefinitions.map((item) => item.cd),
+      credentialDefinitions: issuer.cds.map((item) => item.cd),
     }))
   }
 }

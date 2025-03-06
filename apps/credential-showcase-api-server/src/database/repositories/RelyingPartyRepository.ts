@@ -139,7 +139,7 @@ class RelyingPartyRepository implements RepositoryDefinition<RelyingParty, NewRe
     ).query.relyingParties.findFirst({
       where: eq(relyingParties.id, id),
       with: {
-        credentialDefinitions: {
+        cds: {
           with: {
             cd: {
               with: {
@@ -161,7 +161,7 @@ class RelyingPartyRepository implements RepositoryDefinition<RelyingParty, NewRe
 
     return {
       ...result,
-      credentialDefinitions: result.credentialDefinitions.map((item) => item.cd),
+      credentialDefinitions: result.cds.map((item) => item.cd),
     }
   }
 
@@ -170,7 +170,7 @@ class RelyingPartyRepository implements RepositoryDefinition<RelyingParty, NewRe
       await this.databaseService.getConnection()
     ).query.relyingParties.findMany({
       with: {
-        credentialDefinitions: {
+        cds: {
           with: {
             cd: {
               with: {
@@ -188,7 +188,7 @@ class RelyingPartyRepository implements RepositoryDefinition<RelyingParty, NewRe
 
     return result.map((relyingParty) => ({
       ...relyingParty,
-      credentialDefinitions: relyingParty.credentialDefinitions.map((item) => item.cd),
+      credentialDefinitions: relyingParty.cds.map((item) => item.cd),
     }))
   }
 }

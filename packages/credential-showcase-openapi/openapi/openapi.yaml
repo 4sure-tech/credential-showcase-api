@@ -991,7 +991,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /credential-definitions:
+  /credentials/definitions:
     get:
       tags:
         - Credential Definitions
@@ -1038,7 +1038,7 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /credential-definitions/{definitionId}:
+  /credentials/definitions/{definitionId}:
     parameters:
       - name: definitionId
         in: path
@@ -1099,7 +1099,7 @@ paths:
       responses:
         '204':
           description: Deleted
-  /credential-definitions/{definitionId}/representations:
+  /credentials/definitions/{definitionId}/representations:
     parameters:
       - name: definitionId
         in: path
@@ -1131,7 +1131,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /credential-schemas:
+  /credentials/schemas:
     get:
       tags:
         - Credential Definitions
@@ -1178,7 +1178,7 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /credential-schemas/{schemaId}:
+  /credentials/schemas/{schemaId}:
     parameters:
       - name: schemaId
         in: path
@@ -1247,7 +1247,6 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-
   /personas:
     get:
       tags:
@@ -1732,13 +1731,13 @@ paths:
                 items:
                   $ref: '#/components/schemas/ShowcasesResponse'
         '400':
-            $ref: '#/components/responses/BadRequest'
+          $ref: '#/components/responses/BadRequest'
         '401':
-            $ref: '#/components/responses/Unauthorized'
+          $ref: '#/components/responses/Unauthorized'
         '403':
-            $ref: '#/components/responses/Forbidden'
+          $ref: '#/components/responses/Forbidden'
         '500':
-            $ref: '#/components/responses/InternalServerError'
+          $ref: '#/components/responses/InternalServerError'
     post:
       tags:
         - Showcases
@@ -1758,13 +1757,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ShowcaseResponse'
         '400':
-            $ref: '#/components/responses/BadRequest'
+          $ref: '#/components/responses/BadRequest'
         '401':
-            $ref: '#/components/responses/Unauthorized'
+          $ref: '#/components/responses/Unauthorized'
         '403':
-            $ref: '#/components/responses/Forbidden'
+          $ref: '#/components/responses/Forbidden'
         '500':
-            $ref: '#/components/responses/InternalServerError'
+          $ref: '#/components/responses/InternalServerError'
   /showcases/{showcaseId}:
     parameters:
       - name: showcaseId
@@ -1786,13 +1785,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ShowcaseResponse'
         '400':
-            $ref: '#/components/responses/BadRequest'
+          $ref: '#/components/responses/BadRequest'
         '401':
-            $ref: '#/components/responses/Unauthorized'
+          $ref: '#/components/responses/Unauthorized'
         '403':
-            $ref: '#/components/responses/Forbidden'
+          $ref: '#/components/responses/Forbidden'
         '500':
-            $ref: '#/components/responses/InternalServerError'
+          $ref: '#/components/responses/InternalServerError'
     put:
       tags:
         - Showcases
@@ -1812,13 +1811,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ShowcaseResponse'
         '400':
-            $ref: '#/components/responses/BadRequest'
+          $ref: '#/components/responses/BadRequest'
         '401':
-            $ref: '#/components/responses/Unauthorized'
+          $ref: '#/components/responses/Unauthorized'
         '403':
-            $ref: '#/components/responses/Forbidden'
+          $ref: '#/components/responses/Forbidden'
         '500':
-            $ref: '#/components/responses/InternalServerError'
+          $ref: '#/components/responses/InternalServerError'
     delete:
       tags:
         - Showcases
@@ -1826,23 +1825,23 @@ paths:
       operationId: deleteShowcase
       responses:
         '204':
-            description: Deleted
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    message:
-                      type: string
-                      description: A message indicating the showcase was deleted
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message indicating the showcase was deleted
         '400':
-            $ref: '#/components/responses/BadRequest'
+          $ref: '#/components/responses/BadRequest'
         '401':
-            $ref: '#/components/responses/Unauthorized'
+          $ref: '#/components/responses/Unauthorized'
         '403':
-            $ref: '#/components/responses/Forbidden'
+          $ref: '#/components/responses/Forbidden'
         '500':
-            $ref: '#/components/responses/InternalServerError'
+          $ref: '#/components/responses/InternalServerError'
 
 components:
   securitySchemes:
@@ -2239,7 +2238,7 @@ components:
           example: This workflow issues credentials to users
         type:
           type: string
-          enum: [ISSUANCE, PRESENTATION]
+          enum: [ ISSUANCE, PRESENTATION ]
           description: Type of workflow
           example: ISSUANCE
         steps:
@@ -2289,7 +2288,7 @@ components:
       type: object
       properties:
         issuanceFlow:
-            $ref: '#/components/schemas/IssuanceFlow'
+          $ref: '#/components/schemas/IssuanceFlow'
     IssuanceFlow:
       type: object
       allOf:
@@ -2358,8 +2357,6 @@ components:
       type: string
       enum:
         - ARIES
-        - CREDENTIAL_DEF
-        - CREDENTIAL_SCHEMA
       description: Types of supported issuers
     RelyingPartyType:
       type: string
@@ -2379,7 +2376,7 @@ components:
         id:
           type: string
           description: Unique identifier for the issuer
-          example: did:sov:XUeUZauFLeBNofY3NhaZCB
+          example: 123e4567-e89b-12d3-abcd-426614174456
         name:
           type: string
           description: Name of the issuer
@@ -2406,6 +2403,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CredentialDefinition'
+        credentialSchema:
+          type: array
+          items:
+            $ref: '#/components/schemas/CredentialSchema'
     IssuerRequest:
       type: object
       required:
@@ -2569,7 +2570,7 @@ components:
           example: Credential Definition Name
         issuerId:
           type: string
-          description: Identifier of the issuer who created this schema
+          description: Unique identifier of the issuer who created this schema
           example: 123e4567-e89b-12d3-a456-426614174123
         schemaId:
           type: string
@@ -2767,7 +2768,7 @@ components:
           example: Diploma Schema
         issuerId:
           type: string
-          description: Identifier of the issuer who created this schema
+          description: Unique identifier of the issuer who created this schema
           example: 123e4567-e89b-12d3-a456-426614174123
         version:
           type: string
@@ -2792,7 +2793,7 @@ components:
       properties:
         issuerId:
           type: string
-          description: Identifier of the issuer creating the schema
+          description: Unique identifier of the issuer creating the schema
           example: 123e4567-e89b-12d3-a456-426614174123
         name:
           type: string
@@ -2835,7 +2836,7 @@ components:
         - status
         - scenarios
         - personas
-        - credentials
+        - credentialDefinitions
         - hidden
       properties:
         id:
@@ -2851,10 +2852,7 @@ components:
           description: Description of the showcase
           example: Collection of credential usage scenarios
         status:
-          type: string
-          enum: [pending, active, archived]
-          description: Current status of the showcase
-          example: pending
+          $ref: '#/components/schemas/ShowcaseStatus'
         hidden:
           type: boolean
           description: Whether the showcase is hidden from public view
@@ -2864,7 +2862,7 @@ components:
           description: List of scenarios in this showcase
           items:
             $ref: '#/components/schemas/Workflow'
-        credentials:
+        credentialDefinitions:
           type: array
           description: List of credential definitions used in this showcase
           items:
@@ -2894,7 +2892,7 @@ components:
         - status
         - scenarios
         - personas
-        - credentials
+        - credentialDefinitions
         - hidden
       properties:
         name:
@@ -2906,10 +2904,7 @@ components:
           description: Description of the showcase
           example: Collection of credential usage scenarios
         status:
-          type: string
-          enum: [pending, active, archived]
-          description: Current status of the showcase
-          example: pending
+          $ref: '#/components/schemas/ShowcaseStatus'
         hidden:
           type: boolean
           description: Whether the showcase is hidden from public view
@@ -2920,7 +2915,7 @@ components:
           items:
             type: string
             example: 123e4567-e89b-12d3-a456-426614174469
-        credentials:
+        credentialDefinitions:
           type: array
           description: List of credential definitions used in this showcase
           items:
@@ -2932,6 +2927,14 @@ components:
           items:
             type: string
             example: 123e4567-e89b-12d3-a456-426614174469
+
+    ShowcaseStatus:
+      type: string
+      enum:
+          - PENDING
+          - ACTIVE
+          - ARCHIVED
+      description: Types of supported credentials
 
     # Scenario:
     #   type: object

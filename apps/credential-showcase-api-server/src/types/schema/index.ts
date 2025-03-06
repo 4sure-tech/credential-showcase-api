@@ -11,7 +11,7 @@ import {
   steps,
   stepActions,
   ariesProofRequests,
-  credentialSchemas,
+  showcases,
 } from '../../database/schema'
 
 // $inferSelect does not respect nullability of fields and the type has every field as required
@@ -29,15 +29,13 @@ export type NewPersona = typeof personas.$inferInsert & { headshotImage?: string
 export type CredentialDefinition = Omit<typeof credentialDefinitions.$inferSelect, 'icon' | 'type'> & {
   type: CredentialType
   icon: Asset
-  issuer: Issuer
-  credentialSchema: CredentialSchema
+  attributes: CredentialAttribute[]
   representations: CredentialRepresentation[]
   revocation?: RevocationInfo | null
 }
-export type NewCredentialDefinition = Omit<typeof credentialDefinitions.$inferInsert, 'type' | 'credentialSchema' | 'representations'> & {
+export type NewCredentialDefinition = Omit<typeof credentialDefinitions.$inferInsert, 'type'> & {
   type: CredentialType
-  issuerId: string
-  credentialSchemaId: string
+  attributes: NewCredentialAttribute[]
   representations: NewCredentialRepresentation[]
   revocation?: NewRevocationInfo | null
 }
@@ -55,13 +53,6 @@ export type NewCredentialRepresentation = Omit<typeof credentialRepresentations.
 export type RevocationInfo = Omit<typeof revocationInfo.$inferSelect, 'credentialDefinition'>
 export type NewRevocationInfo = Omit<typeof revocationInfo.$inferInsert, 'credentialDefinition'>
 
-export type CredentialSchema = typeof credentialSchemas.$inferSelect & {
-  attributes: CredentialAttribute[]
-}
-
-export type NewCredentialSchema = typeof credentialSchemas.$inferInsert & {
-  attributes: NewCredentialAttribute[]
-}
 export type RelyingParty = Omit<typeof relyingParties.$inferSelect, 'logo'> & {
   credentialDefinitions: CredentialDefinition[]
   logo: Asset | null
@@ -117,7 +108,7 @@ export enum WorkflowType {
   PRESENTATION = 'PRESENTATION',
 }
 
-export type IssuanceFlow = Omit<typeof workflows.$inferSelect, 'relyingParty' | 'issuer' | 'workflowType'> & {
+export type IssuanceFlow = Omit<typeof workflows.$inferSelect, 'relyingParty' | 'issuer'> & {
   personas: Persona[]
   steps: Step[]
   issuer?: Issuer | null
@@ -128,7 +119,7 @@ export type NewIssuanceFlow = Omit<typeof workflows.$inferInsert, 'relyingParty'
   steps: NewStep[]
 }
 
-export type PresentationFlow = Omit<typeof workflows.$inferSelect, 'relyingParty' | 'issuer' | 'workflowType'> & {
+export type PresentationFlow = Omit<typeof workflows.$inferSelect, 'relyingParty' | 'issuer'> & {
   personas: Persona[]
   steps: Step[]
   relyingParty?: RelyingParty | null
@@ -150,10 +141,10 @@ export type NewStep = Omit<typeof steps.$inferInsert, 'workflow'> & {
 }
 
 export type AriesOOBAction = Omit<typeof stepActions.$inferSelect, 'proofRequest'> & {
-  proofRequest?: AriesProofRequests | null
+  proofRequest?: AriesProofRequest | null
 }
 export type NewAriesOOBAction = Omit<typeof stepActions.$inferInsert, 'step' | 'proofRequest'> & {
-  proofRequest: NewAriesProofRequests
+  proofRequest: NewAriesProofRequest
 }
 
 export type AriesRequestCredentialAttribute = {
@@ -168,5 +159,25 @@ export type AriesRequestCredentialPredicate = {
   restrictions?: string[]
 }
 
-export type AriesProofRequests = typeof ariesProofRequests.$inferSelect
-export type NewAriesProofRequests = Omit<typeof ariesProofRequests.$inferInsert, 'stepAction'>
+export type AriesProofRequest = typeof ariesProofRequests.$inferSelect
+export type NewAriesProofRequest = Omit<typeof ariesProofRequests.$inferInsert, 'stepAction'>
+
+export type Showcase = typeof showcases.$inferSelect & {
+  scenarios: Scenario[]
+  credentialDefinitions: CredentialDefinition[]
+  personas: Persona[]
+}
+export type NewShowcase = typeof showcases.$inferInsert & {
+  scenarios: string[]
+  credentialDefinitions: string[]
+  personas: string[]
+}
+
+export type Scenario = IssuanceFlow | PresentationFlow
+export type NewScenario = NewIssuanceFlow | NewPresentationFlow
+
+export enum ShowcaseStatus {
+  PENDING = 'PENDING',
+  ACTIVE = 'ACTIVE',
+  ARCHIVED = 'ARCHIVED',
+}
