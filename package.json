@@ -8,7 +8,6 @@
   "scripts": {
     "prepare": "husky",
     "preinstall": "npx only-allow pnpm",
-    "postinstall": "cd ../../packages/credential-showcase-openapi && mvn clean generate-sources || echo 'Maven failed to run in the correct directory'",
     "build": "turbo run build",
     "prettier": "prettier --write \"{packages,__tests__,!dist}/**/*.{ts,js,json,md}\"",
     "prettier:check": "prettier --check \"{packages,__tests__,!dist}/**/*.{ts,js,json,md}\"",
