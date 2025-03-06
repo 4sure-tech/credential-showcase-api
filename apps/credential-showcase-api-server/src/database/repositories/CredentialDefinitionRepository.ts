@@ -17,6 +17,7 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
 
   async create(credentialDefinition: NewCredentialDefinition): Promise<CredentialDefinition> {
     const iconResult = await this.assetRepository.findById(credentialDefinition.icon)
+    const credentialSchemaResult = await this.credentialSchemaRepository.findById(credentialDefinition.credentialSchemaId)
 
     return (await this.databaseService.getConnection()).transaction(async (tx): Promise<CredentialDefinition> => {
       const [credentialDefinitionResult] = await tx
@@ -51,8 +52,6 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
       //         })
       //         .returning();
       // }
-
-      const credentialSchemaResult = await this.credentialSchemaRepository.findById(credentialDefinition.credentialSchemaId)
 
       return {
         ...credentialDefinitionResult,
