@@ -24,7 +24,11 @@ export type Persona = Omit<typeof personas.$inferSelect, 'headshotImage' | 'body
     headshotImage: Asset | null
     bodyImage: Asset | null
 };
-export type NewPersona = typeof personas.$inferInsert & { headshotImage?: string | null, bodyImage?: string | null };
+export type NewPersona = typeof personas.$inferInsert & {
+    headshotImage?: string | null
+    bodyImage?: string | null
+    hidden: boolean
+};
 
 export type CredentialDefinition = Omit<typeof credentialDefinitions.$inferSelect, 'icon' | 'type'> & {
     type: CredentialType
@@ -119,6 +123,7 @@ export type NewIssuanceScenario = Omit<typeof scenarios.$inferInsert, 'relyingPa
     issuer: string
     steps: NewStep[]
     bannerImage?: string | null
+    hidden: boolean
 };
 
 export type PresentationScenario = Omit<typeof scenarios.$inferSelect, 'relyingParty' | 'issuer' | 'bannerImage'> & {
@@ -132,6 +137,7 @@ export type NewPresentationScenario = Omit<typeof scenarios.$inferInsert, 'issue
     relyingParty: string
     steps: NewStep[]
     bannerImage?: string | null
+    hidden: boolean
 };
 
 export type Step = Omit<typeof steps.$inferSelect, 'asset'> & {

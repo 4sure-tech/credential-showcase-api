@@ -27,10 +27,7 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
     return (await this.databaseService.getConnection()).transaction(async (tx): Promise<Issuer> => {
       const [issuerResult] = (await tx.insert(issuers)
           .values({
-            name: issuer.name,
-            type: issuer.type,
-            description: issuer.description,
-            organization: issuer.organization,
+            ...issuer,
             logo: logoResult ? logoResult.id : null
           })
           .returning())
@@ -81,10 +78,7 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
     return (await this.databaseService.getConnection()).transaction(async (tx): Promise<Issuer> => {
       const [issuerResult] = await tx.update(issuers)
           .set({
-            name: issuer.name,
-            type: issuer.type,
-            description: issuer.description,
-            organization: issuer.organization,
+            ...issuer,
             logo: logoResult ? logoResult.id : null
           })
           .where(eq(issuers.id, id))

@@ -199,7 +199,9 @@ describe('Database showcase repository tests', (): void => {
                     ]
                 }
             ],
-            personas: [persona1.id, persona2.id]
+            personas: [persona1.id, persona2.id],
+            bannerImage: null,
+            hidden: false,
         };
         issuanceScenario1 = await scenarioRepository.create(newIssuanceScenario)
         issuanceScenario2 = await scenarioRepository.create(newIssuanceScenario)

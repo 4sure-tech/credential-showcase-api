@@ -68,8 +68,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         return (await this.databaseService.getConnection()).transaction(async (tx): Promise<Scenario> => {
             const [scenarioResult] = await tx.insert(scenarios)
                 .values({
-                    name: scenario.name,
-                    description: scenario.description,
+                    ...scenario,
                     ...(isIssuanceScenario(scenario) && {
                         issuer: scenarioPartyResult.id,
                     }),
@@ -189,8 +188,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         return (await this.databaseService.getConnection()).transaction(async (tx): Promise<Scenario> => {
             const [scenarioResult] = await tx.update(scenarios)
                 .set({
-                    name: scenario.name,
-                    description: scenario.description,
+                    ...scenario,
                     ...(isIssuanceScenario(scenario) && {
                         issuer: scenarioPartyResult.id,
                     }),

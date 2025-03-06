@@ -24,6 +24,7 @@ classDiagram
         +description : String
         +steps: List~Steps~
         +personas: List~Persona~
+        +hidden : Boolean
         +createdAt : DateTime
         +updatedAt : DateTime
         bannerImage: Asset
@@ -91,6 +92,7 @@ classDiagram
         +description: String
         +createdAt : DateTime
         +updatedAt : DateTime
+        +hidden : Boolean
         headshotImage: Asset
         bodyImage: Asset
     }
