@@ -13,6 +13,8 @@ classDiagram
         +personas: List~String~
         +credentialDefinitions: List~String~
         +hidden : Boolean
+        +createdAt : DateTime
+        +updatedAt : DateTime
         completionMessage : String
     }
     class Scenario {
@@ -21,6 +23,8 @@ classDiagram
         +description : String
         +steps: List~Steps~
         +personas: List~Persona~
+        +createdAt : DateTime
+        +updatedAt : DateTime
     }
     class IssuanceFlow {
         issuer: Issuer
@@ -33,6 +37,8 @@ classDiagram
         +description : String
         +order : int
         +type : StepType
+        +createdAt : DateTime
+        +updatedAt : DateTime
         subFlow: Scenario
         actions: List~StepAction~
         asset: Asset
@@ -41,11 +47,15 @@ classDiagram
         +type: String
         +title: String
         +text: String
+        +createdAt : DateTime
+        +updatedAt : DateTime
     }
     class AriesOOBAction {
         proofRequest: AriesProofRequest
     }
     class AriesProofRequest {
+        +createdAt : DateTime
+        +updatedAt : DateTime
         attributes: Dictionary~String, AriesRequestCredentialAttributes~
         predicates: Dictionary~String, AriesRequestCredentialPredicates~
     }
@@ -68,6 +78,8 @@ classDiagram
     class Asset {
         +mediaType : String
         +content : String
+        +createdAt : DateTime
+        +updatedAt : DateTime
         fileName : String
         description : String
     }
@@ -75,6 +87,8 @@ classDiagram
         +name : String
         +role: String
         +description: String
+        +createdAt : DateTime
+        +updatedAt : DateTime
         headshotImage: Asset
         bodyImage: Asset
     }
@@ -83,6 +97,8 @@ classDiagram
         +type: IssuerType
         +credentialDefinitions: List~CredentialDefinition~
         +description: String
+        +createdAt : DateTime
+        +updatedAt : DateTime
         organization: String
         logo: Asset
     }
@@ -95,6 +111,8 @@ classDiagram
         +type: RelyingPartyType
         +credentialDefinitions: List~CredentialDefinition~
         +description: String
+        +createdAt : DateTime
+        +updatedAt : DateTime
         organization: String
         logo: Asset
     }
@@ -109,16 +127,22 @@ classDiagram
         +type: CredentialType
         +attributes: List~CredentialAttribute~
         +representations: List~CredentialRepresentation~
+        +createdAt : DateTime
+        +updatedAt : DateTime
         revocation: RevocationInfo
    }
    class RevocationInfo {
         +title: String
         +description: String
+        +createdAt : DateTime
+        +updatedAt : DateTime
    }
    class AnonCredRevocation {
    }
    class CredentialRepresentation {
         +id: String
+        +createdAt : DateTime
+        +updatedAt : DateTime
    }
    class OCARepresentation {
        +credDefId: String
@@ -129,6 +153,8 @@ classDiagram
         +name : String
         +value : String
         +type: CredentialAttributeType
+        +createdAt : DateTime
+        +updatedAt : DateTime
     }
     class CredentialType {
         <<enumeration>>

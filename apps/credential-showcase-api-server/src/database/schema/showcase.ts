@@ -11,6 +11,7 @@ export const showcases = pgTable('showcase', {
     id: uuid('id').notNull().primaryKey().defaultRandom(),
     name: text().notNull(),
     description: text().notNull(),
+    completionMessage: text(),
     status: showcaseStatusPg().notNull().$type<ShowcaseStatus>(),
     hidden: boolean().notNull().default(false),
     bannerImage: uuid('banner_image').references(() => assets.id),
