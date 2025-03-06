@@ -11,7 +11,7 @@ export const personas = pgTable('persona', {
   bodyImage: uuid('body_image').references(() => assets.id),
   hidden: boolean().notNull().default(false),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull().$onUpdate(() => new Date()),
 });
 
 export const personaRelations = relations(personas, ({ one }) => ({

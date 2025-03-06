@@ -16,7 +16,7 @@ export const workflows = pgTable('workflow', {
     hidden: boolean().notNull().default(false),
     relyingParty: uuid('relying_party').references(() => relyingParties.id),
     createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull().$onUpdate(() => new Date()),
     },
     () => [
         check('workflow_type_check', sql`

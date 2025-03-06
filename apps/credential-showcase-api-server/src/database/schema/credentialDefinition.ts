@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { pgTable, text, uuid } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 import { assets } from './asset';
 import { CredentialTypePg } from './credentialType';
 import { credentialAttributes } from './credentialAttribute';
@@ -13,7 +13,9 @@ export const credentialDefinitions = pgTable('credentialDefinition', {
     name: text().notNull(),
     version: text().notNull(),
     icon: uuid().references(() => assets.id).notNull(),
-    type: CredentialTypePg().notNull().$type<CredentialType>()
+    type: CredentialTypePg().notNull().$type<CredentialType>(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull().$onUpdate(() => new Date()),
 });
 
 export const credentialDefinitionRelations = relations(credentialDefinitions, ({ one, many }) => ({

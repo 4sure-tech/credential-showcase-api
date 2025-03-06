@@ -15,7 +15,7 @@ export const showcases = pgTable('showcase', {
     hidden: boolean().notNull().default(false),
     bannerImage: uuid('banner_image').references(() => assets.id),
     createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull().$onUpdate(() => new Date()),
 });
 
 export const showcaseRelations = relations(showcases, ({ many, one }) => ({

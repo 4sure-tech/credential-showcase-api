@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { pgTable, integer, text, uuid, unique } from 'drizzle-orm/pg-core';
+import { pgTable, integer, text, timestamp, uuid, unique } from 'drizzle-orm/pg-core';
 import { StepTypePg } from './stepType';
 import { workflows } from './workflow';
 import { stepActions } from './stepAction';
@@ -14,7 +14,9 @@ export const steps = pgTable('step', {
     type: StepTypePg().notNull().$type<StepType>(),
     subFlow: uuid('sub_flow').references(() => workflows.id),
     workflow: uuid().references(() => workflows.id,{ onDelete: 'cascade' }).notNull(),
-    asset: uuid().references(() => assets.id)
+    asset: uuid().references(() => assets.id),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull().$onUpdate(() => new Date()),
 }, (table) => {
     return {
         uniqueStepOrder: unique().on(table.order, table.workflow)
