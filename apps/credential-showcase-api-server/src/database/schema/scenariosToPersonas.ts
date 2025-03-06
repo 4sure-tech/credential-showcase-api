@@ -1,26 +1,26 @@
 import { relations } from 'drizzle-orm';
 import { pgTable, primaryKey, timestamp, uuid } from 'drizzle-orm/pg-core';
-import { workflows } from './workflow';
+import { scenarios } from './scenario';
 import { personas } from './persona';
 
-export const workflowsToPersonas = pgTable('workflowsToPersonas', {
-        workflow: uuid().references(() => workflows.id, { onDelete: 'cascade' }).notNull(),
+export const scenariosToPersonas = pgTable('scenariosToPersonas', {
+        scenario: uuid().references(() => scenarios.id, { onDelete: 'cascade' }).notNull(),
         persona: uuid().references(() => personas.id, { onDelete: 'cascade' }).notNull(),
         createdAt: timestamp('created_at').defaultNow().notNull(),
         updatedAt: timestamp('updated_at').defaultNow().notNull().$onUpdate(() => new Date()),
     },
     (t) => [
-        primaryKey({ columns: [t.workflow, t.persona] })
+        primaryKey({ columns: [t.scenario, t.persona] })
     ],
 );
 
-export const workflowsToPersonasRelations = relations(workflowsToPersonas, ({ one }) => ({
-    workflow: one(workflows, {
-        fields: [workflowsToPersonas.workflow],
-        references: [workflows.id],
+export const scenariosToPersonasRelations = relations(scenariosToPersonas, ({ one }) => ({
+    scenario: one(scenarios, {
+        fields: [scenariosToPersonas.scenario],
+        references: [scenarios.id],
     }),
     persona: one(personas, {
-        fields: [workflowsToPersonas.persona],
+        fields: [scenariosToPersonas.persona],
         references: [personas.id],
     }),
 }));

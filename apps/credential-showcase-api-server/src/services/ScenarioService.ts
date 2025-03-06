@@ -11,7 +11,7 @@ import {
 } from '../types';
 
 @Service()
-class IssuanceFlowService {
+class ScenarioService {
     constructor(private readonly scenarioRepository: ScenarioRepository) {}
 
     public getScenarios = async (args: ScenarioFindAllArgs): Promise<Scenario[]> => {
@@ -75,4 +75,4 @@ class IssuanceFlowService {
     };
 }
 
-export default IssuanceFlowService
+export default ScenarioService

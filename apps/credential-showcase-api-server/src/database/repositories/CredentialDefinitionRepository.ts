@@ -8,7 +8,7 @@ import {
     CredentialDefinition,
     NewCredentialAttribute,
     NewCredentialDefinition,
-    NewCredentialRepresentation,
+    // NewCredentialRepresentation, TODO SHOWCASE-81 enable
     RepositoryDefinition
 } from '../../types';
 
@@ -39,28 +39,30 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
                     })))
                 .returning();
 
-            const credentialRepresentationsResult = await tx.insert(credentialRepresentations)
-                .values(credentialDefinition.representations.map((representation: NewCredentialRepresentation) => ({
-                    ...representation,
-                    credentialDefinition: credentialDefinitionResult.id
-                })))
-                .returning();
+            // TODO SHOWCASE-81 enable
+            // const credentialRepresentationsResult = await tx.insert(credentialRepresentations)
+            //     .values(credentialDefinition.representations.map((representation: NewCredentialRepresentation) => ({
+            //         ...representation,
+            //         credentialDefinition: credentialDefinitionResult.id
+            //     })))
+            //     .returning();
 
+            // TODO SHOWCASE-80 enable
             let revocationResult = null;
-            if (credentialDefinition.revocation) {
-                [revocationResult] = await tx.insert(revocationInfo)
-                    .values({
-                        ...credentialDefinition.revocation,
-                        credentialDefinition: credentialDefinitionResult.id
-                    })
-                    .returning();
-            }
+            // if (credentialDefinition.revocation) {
+            //     [revocationResult] = await tx.insert(revocationInfo)
+            //         .values({
+            //             ...credentialDefinition.revocation,
+            //             credentialDefinition: credentialDefinitionResult.id
+            //         })
+            //         .returning();
+            // }
 
             return {
                 ...credentialDefinitionResult,
                 icon: iconResult,
                 attributes: credentialAttributesResult,
-                representations: credentialRepresentationsResult,
+                representations: [], //credentialRepresentationsResult, TODO SHOWCASE-81 enable
                 revocation: revocationResult,
             };
         })
@@ -99,28 +101,30 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
                 })))
                 .returning();
 
-            const credentialRepresentationsResult = await tx.insert(credentialRepresentations)
-                .values(credentialDefinition.representations.map((representation: NewCredentialRepresentation) => ({
-                    ...representation,
-                    credentialDefinition: credentialDefinitionResult.id
-                })))
-                .returning();
+            // TODO SHOWCASE-81 enable
+            // const credentialRepresentationsResult = await tx.insert(credentialRepresentations)
+            //     .values(credentialDefinition.representations.map((representation: NewCredentialRepresentation) => ({
+            //         ...representation,
+            //         credentialDefinition: credentialDefinitionResult.id
+            //     })))
+            //     .returning();
 
+            // TODO SHOWCASE-80 enable
             let revocationResult = null;
-            if (credentialDefinition.revocation) {
-                [revocationResult] = await tx.insert(revocationInfo)
-                    .values({
-                        ...credentialDefinition.revocation,
-                        credentialDefinition: credentialDefinitionResult.id
-                    })
-                    .returning();
-            }
+            // if (credentialDefinition.revocation) {
+            //     [revocationResult] = await tx.insert(revocationInfo)
+            //         .values({
+            //             ...credentialDefinition.revocation,
+            //             credentialDefinition: credentialDefinitionResult.id
+            //         })
+            //         .returning();
+            // }
 
             return {
                 ...credentialDefinitionResult,
                 icon: iconResult,
                 attributes: credentialAttributesResult,
-                representations: credentialRepresentationsResult,
+                representations: [],//credentialRepresentationsResult, TODO SHOWCASE-81 enable
                 revocation: revocationResult,
             };
         })
