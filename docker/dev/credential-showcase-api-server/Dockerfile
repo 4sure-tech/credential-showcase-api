@@ -19,8 +19,6 @@ WORKDIR /build
 COPY . /build
 RUN rm -rf $(pnpm store path) && pnpm install -g rimraf typescript tslib
 RUN pnpm install
-# migrate db
-# RUN pnpm db:migrate
 
 RUN pnpm build
 RUN pnpm deploy /deploy --filter credential-showcase-api-server --prod --no-optional
