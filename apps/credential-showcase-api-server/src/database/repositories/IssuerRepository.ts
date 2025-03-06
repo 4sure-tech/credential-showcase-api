@@ -31,10 +31,7 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
       const [issuerResult] = await tx
         .insert(issuers)
         .values({
-          name: issuer.name,
-          type: issuer.type,
-          description: issuer.description,
-          organization: issuer.organization,
+          ...issuer,
           logo: logoResult ? logoResult.id : null,
         })
         .returning()
@@ -117,10 +114,7 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
       const [issuerResult] = await tx
         .update(issuers)
         .set({
-          name: issuer.name,
-          type: issuer.type,
-          description: issuer.description,
-          organization: issuer.organization,
+          ...issuer,
           logo: logoResult ? logoResult.id : null,
         })
         .where(eq(issuers.id, id))
@@ -208,8 +202,12 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
         },
         css: {
           with: {
-            attributes: true,
-          },
+            cs: {
+              with: {
+                attributes: true
+              }
+            }
+          }
         },
         logo: true,
       },
@@ -249,8 +247,12 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
         },
         css: {
           with: {
-            attributes: true,
-          },
+            cs: {
+              with: {
+                attributes: true
+              }
+            }
+          }
         },
         logo: true,
       },

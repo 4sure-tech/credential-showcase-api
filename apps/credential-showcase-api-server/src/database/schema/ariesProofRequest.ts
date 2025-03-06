@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm'
-import { pgTable, jsonb, uuid } from 'drizzle-orm/pg-core'
+import { pgTable, jsonb, timestamp, uuid } from 'drizzle-orm/pg-core'
 import { stepActions } from './stepAction'
 import { AriesRequestCredentialAttribute, AriesRequestCredentialPredicate } from '../../types'
 
@@ -11,6 +11,11 @@ export const ariesProofRequests = pgTable('ariesProofRequest', {
     .references(() => stepActions.id, { onDelete: 'cascade' })
     .notNull()
     .unique(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
 })
 
 export const ariesProofRequestRelations = relations(ariesProofRequests, ({ one }) => ({

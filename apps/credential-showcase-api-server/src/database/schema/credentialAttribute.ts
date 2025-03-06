@@ -1,4 +1,4 @@
-import { pgTable, text, uuid } from 'drizzle-orm/pg-core'
+import { pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 import { CredentialAttributeTypePg } from './credentialAttributeType'
 import { CredentialAttributeType } from '../../types'
@@ -12,6 +12,11 @@ export const credentialAttributes = pgTable('credentialAttribute', {
   credentialSchema: uuid('credential_schema')
     .references(() => credentialSchemas.id, { onDelete: 'cascade' })
     .notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
 })
 
 export const credentialAttributeRelations = relations(credentialAttributes, ({ one }) => ({

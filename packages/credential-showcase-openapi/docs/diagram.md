@@ -13,6 +13,10 @@ classDiagram
         +personas: List~String~
         +credentialDefinitions: List~String~
         +hidden : Boolean
+        +createdAt : DateTime
+        +updatedAt : DateTime
+        bannerImage: Asset
+        completionMessage : String
     }
     class Scenario {
         <!-- Scenarios is a collection of workflows -->
@@ -20,6 +24,10 @@ classDiagram
         +description : String
         +steps: List~Steps~
         +personas: List~Persona~
+        +hidden : Boolean
+        +createdAt : DateTime
+        +updatedAt : DateTime
+        bannerImage: Asset
     }
     class IssuanceScenario {
         issuer: Issuer
@@ -32,6 +40,8 @@ classDiagram
         +description : String
         +order : int
         +type : StepType
+        +createdAt : DateTime
+        +updatedAt : DateTime
         subFlow: Scenario
         actions: List~StepAction~
         asset: Asset
@@ -40,11 +50,15 @@ classDiagram
         +type: String
         +title: String
         +text: String
+        +createdAt : DateTime
+        +updatedAt : DateTime
     }
     class AriesOOBAction {
         proofRequest: AriesProofRequest
     }
     class AriesProofRequest {
+        +createdAt : DateTime
+        +updatedAt : DateTime
         attributes: Dictionary~String, AriesRequestCredentialAttributes~
         predicates: Dictionary~String, AriesRequestCredentialPredicates~
     }
@@ -67,6 +81,8 @@ classDiagram
     class Asset {
         +mediaType : String
         +content : String
+        +createdAt : DateTime
+        +updatedAt : DateTime
         fileName : String
         description : String
     }
@@ -74,6 +90,9 @@ classDiagram
         +name : String
         +role: String
         +description: String
+        +createdAt : DateTime
+        +updatedAt : DateTime
+        +hidden : Boolean
         headshotImage: Asset
         bodyImage: Asset
     }
@@ -82,6 +101,8 @@ classDiagram
         +type: IssuerType
         +credentialDefinitions: List~CredentialDefinition~
         +description: String
+        +createdAt : DateTime
+        +updatedAt : DateTime
         organization: String
         logo: Asset
     }
@@ -94,6 +115,8 @@ classDiagram
         +type: RelyingPartyType
         +credentialDefinitions: List~CredentialDefinition~
         +description: String
+        +createdAt : DateTime
+        +updatedAt : DateTime
         organization: String
         logo: Asset
     }
@@ -108,16 +131,22 @@ classDiagram
         +type: CredentialType
         +attributes: List~CredentialAttribute~
         +representations: List~CredentialRepresentation~
+        +createdAt : DateTime
+        +updatedAt : DateTime
         revocation: RevocationInfo
    }
    class RevocationInfo {
         +title: String
         +description: String
+        +createdAt : DateTime
+        +updatedAt : DateTime
    }
    class AnonCredRevocation {
    }
    class CredentialRepresentation {
         +id: String
+        +createdAt : DateTime
+        +updatedAt : DateTime
    }
    class OCARepresentation {
        +credDefId: String
@@ -128,6 +157,8 @@ classDiagram
         +name : String
         +value : String
         +type: CredentialAttributeType
+        +createdAt : DateTime
+        +updatedAt : DateTime
     }
     class CredentialType {
         <<enumeration>>
@@ -144,9 +175,11 @@ classDiagram
     Showcase "1" <|-- "1..*" Scenario: has
     Showcase "1..*" o-- "1..*" Persona
     Showcase "1..*" o-- "1..*" CredentialDefinition : contains
+    Showcase "1" -- "0..*" Asset : references
     Scenario <|-- IssuanceScenario : specialization (onboarding)
     Scenario <|-- PresentationScenario : specialization (scenario)
     Scenario "1" *-- "1..*" Step : contains
+    Scenario "1" -- "0..*" Asset : references
     CredentialAttribute  o-- "1" CredentialAttributeType : of
     CredentialDefinition "1" *-- "1..*" CredentialAttribute : has
     CredentialDefinition "icon" --> Asset

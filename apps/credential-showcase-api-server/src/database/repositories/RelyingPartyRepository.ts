@@ -30,10 +30,7 @@ class RelyingPartyRepository implements RepositoryDefinition<RelyingParty, NewRe
       const [relyingPartyResult] = await tx
         .insert(relyingParties)
         .values({
-          name: relyingParty.name,
-          type: relyingParty.type,
-          description: relyingParty.description,
-          organization: relyingParty.organization,
+          ...relyingParty,
           logo: logoResult ? logoResult.id : null,
         })
         .returning()
@@ -95,10 +92,7 @@ class RelyingPartyRepository implements RepositoryDefinition<RelyingParty, NewRe
       const [relyingPartyResult] = await tx
         .update(relyingParties)
         .set({
-          name: relyingParty.name,
-          type: relyingParty.type,
-          description: relyingParty.description,
-          organization: relyingParty.organization,
+          ...relyingParty,
           logo: logoResult ? logoResult.id : null,
         })
         .where(eq(relyingParties.id, id))

@@ -139,6 +139,7 @@ describe('Database scenario repository tests', (): void => {
       description: 'Experienced developer',
       headshotImage: asset.id,
       bodyImage: asset.id,
+      hidden: false,
     }
     persona1 = await personaRepository.create(newPersona)
     persona2 = await personaRepository.create(newPersona)
@@ -238,6 +239,8 @@ describe('Database scenario repository tests', (): void => {
         },
       ],
       personas: [persona1.id, persona2.id],
+      bannerImage: asset.id,
+      hidden: true,
     }
 
     const savedIssuanceScenario = await repository.create(issuanceScenario)
@@ -245,6 +248,7 @@ describe('Database scenario repository tests', (): void => {
     expect(savedIssuanceScenario).toBeDefined()
     expect(savedIssuanceScenario.name).toEqual(issuanceScenario.name)
     expect(savedIssuanceScenario.description).toEqual(issuanceScenario.description)
+    expect(savedIssuanceScenario.hidden).toEqual(issuanceScenario.hidden)
     expect(savedIssuanceScenario.steps).toBeDefined()
     expect(savedIssuanceScenario.steps.length).toEqual(2)
     expect(savedIssuanceScenario.steps[0].title).toEqual(issuanceScenario.steps[0].title)
@@ -300,6 +304,11 @@ describe('Database scenario repository tests', (): void => {
     expect(savedIssuanceScenario.personas[0].bodyImage!.fileName).toEqual(asset.fileName)
     expect(savedIssuanceScenario.personas[0].bodyImage!.description).toEqual(asset.description)
     expect(savedIssuanceScenario.personas[0].bodyImage!.content).toStrictEqual(asset.content)
+    expect(savedIssuanceScenario.bannerImage!.id).toBeDefined()
+    expect(savedIssuanceScenario.bannerImage!.mediaType).toEqual(asset.mediaType)
+    expect(savedIssuanceScenario.bannerImage!.fileName).toEqual(asset.fileName)
+    expect(savedIssuanceScenario.bannerImage!.description).toEqual(asset.description)
+    expect(savedIssuanceScenario.bannerImage!.content).toStrictEqual(asset.content)
   })
 
   it('Should save presentation scenario to database', async (): Promise<void> => {
@@ -390,6 +399,8 @@ describe('Database scenario repository tests', (): void => {
         },
       ],
       personas: [persona1.id, persona2.id],
+      bannerImage: asset.id,
+      hidden: true,
     }
 
     const savedPresentationScenario = await repository.create(presentationScenario)
@@ -397,6 +408,7 @@ describe('Database scenario repository tests', (): void => {
     expect(savedPresentationScenario).toBeDefined()
     expect(savedPresentationScenario.name).toEqual(presentationScenario.name)
     expect(savedPresentationScenario.description).toEqual(presentationScenario.description)
+    expect(savedPresentationScenario.hidden).toEqual(presentationScenario.hidden)
     expect(savedPresentationScenario.steps).toBeDefined()
     expect(savedPresentationScenario.steps.length).toEqual(2)
     expect(savedPresentationScenario.steps[0].title).toEqual(presentationScenario.steps[0].title)
@@ -435,6 +447,11 @@ describe('Database scenario repository tests', (): void => {
     expect(savedPresentationScenario.personas[0].bodyImage!.fileName).toEqual(asset.fileName)
     expect(savedPresentationScenario.personas[0].bodyImage!.description).toEqual(asset.description)
     expect(savedPresentationScenario.personas[0].bodyImage!.content).toStrictEqual(asset.content)
+    expect(savedPresentationScenario.bannerImage!.id).toBeDefined()
+    expect(savedPresentationScenario.bannerImage!.mediaType).toEqual(asset.mediaType)
+    expect(savedPresentationScenario.bannerImage!.fileName).toEqual(asset.fileName)
+    expect(savedPresentationScenario.bannerImage!.description).toEqual(asset.description)
+    expect(savedPresentationScenario.bannerImage!.content).toStrictEqual(asset.content)
   })
 
   it('Should throw error when saving scenario with no steps', async (): Promise<void> => {
@@ -444,6 +461,7 @@ describe('Database scenario repository tests', (): void => {
       issuer: issuer.id,
       steps: [],
       personas: [persona1.id],
+      hidden: false,
     }
 
     await expect(repository.create(issuanceScenario)).rejects.toThrowError(`At least one step is required`)
@@ -538,9 +556,106 @@ describe('Database scenario repository tests', (): void => {
         },
       ],
       personas: [persona1.id],
+      hidden: false,
     }
 
     await expect(repository.create(issuanceScenario)).rejects.toThrowError(`No issuer found for id: ${unknownIssuerId}`)
+  })
+
+  it('Should throw error when saving scenario with banner image id', async (): Promise<void> => {
+    const unknownBannerImageId = 'a197e5b2-e4e5-4788-83b1-ecaa0e99ed3a'
+    const issuanceScenario: NewIssuanceScenario = {
+      name: 'example_name',
+      description: 'example_description',
+      issuer: issuer.id,
+      steps: [
+        {
+          title: 'example_title',
+          description: 'example_description',
+          order: 1,
+          type: StepType.HUMAN_TASK,
+          asset: asset.id,
+          actions: [
+            {
+              title: 'example_title',
+              actionType: StepActionType.ARIES_OOB,
+              text: 'example_text',
+              proofRequest: {
+                attributes: {
+                  attribute1: {
+                    attributes: ['attribute1', 'attribute2'],
+                    restrictions: ['restriction1', 'restriction2'],
+                  },
+                  attribute2: {
+                    attributes: ['attribute1', 'attribute2'],
+                    restrictions: ['restriction1', 'restriction2'],
+                  },
+                },
+                predicates: {
+                  predicate1: {
+                    name: 'example_name',
+                    type: 'example_type',
+                    value: 'example_value',
+                    restrictions: ['restriction1', 'restriction2'],
+                  },
+                  predicate2: {
+                    name: 'example_name',
+                    type: 'example_type',
+                    value: 'example_value',
+                    restrictions: ['restriction1', 'restriction2'],
+                  },
+                },
+              },
+            },
+          ],
+        },
+        {
+          title: 'example_title',
+          description: 'example_description',
+          order: 2,
+          type: StepType.HUMAN_TASK,
+          asset: asset.id,
+          actions: [
+            {
+              title: 'example_title',
+              actionType: StepActionType.ARIES_OOB,
+              text: 'example_text',
+              proofRequest: {
+                attributes: {
+                  attribute1: {
+                    attributes: ['attribute1', 'attribute2'],
+                    restrictions: ['restriction1', 'restriction2'],
+                  },
+                  attribute2: {
+                    attributes: ['attribute1', 'attribute2'],
+                    restrictions: ['restriction1', 'restriction2'],
+                  },
+                },
+                predicates: {
+                  predicate1: {
+                    name: 'example_name',
+                    type: 'example_type',
+                    value: 'example_value',
+                    restrictions: ['restriction1', 'restriction2'],
+                  },
+                  predicate2: {
+                    name: 'example_name',
+                    type: 'example_type',
+                    value: 'example_value',
+                    restrictions: ['restriction1', 'restriction2'],
+                  },
+                },
+              },
+            },
+          ],
+        },
+      ],
+      personas: [persona1.id],
+      bannerImage: unknownBannerImageId,
+      hidden: false,
+    }
+
+    await expect(repository.create(issuanceScenario)).rejects.toThrowError(`No asset found for id: ${unknownBannerImageId}`)
   })
 
   it('Should throw error when saving scenario with duplicate step order', async (): Promise<void> => {
@@ -631,6 +746,7 @@ describe('Database scenario repository tests', (): void => {
         },
       ],
       personas: [persona1.id],
+      hidden: false,
     }
 
     await expect(repository.create(issuanceScenario)).rejects.toThrowError(
@@ -687,6 +803,7 @@ describe('Database scenario repository tests', (): void => {
         },
       ],
       personas: [unknownPersonaId],
+      hidden: false,
     }
 
     await expect(repository.create(issuanceScenario)).rejects.toThrowError(`No persona found for id: ${unknownPersonaId}`)
@@ -740,6 +857,7 @@ describe('Database scenario repository tests', (): void => {
         },
       ],
       personas: [],
+      hidden: false,
     }
 
     await expect(repository.create(issuanceScenario)).rejects.toThrowError(`At least one persona is required`)
@@ -833,6 +951,7 @@ describe('Database scenario repository tests', (): void => {
         },
       ],
       personas: [persona1.id, persona2.id],
+      hidden: false,
     }
 
     const savedIssuanceScenario = await repository.create(issuanceScenario)
@@ -843,6 +962,7 @@ describe('Database scenario repository tests', (): void => {
     expect(fromDb).toBeDefined()
     expect(fromDb.name).toEqual(issuanceScenario.name)
     expect(fromDb.description).toEqual(issuanceScenario.description)
+    expect(fromDb.hidden).toEqual(issuanceScenario.hidden)
     expect(fromDb.steps).toBeDefined()
     expect(fromDb.steps.length).toEqual(2)
     expect(fromDb.steps[0].actions[0].proofRequest).not.toBeNull()
@@ -969,6 +1089,7 @@ describe('Database scenario repository tests', (): void => {
         },
       ],
       personas: [persona1.id, persona2.id],
+      hidden: false,
     }
 
     const savedIssuanceScenario1 = await repository.create(issuanceScenario)
@@ -1070,6 +1191,7 @@ describe('Database scenario repository tests', (): void => {
         },
       ],
       personas: [persona1.id],
+      hidden: false,
     }
 
     const savedIssuanceScenario = await repository.create(issuanceScenario)
@@ -1168,6 +1290,7 @@ describe('Database scenario repository tests', (): void => {
         },
       ],
       personas: [persona1.id, persona2.id],
+      hidden: true,
     }
 
     const savedIssuanceScenario = await repository.create(issuanceScenario)
@@ -1251,12 +1374,14 @@ describe('Database scenario repository tests', (): void => {
       ],
       issuer: (<IssuanceScenario>savedIssuanceScenario).issuer!.id,
       personas: [persona1.id],
+      bannerImage: null,
     }
     const updatedIssuanceScenarioResult = await repository.update(savedIssuanceScenario.id, updatedIssuanceScenario)
 
     expect(updatedIssuanceScenarioResult).toBeDefined()
     expect(updatedIssuanceScenarioResult.name).toEqual(updatedIssuanceScenario.name)
     expect(updatedIssuanceScenarioResult.description).toEqual(updatedIssuanceScenario.description)
+    expect(updatedIssuanceScenarioResult.hidden).toEqual(updatedIssuanceScenario.hidden)
     expect(updatedIssuanceScenarioResult.steps).toBeDefined()
     expect(updatedIssuanceScenarioResult.steps.length).toEqual(1)
     expect(updatedIssuanceScenarioResult.steps[0].title).toEqual(updatedIssuanceScenario.steps[0].title)
@@ -1396,6 +1521,7 @@ describe('Database scenario repository tests', (): void => {
         },
       ],
       personas: [persona1.id],
+      hidden: false,
     }
 
     const savedIssuanceScenario = await repository.create(issuanceScenario)
@@ -1406,6 +1532,7 @@ describe('Database scenario repository tests', (): void => {
       steps: [],
       issuer: (<IssuanceScenario>savedIssuanceScenario).issuer!.id,
       personas: [persona1.id],
+      bannerImage: null,
     }
 
     await expect(repository.update(savedIssuanceScenario.id, updatedIssuanceScenario)).rejects.toThrowError(`At least one step is required`)
@@ -1500,6 +1627,7 @@ describe('Database scenario repository tests', (): void => {
         },
       ],
       personas: [persona1.id],
+      hidden: false,
     }
 
     const savedIssuanceScenario = await repository.create(issuanceScenario)
@@ -1551,6 +1679,7 @@ describe('Database scenario repository tests', (): void => {
       ],
       issuer: unknownIssuerId,
       personas: [persona1.id],
+      bannerImage: null,
     }
 
     await expect(repository.update(savedIssuanceScenario.id, updatedIssuanceScenario)).rejects.toThrowError(
@@ -1558,8 +1687,157 @@ describe('Database scenario repository tests', (): void => {
     )
   })
 
-  it('Should throw error when updating scenario with invalid persona id', async (): Promise<void> => {
-    const unknownPersonaId = 'a197e5b2-e4e5-4788-83b1-ecaa0e99ed3a'
+  it('Should throw error when updating scenario with invalid issuer id', async (): Promise<void> => {
+    const unknownIssuerId = 'a197e5b2-e4e5-4788-83b1-ecaa0e99ed3a'
+    const issuanceScenario: NewIssuanceScenario = {
+      name: 'example_name',
+      description: 'example_description',
+      issuer: issuer.id,
+      steps: [
+        {
+          title: 'example_title',
+          description: 'example_description',
+          order: 1,
+          type: StepType.HUMAN_TASK,
+          asset: asset.id,
+          actions: [
+            {
+              title: 'example_title',
+              actionType: StepActionType.ARIES_OOB,
+              text: 'example_text',
+              proofRequest: {
+                attributes: {
+                  attribute1: {
+                    attributes: ['attribute1', 'attribute2'],
+                    restrictions: ['restriction1', 'restriction2'],
+                  },
+                  attribute2: {
+                    attributes: ['attribute1', 'attribute2'],
+                    restrictions: ['restriction1', 'restriction2'],
+                  },
+                },
+                predicates: {
+                  predicate1: {
+                    name: 'example_name',
+                    type: 'example_type',
+                    value: 'example_value',
+                    restrictions: ['restriction1', 'restriction2'],
+                  },
+                  predicate2: {
+                    name: 'example_name',
+                    type: 'example_type',
+                    value: 'example_value',
+                    restrictions: ['restriction1', 'restriction2'],
+                  },
+                },
+              },
+            },
+          ],
+        },
+        {
+          title: 'example_title',
+          description: 'example_description',
+          order: 2,
+          type: StepType.HUMAN_TASK,
+          asset: asset.id,
+          actions: [
+            {
+              title: 'example_title',
+              actionType: StepActionType.ARIES_OOB,
+              text: 'example_text',
+              proofRequest: {
+                attributes: {
+                  attribute1: {
+                    attributes: ['attribute1', 'attribute2'],
+                    restrictions: ['restriction1', 'restriction2'],
+                  },
+                  attribute2: {
+                    attributes: ['attribute1', 'attribute2'],
+                    restrictions: ['restriction1', 'restriction2'],
+                  },
+                },
+                predicates: {
+                  predicate1: {
+                    name: 'example_name',
+                    type: 'example_type',
+                    value: 'example_value',
+                    restrictions: ['restriction1', 'restriction2'],
+                  },
+                  predicate2: {
+                    name: 'example_name',
+                    type: 'example_type',
+                    value: 'example_value',
+                    restrictions: ['restriction1', 'restriction2'],
+                  },
+                },
+              },
+            },
+          ],
+        },
+      ],
+      personas: [persona1.id],
+      hidden: false,
+    }
+
+    const savedIssuanceScenario = await repository.create(issuanceScenario)
+    expect(savedIssuanceScenario).toBeDefined()
+
+    const updatedIssuanceScenario: NewIssuanceScenario = {
+      ...savedIssuanceScenario,
+      steps: [
+        {
+          title: 'example_title',
+          description: 'example_description',
+          order: 1,
+          type: StepType.HUMAN_TASK,
+          asset: asset.id,
+          actions: [
+            {
+              title: 'example_title',
+              actionType: StepActionType.ARIES_OOB,
+              text: 'example_text',
+              proofRequest: {
+                attributes: {
+                  attribute1: {
+                    attributes: ['attribute1', 'attribute2'],
+                    restrictions: ['restriction1', 'restriction2'],
+                  },
+                  attribute2: {
+                    attributes: ['attribute1', 'attribute2'],
+                    restrictions: ['restriction1', 'restriction2'],
+                  },
+                },
+                predicates: {
+                  predicate1: {
+                    name: 'example_name',
+                    type: 'example_type',
+                    value: 'example_value',
+                    restrictions: ['restriction1', 'restriction2'],
+                  },
+                  predicate2: {
+                    name: 'example_name',
+                    type: 'example_type',
+                    value: 'example_value',
+                    restrictions: ['restriction1', 'restriction2'],
+                  },
+                },
+              },
+            },
+          ],
+        },
+      ],
+      issuer: unknownIssuerId,
+      personas: [persona1.id],
+      bannerImage: null,
+    }
+
+    await expect(repository.update(savedIssuanceScenario.id, updatedIssuanceScenario)).rejects.toThrowError(
+      `No issuer found for id: ${unknownIssuerId}`,
+    )
+  })
+
+  it('Should throw error when updating scenario with invalid banner image id', async (): Promise<void> => {
+    const unknownBannerImageId = 'a197e5b2-e4e5-4788-83b1-ecaa0e99ed3a'
     const issuanceScenario: NewIssuanceScenario = {
       name: 'example_name',
       description: 'example_description',
@@ -1607,6 +1885,7 @@ describe('Database scenario repository tests', (): void => {
         },
       ],
       personas: [persona1.id],
+      hidden: false,
     }
 
     const savedIssuanceScenario = await repository.create(issuanceScenario)
@@ -1657,11 +1936,12 @@ describe('Database scenario repository tests', (): void => {
         },
       ],
       issuer: issuer.id,
-      personas: [unknownPersonaId],
+      personas: [persona1.id],
+      bannerImage: unknownBannerImageId,
     }
 
     await expect(repository.update(savedIssuanceScenario.id, updatedIssuanceScenario)).rejects.toThrowError(
-      `No persona found for id: ${unknownPersonaId}`,
+      `No asset found for id: ${unknownBannerImageId}`,
     )
   })
 
@@ -1713,6 +1993,7 @@ describe('Database scenario repository tests', (): void => {
         },
       ],
       personas: [persona1.id],
+      hidden: false,
     }
 
     const savedIssuanceScenario = await repository.create(issuanceScenario)
@@ -1764,6 +2045,7 @@ describe('Database scenario repository tests', (): void => {
       ],
       issuer: (<IssuanceScenario>savedIssuanceScenario).issuer!.id,
       personas: [],
+      bannerImage: null,
     }
 
     await expect(repository.update(savedIssuanceScenario.id, updatedIssuanceScenario)).rejects.toThrowError(`At least one persona is required`)
@@ -1817,6 +2099,7 @@ describe('Database scenario repository tests', (): void => {
         },
       ],
       personas: [persona1.id],
+      hidden: false,
     }
 
     const savedIssuanceScenario = await repository.create(issuanceScenario)
@@ -1981,6 +2264,7 @@ describe('Database scenario repository tests', (): void => {
         },
       ],
       personas: [persona1.id],
+      hidden: false,
     }
 
     const savedIssuanceScenario = await repository.create(issuanceScenario)
@@ -2077,6 +2361,7 @@ describe('Database scenario repository tests', (): void => {
         },
       ],
       personas: [persona1.id],
+      hidden: false,
     }
 
     const savedIssuanceScenario = await repository.create(issuanceScenario)
@@ -2206,6 +2491,7 @@ describe('Database scenario repository tests', (): void => {
         },
       ],
       personas: [persona1.id],
+      hidden: false,
     }
 
     const savedIssuanceScenario = await repository.create(issuanceScenario)
@@ -2319,6 +2605,7 @@ describe('Database scenario repository tests', (): void => {
         },
       ],
       personas: [persona1.id],
+      hidden: false,
     }
 
     const savedIssuanceScenario = await repository.create(issuanceScenario)
@@ -2381,6 +2668,7 @@ describe('Database scenario repository tests', (): void => {
         },
       ],
       personas: [persona1.id],
+      hidden: false,
     }
 
     const savedIssuanceScenario = await repository.create(issuanceScenario)
@@ -2538,6 +2826,7 @@ describe('Database scenario repository tests', (): void => {
         },
       ],
       personas: [persona1.id],
+      hidden: false,
     }
 
     const savedIssuanceScenario = await repository.create(issuanceScenario)
@@ -2602,6 +2891,7 @@ describe('Database scenario repository tests', (): void => {
         },
       ],
       personas: [persona1.id],
+      hidden: false,
     }
 
     const savedIssuanceScenario = await repository.create(issuanceScenario)
@@ -2719,6 +3009,7 @@ describe('Database scenario repository tests', (): void => {
         },
       ],
       personas: [persona1.id],
+      hidden: false,
     }
 
     const savedIssuanceScenario = await repository.create(issuanceScenario)
@@ -2826,6 +3117,7 @@ describe('Database scenario repository tests', (): void => {
         },
       ],
       personas: [persona1.id],
+      hidden: false,
     }
 
     const savedIssuanceScenario = await repository.create(issuanceScenario)
@@ -2920,6 +3212,7 @@ describe('Database scenario repository tests', (): void => {
         },
       ],
       personas: [persona1.id],
+      hidden: false,
     }
 
     const savedIssuanceScenario = await repository.create(issuanceScenario)
@@ -2982,6 +3275,7 @@ describe('Database scenario repository tests', (): void => {
         },
       ],
       personas: [persona1.id],
+      hidden: false,
     }
 
     const savedIssuanceScenario = await repository.create(issuanceScenario)

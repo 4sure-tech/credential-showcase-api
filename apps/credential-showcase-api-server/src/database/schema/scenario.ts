@@ -31,7 +31,7 @@ export const scenarios = pgTable(
       sql`
             (scenario_type = 'PRESENTATION' AND relying_party IS NOT NULL) OR
             (scenario_type = 'ISSUANCE' AND issuer IS NOT NULL)
-        `,
+    `,
     ),
   ],
 )

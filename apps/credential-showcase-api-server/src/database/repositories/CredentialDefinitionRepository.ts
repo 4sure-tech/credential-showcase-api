@@ -23,14 +23,7 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
       const [credentialDefinitionResult] = await tx
         .insert(credentialDefinitions)
         .values({
-          name: credentialDefinition.name,
-          version: credentialDefinition.version,
-          //          issuerId: credentialDefinition.issuerId,
-          identifierType: credentialDefinition.identifierType,
-          identifier: credentialDefinition.identifier,
-          credentialSchemaId: credentialDefinition.credentialSchemaId,
-          icon: iconResult.id,
-          type: credentialDefinition.type,
+          ...credentialDefinition,
         })
         .returning()
 
@@ -76,10 +69,7 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
       const [credentialDefinitionResult] = await tx
         .update(credentialDefinitions)
         .set({
-          name: credentialDefinition.name,
-          type: credentialDefinition.type,
-          version: credentialDefinition.version,
-          icon: credentialDefinition.icon,
+          ...credentialDefinition,
         })
         .where(eq(credentialDefinitions.id, id))
         .returning()

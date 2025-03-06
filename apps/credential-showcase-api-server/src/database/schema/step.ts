@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm'
-import { pgTable, integer, text, uuid, unique } from 'drizzle-orm/pg-core'
+import { pgTable, integer, text, timestamp, uuid, unique } from 'drizzle-orm/pg-core'
 import { StepTypePg } from './stepType'
 import { scenarios } from './scenario'
 import { stepActions } from './stepAction'
@@ -19,6 +19,11 @@ export const steps = pgTable(
       .references(() => scenarios.id, { onDelete: 'cascade' })
       .notNull(),
     asset: uuid().references(() => assets.id),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at')
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
   },
   (table) => {
     return {

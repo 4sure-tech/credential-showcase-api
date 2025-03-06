@@ -5,7 +5,6 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "postinstall": "mvn clean generate-sources",
     "dev": "tsc --watch",
     "build": "tsc",
     "build:clean": "tsc --build --clean && tsc --build"

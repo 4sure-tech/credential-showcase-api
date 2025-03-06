@@ -13,7 +13,8 @@
     "prettier": "prettier --write \"{packages,apps,__tests__,!dist}/**/*.{ts,js,json,md}\"",
     "prettier:check": "prettier --check \"{packages,apps,__tests__,!dist}/**/*.{ts,js,json,md}\"",
     "test:ci": "jest --config=jest.json",
-    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --verbose --config=jest.json --coverage=true --detectOpenHandles"
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --verbose --config=jest.json --coverage=true --detectOpenHandles",
+    "db:migrate": "turbo run db:migrate"
   },
   "publishConfig": {
     "access": "public"

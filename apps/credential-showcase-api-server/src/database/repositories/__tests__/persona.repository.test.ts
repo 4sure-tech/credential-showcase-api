@@ -47,6 +47,7 @@ describe('Database persona repository tests', (): void => {
       description: 'Experienced developer',
       headshotImage: asset.id,
       bodyImage: asset.id,
+      hidden: true,
     }
 
     const savedPersona = await personaRepository.create(persona)
@@ -55,6 +56,7 @@ describe('Database persona repository tests', (): void => {
     expect(savedPersona.name).toEqual(persona.name)
     expect(savedPersona.role).toEqual(persona.role)
     expect(savedPersona.description).toEqual(persona.description)
+    expect(savedPersona.hidden).toEqual(persona.hidden)
     expect(savedPersona.headshotImage).toBeDefined()
     expect(savedPersona.headshotImage!.id).toBeDefined()
     expect(savedPersona.headshotImage!.mediaType).toEqual(asset.mediaType)
@@ -74,6 +76,7 @@ describe('Database persona repository tests', (): void => {
       name: 'John Doe',
       role: 'Software Engineer',
       description: 'Experienced developer',
+      hidden: false,
     }
 
     const savedPersona = await personaRepository.create(persona)
@@ -93,6 +96,7 @@ describe('Database persona repository tests', (): void => {
       role: 'Software Engineer',
       description: 'Experienced developer',
       headshotImage: unknownImageId,
+      hidden: false,
     }
 
     await expect(personaRepository.create(persona)).rejects.toThrowError(`No asset found for id: ${unknownImageId}`)
@@ -105,6 +109,7 @@ describe('Database persona repository tests', (): void => {
       role: 'Software Engineer',
       description: 'Experienced developer',
       bodyImage: unknownImageId,
+      hidden: false,
     }
 
     await expect(personaRepository.create(persona)).rejects.toThrowError(`No asset found for id: ${unknownImageId}`)
@@ -117,6 +122,7 @@ describe('Database persona repository tests', (): void => {
       description: 'Experienced developer',
       headshotImage: asset.id,
       bodyImage: asset.id,
+      hidden: false,
     }
 
     const savedPersona = await personaRepository.create(persona)
@@ -149,6 +155,7 @@ describe('Database persona repository tests', (): void => {
       description: 'Experienced developer',
       headshotImage: asset.id,
       bodyImage: asset.id,
+      hidden: false,
     }
 
     const savedPersona1 = await personaRepository.create(persona)
@@ -169,6 +176,7 @@ describe('Database persona repository tests', (): void => {
       description: 'Experienced developer',
       headshotImage: asset.id,
       bodyImage: asset.id,
+      hidden: false,
     }
 
     const savedPersona = await personaRepository.create(persona)
@@ -186,6 +194,7 @@ describe('Database persona repository tests', (): void => {
       description: 'Experienced developer',
       headshotImage: asset.id,
       bodyImage: asset.id,
+      hidden: true,
     }
 
     const savedPersona = await personaRepository.create(persona)
@@ -203,6 +212,7 @@ describe('Database persona repository tests', (): void => {
     expect(updatedPersona.name).toEqual(newName)
     expect(updatedPersona.role).toEqual(persona.role)
     expect(updatedPersona.description).toEqual(persona.description)
+    expect(updatedPersona.hidden).toEqual(persona.hidden)
     expect(updatedPersona.headshotImage).toBeDefined()
     expect(updatedPersona.headshotImage!.id).toBeDefined()
     expect(updatedPersona.headshotImage!.mediaType).toEqual(asset.mediaType)
@@ -225,6 +235,7 @@ describe('Database persona repository tests', (): void => {
       description: 'Experienced developer',
       headshotImage: asset.id,
       bodyImage: asset.id,
+      hidden: false,
     }
 
     const savedPersona = await personaRepository.create(persona)
@@ -247,6 +258,7 @@ describe('Database persona repository tests', (): void => {
       description: 'Experienced developer',
       headshotImage: asset.id,
       bodyImage: asset.id,
+      hidden: false,
     }
 
     const savedPersona = await personaRepository.create(persona)
