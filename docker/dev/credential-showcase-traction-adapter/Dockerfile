@@ -8,8 +8,11 @@ RUN npm -g install pnpm && pnpm setup && source /root/.bashrc && pnpm self-updat
 
 WORKDIR /build
 COPY . /build
-RUN rm -rf $(pnpm store path) && pnpm install -g rimraf typescript tslib turbo
-RUN pnpm install
+#RUN rm -rf $(pnpm store path) && pnpm install -g rimraf typescript tslib turbo
+RUN pnpm install --no-frozen-lockfile
+RUN pnpm store prune && pnpm install -g rimraf typescript tslib turbo
+#RUN pnpm install
+#RUN pnpm install --no-frozen-lockfile
 RUN pnpm build
 RUN pnpm deploy /deploy --filter credential-showcase-traction-adapter --prod
 
