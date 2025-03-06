@@ -1099,37 +1099,6 @@ paths:
       responses:
         '204':
           description: Deleted
-  /credential-definitions/{definitionId}/representations:
-    parameters:
-      - name: definitionId
-        in: path
-        required: true
-        schema:
-          type: string
-    get:
-      tags:
-        - Credential Definitions
-      summary: List credential representations
-      operationId: listCredentialRepresentations
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  oneOf:
-                    - $ref: '#/components/schemas/CredentialRepresentation'
-                    - $ref: '#/components/schemas/OCARepresentation'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
 
   /personas:
     get:
@@ -2424,7 +2393,8 @@ components:
         - type
         - icon
         - attributes
-        - representations
+        # TODO enable back in SHOWCASE-81
+        # - representations
       properties:
         id:
           type: string

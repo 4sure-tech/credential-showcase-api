@@ -1,15 +1,16 @@
 import 'reflect-metadata';
-import {PGlite} from '@electric-sql/pglite';
-import {drizzle} from 'drizzle-orm/pglite';
-import {NodePgDatabase} from 'drizzle-orm/node-postgres';
-import {migrate} from 'drizzle-orm/node-postgres/migrator';
-import {Container} from 'typedi';
+import { PGlite } from '@electric-sql/pglite';
+import { drizzle } from 'drizzle-orm/pglite';
+import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { migrate } from 'drizzle-orm/node-postgres/migrator';
+import { Container } from 'typedi';
 import DatabaseService from '../../../services/DatabaseService';
 import ScenarioRepository from '../../../database/repositories/ScenarioRepository';
 import IssuerRepository from '../../../database/repositories/IssuerRepository';
 import CredentialDefinitionRepository from '../../../database/repositories/CredentialDefinitionRepository';
 import AssetRepository from '../../../database/repositories/AssetRepository';
 import PersonaRepository from '../PersonaRepository';
+import RelyingPartyRepository from '../RelyingPartyRepository';
 import * as schema from '../../../database/schema';
 import {
     Asset,
@@ -35,7 +36,6 @@ import {
     StepType,
     ScenarioType
 } from '../../../types';
-import RelyingPartyRepository from '../RelyingPartyRepository';
 
 describe('Database scenario repository tests', (): void => {
     let client: PGlite;
@@ -83,14 +83,14 @@ describe('Database scenario repository tests', (): void => {
                     type: CredentialAttributeType.STRING
                 }
             ],
-            representations: [
-                { // TODO SHOWCASE-81 OCARepresentation
-
-                },
-                { // TODO SHOWCASE-81 OCARepresentation
-
-                }
-            ],
+            // representations: [
+            //     { // TODO SHOWCASE-81 OCARepresentation
+            //
+            //     },
+            //     { // TODO SHOWCASE-81 OCARepresentation
+            //
+            //     }
+            // ],
             revocation: { // TODO SHOWCASE-80 AnonCredRevocation
                 title: 'example_revocation_title',
                 description: 'example_revocation_description'
