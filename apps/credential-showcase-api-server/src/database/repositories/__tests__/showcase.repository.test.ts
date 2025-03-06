@@ -16,11 +16,11 @@ import {
     CredentialAttributeType,
     CredentialDefinition,
     CredentialType,
-    IssuanceFlow,
+    IssuanceScenario,
     IssuerType,
     NewAsset,
     NewCredentialDefinition,
-    NewIssuanceFlow,
+    NewIssuanceScenario,
     NewIssuer,
     NewPersona,
     NewShowcase,
@@ -35,8 +35,8 @@ describe('Database showcase repository tests', (): void => {
     let repository: ShowcaseRepository;
     let persona1: Persona
     let persona2: Persona
-    let issuanceFlow1: IssuanceFlow
-    let issuanceFlow2: IssuanceFlow
+    let issuanceScenario1: IssuanceScenario
+    let issuanceScenario2: IssuanceScenario
     let credentialDefinition1: CredentialDefinition
     let credentialDefinition2: CredentialDefinition
 
@@ -111,7 +111,7 @@ describe('Database showcase repository tests', (): void => {
         persona1 = await personaRepository.create(newPersona);
         persona2 = await personaRepository.create(newPersona);
         const scenarioRepository = Container.get(ScenarioRepository);
-        const newIssuanceFlow: NewIssuanceFlow = {
+        const newIssuanceScenario: NewIssuanceScenario = {
             name: 'example_name',
             description: 'example_description',
             issuer: issuer.id,
@@ -199,8 +199,8 @@ describe('Database showcase repository tests', (): void => {
             ],
             personas: [persona1.id, persona2.id]
         };
-        issuanceFlow1 = await scenarioRepository.create(newIssuanceFlow)
-        issuanceFlow2 = await scenarioRepository.create(newIssuanceFlow)
+        issuanceScenario1 = await scenarioRepository.create(newIssuanceScenario)
+        issuanceScenario2 = await scenarioRepository.create(newIssuanceScenario)
     })
 
     afterEach(async (): Promise<void> => {
@@ -215,7 +215,7 @@ describe('Database showcase repository tests', (): void => {
             description: 'example_description',
             status: ShowcaseStatus.ACTIVE,
             hidden: false,
-            scenarios: [issuanceFlow1.id, issuanceFlow2.id],
+            scenarios: [issuanceScenario1.id, issuanceScenario2.id],
             credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
             personas: [persona1.id, persona2.id]
         };
@@ -238,7 +238,7 @@ describe('Database showcase repository tests', (): void => {
             description: 'example_description',
             status: ShowcaseStatus.ACTIVE,
             hidden: false,
-            scenarios: [issuanceFlow1.id, issuanceFlow2.id],
+            scenarios: [issuanceScenario1.id, issuanceScenario2.id],
             credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
             personas: []
         };
@@ -252,7 +252,7 @@ describe('Database showcase repository tests', (): void => {
             description: 'example_description',
             status: ShowcaseStatus.ACTIVE,
             hidden: false,
-            scenarios: [issuanceFlow1.id, issuanceFlow2.id],
+            scenarios: [issuanceScenario1.id, issuanceScenario2.id],
             credentialDefinitions: [],
             personas: [persona1.id, persona2.id]
         };
@@ -260,7 +260,7 @@ describe('Database showcase repository tests', (): void => {
         await expect(repository.create(showcase)).rejects.toThrowError(`At least one credential definition is required`)
     })
 
-    it('Should throw error when saving showcase with no workflows', async (): Promise<void> => {
+    it('Should throw error when saving showcase with no scenarios', async (): Promise<void> => {
         const showcase: NewShowcase = {
             name: 'example_name',
             description: 'example_description',
@@ -281,7 +281,7 @@ describe('Database showcase repository tests', (): void => {
             description: 'example_description',
             status: ShowcaseStatus.ACTIVE,
             hidden: false,
-            scenarios: [issuanceFlow1.id, issuanceFlow2.id],
+            scenarios: [issuanceScenario1.id, issuanceScenario2.id],
             credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
             personas: [unknownPersonaId]
         };
@@ -296,7 +296,7 @@ describe('Database showcase repository tests', (): void => {
             description: 'example_description',
             status: ShowcaseStatus.ACTIVE,
             hidden: false,
-            scenarios: [issuanceFlow1.id, issuanceFlow2.id],
+            scenarios: [issuanceScenario1.id, issuanceScenario2.id],
             credentialDefinitions: [unknownCredentialDefinitionId],
             personas: [persona1.id, persona2.id]
         };
@@ -325,7 +325,7 @@ describe('Database showcase repository tests', (): void => {
             description: 'example_description',
             status: ShowcaseStatus.ACTIVE,
             hidden: false,
-            scenarios: [issuanceFlow1.id, issuanceFlow2.id],
+            scenarios: [issuanceScenario1.id, issuanceScenario2.id],
             credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
             personas: [persona1.id, persona2.id]
         };
@@ -351,7 +351,7 @@ describe('Database showcase repository tests', (): void => {
             description: 'example_description',
             status: ShowcaseStatus.ACTIVE,
             hidden: false,
-            scenarios: [issuanceFlow1.id, issuanceFlow2.id],
+            scenarios: [issuanceScenario1.id, issuanceScenario2.id],
             credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
             personas: [persona1.id, persona2.id]
         };
@@ -374,7 +374,7 @@ describe('Database showcase repository tests', (): void => {
             description: 'example_description',
             status: ShowcaseStatus.ACTIVE,
             hidden: false,
-            scenarios: [issuanceFlow1.id, issuanceFlow2.id],
+            scenarios: [issuanceScenario1.id, issuanceScenario2.id],
             credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
             personas: [persona1.id, persona2.id]
         };
@@ -393,7 +393,7 @@ describe('Database showcase repository tests', (): void => {
             description: 'example_description',
             status: ShowcaseStatus.ACTIVE,
             hidden: false,
-            scenarios: [issuanceFlow1.id, issuanceFlow2.id],
+            scenarios: [issuanceScenario1.id, issuanceScenario2.id],
             credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
             personas: [persona1.id, persona2.id]
         };
@@ -404,7 +404,7 @@ describe('Database showcase repository tests', (): void => {
         const updatedShowcase = await repository.update(savedShowcase.id, {
             ...savedShowcase,
             name: newName,
-            scenarios: [issuanceFlow1.id, issuanceFlow2.id],
+            scenarios: [issuanceScenario1.id, issuanceScenario2.id],
             credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
             personas: [persona1.id, persona2.id]
         })
@@ -425,7 +425,7 @@ describe('Database showcase repository tests', (): void => {
             description: 'example_description',
             status: ShowcaseStatus.ACTIVE,
             hidden: false,
-            scenarios: [issuanceFlow1.id, issuanceFlow2.id],
+            scenarios: [issuanceScenario1.id, issuanceScenario2.id],
             credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
             personas: [persona1.id, persona2.id]
         };
@@ -434,7 +434,7 @@ describe('Database showcase repository tests', (): void => {
 
         const updatedShowcase: NewShowcase = {
             ...savedShowcase,
-            scenarios: [issuanceFlow1.id, issuanceFlow2.id],
+            scenarios: [issuanceScenario1.id, issuanceScenario2.id],
             credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
             personas: []
         }
@@ -448,7 +448,7 @@ describe('Database showcase repository tests', (): void => {
             description: 'example_description',
             status: ShowcaseStatus.ACTIVE,
             hidden: false,
-            scenarios: [issuanceFlow1.id, issuanceFlow2.id],
+            scenarios: [issuanceScenario1.id, issuanceScenario2.id],
             credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
             personas: [persona1.id, persona2.id]
         };
@@ -457,7 +457,7 @@ describe('Database showcase repository tests', (): void => {
 
         const updatedShowcase: NewShowcase = {
             ...savedShowcase,
-            scenarios: [issuanceFlow1.id, issuanceFlow2.id],
+            scenarios: [issuanceScenario1.id, issuanceScenario2.id],
             credentialDefinitions: [],
             personas: [persona1.id, persona2.id]
         }
@@ -465,13 +465,13 @@ describe('Database showcase repository tests', (): void => {
         await expect(repository.update(savedShowcase.id, updatedShowcase)).rejects.toThrowError(`At least one credential definition is required`)
     })
 
-    it('Should throw error when updating showcase with no workflows', async (): Promise<void> => {
+    it('Should throw error when updating showcase with no scenarios', async (): Promise<void> => {
         const showcase: NewShowcase = {
             name: 'example_name',
             description: 'example_description',
             status: ShowcaseStatus.ACTIVE,
             hidden: false,
-            scenarios: [issuanceFlow1.id, issuanceFlow2.id],
+            scenarios: [issuanceScenario1.id, issuanceScenario2.id],
             credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
             personas: [persona1.id, persona2.id]
         };
@@ -495,7 +495,7 @@ describe('Database showcase repository tests', (): void => {
             description: 'example_description',
             status: ShowcaseStatus.ACTIVE,
             hidden: false,
-            scenarios: [issuanceFlow1.id, issuanceFlow2.id],
+            scenarios: [issuanceScenario1.id, issuanceScenario2.id],
             credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
             personas: [persona1.id, persona2.id]
         };
@@ -504,7 +504,7 @@ describe('Database showcase repository tests', (): void => {
 
         const updatedShowcase: NewShowcase = {
             ...savedShowcase,
-            scenarios: [issuanceFlow1.id, issuanceFlow2.id],
+            scenarios: [issuanceScenario1.id, issuanceScenario2.id],
             credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
             personas: [unknownPersonaId]
         }
@@ -519,7 +519,7 @@ describe('Database showcase repository tests', (): void => {
             description: 'example_description',
             status: ShowcaseStatus.ACTIVE,
             hidden: false,
-            scenarios: [issuanceFlow1.id, issuanceFlow2.id],
+            scenarios: [issuanceScenario1.id, issuanceScenario2.id],
             credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
             personas: [persona1.id, persona2.id]
         };
@@ -528,7 +528,7 @@ describe('Database showcase repository tests', (): void => {
 
         const updatedShowcase: NewShowcase = {
             ...savedShowcase,
-            scenarios: [issuanceFlow1.id, issuanceFlow2.id],
+            scenarios: [issuanceScenario1.id, issuanceScenario2.id],
             credentialDefinitions: [unknownCredentialDefinitionId],
             personas: [persona1.id, persona2.id]
         }
@@ -543,7 +543,7 @@ describe('Database showcase repository tests', (): void => {
             description: 'example_description',
             status: ShowcaseStatus.ACTIVE,
             hidden: false,
-            scenarios: [issuanceFlow1.id, issuanceFlow2.id],
+            scenarios: [issuanceScenario1.id, issuanceScenario2.id],
             credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
             personas: [persona1.id, persona2.id]
         };

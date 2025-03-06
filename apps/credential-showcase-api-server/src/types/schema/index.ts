@@ -7,7 +7,7 @@ import {
     issuers,
     relyingParties,
     revocationInfo,
-    workflows,
+    scenarios,
     steps,
     stepActions,
     ariesProofRequests,
@@ -96,35 +96,35 @@ export enum IssuerType {
 export enum StepType {
     HUMAN_TASK = 'HUMAN_TASK',
     SERVICE = 'SERVICE',
-    WORKFLOW = 'WORKFLOW',
+    SCENARIO = 'SCENARIO',
 }
 
 export enum StepActionType {
     ARIES_OOB = 'ARIES_OOB',
 }
 
-export enum WorkflowType {
+export enum ScenarioType {
     ISSUANCE = 'ISSUANCE',
     PRESENTATION = 'PRESENTATION',
 }
 
-export type IssuanceFlow = Omit<typeof workflows.$inferSelect, 'relyingParty' | 'issuer'> & {
+export type IssuanceScenario = Omit<typeof scenarios.$inferSelect, 'relyingParty' | 'issuer'> & {
     personas: Persona[]
     steps: Step[]
     issuer?: Issuer | null
 };
-export type NewIssuanceFlow = Omit<typeof workflows.$inferInsert, 'relyingParty' | 'workflowType'> & {
+export type NewIssuanceScenario = Omit<typeof scenarios.$inferInsert, 'relyingParty' | 'scenarioType'> & {
     personas: string[]
     issuer: string
     steps: NewStep[]
 };
 
-export type PresentationFlow = Omit<typeof workflows.$inferSelect, 'relyingParty' | 'issuer'> & {
+export type PresentationScenario = Omit<typeof scenarios.$inferSelect, 'relyingParty' | 'issuer'> & {
     personas: Persona[]
     steps: Step[]
     relyingParty?: RelyingParty | null
 };
-export type NewPresentationFlow = Omit<typeof workflows.$inferInsert, 'issuer' | 'workflowType'> & {
+export type NewPresentationScenario = Omit<typeof scenarios.$inferInsert, 'issuer' | 'scenarioType'> & {
     personas: string[]
     relyingParty: string
     steps: NewStep[]
@@ -134,10 +134,10 @@ export type Step = Omit<typeof steps.$inferSelect, 'asset'> & {
     actions: AriesOOBAction[]
     asset?: Asset | null
 };
-export type NewStep = Omit<typeof steps.$inferInsert, 'workflow'> & {
+export type NewStep = Omit<typeof steps.$inferInsert, 'scenario'> & {
     asset?: string | null
     actions: NewAriesOOBAction[]
-    subFlow?: string | null
+    subScenario?: string | null
 };
 
 export type AriesOOBAction = Omit<typeof stepActions.$inferSelect, 'proofRequest'> & {
@@ -173,8 +173,8 @@ export type NewShowcase = typeof showcases.$inferInsert & {
     personas: string[]
 };
 
-export type Scenario = IssuanceFlow | PresentationFlow
-export type NewScenario = NewIssuanceFlow | NewPresentationFlow
+export type Scenario = IssuanceScenario | PresentationScenario
+export type NewScenario = NewIssuanceScenario | NewPresentationScenario
 
 export enum ShowcaseStatus {
     PENDING = 'PENDING',
