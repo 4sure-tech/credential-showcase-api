@@ -52,6 +52,8 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
             return Promise.reject(Error('At least one persona is required'));
         }
 
+        const bannerImageResult = scenario.bannerImage ? await this.assetRepository.findById(scenario.bannerImage) : null
+
         const personaPromises = scenario.personas.map(async persona => await this.personaRepository.findById(persona))
         await Promise.all(personaPromises)
 
@@ -66,8 +68,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         return (await this.databaseService.getConnection()).transaction(async (tx): Promise<Scenario> => {
             const [scenarioResult] = await tx.insert(scenarios)
                 .values({
-                    name: scenario.name,
-                    description: scenario.description,
+                    ...scenario,
                     ...(isIssuanceScenario(scenario) && {
                         issuer: scenarioPartyResult.id,
                     }),
@@ -147,7 +148,11 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
                 ...(isPresentationScenario(scenario) && {
                     relyingParty: <RelyingParty>scenarioPartyResult,
                 }),
-                personas: personasResult
+                personas: personasResult,
+                createdAt: scenarioResult.createdAt,
+                updatedAt: scenarioResult.updatedAt,
+                hidden: scenarioResult.hidden,
+                bannerImage: bannerImageResult
             }
         })
     }
@@ -167,6 +172,8 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
             return Promise.reject(Error('At least one persona is required'));
         }
 
+        const bannerImageResult = scenario.bannerImage ? await this.assetRepository.findById(scenario.bannerImage) : null
+
         const personaPromises = scenario.personas.map(async persona => await this.personaRepository.findById(persona))
         await Promise.all(personaPromises)
 
@@ -181,8 +188,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         return (await this.databaseService.getConnection()).transaction(async (tx): Promise<Scenario> => {
             const [scenarioResult] = await tx.update(scenarios)
                 .set({
-                    name: scenario.name,
-                    description: scenario.description,
+                    ...scenario,
                     ...(isIssuanceScenario(scenario) && {
                         issuer: scenarioPartyResult.id,
                     }),
@@ -267,7 +273,11 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
                 ...(isPresentationScenario(scenario) && {
                     relyingParty: <RelyingParty>scenarioPartyResult,
                 }),
-                personas: personasResult
+                personas: personasResult,
+                createdAt: scenarioResult.createdAt,
+                updatedAt: scenarioResult.updatedAt,
+                hidden: scenarioResult.hidden,
+                bannerImage: bannerImageResult
             }
         })
     }
@@ -329,7 +339,8 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
                             }
                         }
                     }
-                }
+                },
+                bannerImage: true
             }
         })
 
@@ -414,7 +425,8 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
                             }
                         }
                     }
-                }
+                },
+                bannerImage: true
             }
         });
 

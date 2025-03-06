@@ -29,7 +29,10 @@ class PersonaRepository implements RepositoryDefinition<Persona, NewPersona> {
       return {
         ...result,
         bodyImage: bodyImageResult,
-        headshotImage: headshotImageResult
+        headshotImage: headshotImageResult,
+        createdAt: result.createdAt,
+        updatedAt: result.updatedAt,
+        hidden: result.hidden
       }
   }
 
@@ -58,7 +61,10 @@ class PersonaRepository implements RepositoryDefinition<Persona, NewPersona> {
     return {
       ...result,
       bodyImage: bodyImageResult,
-      headshotImage: headshotImageResult
+      headshotImage: headshotImageResult,
+      createdAt: result.createdAt,
+      updatedAt: result.updatedAt,
+      hidden: result.hidden
     }
   }
 

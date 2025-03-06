@@ -1,11 +1,13 @@
 import { relations } from 'drizzle-orm';
-import { pgTable, primaryKey, uuid } from 'drizzle-orm/pg-core';
+import { pgTable, primaryKey, timestamp, uuid } from 'drizzle-orm/pg-core';
 import { issuers } from './issuer';
 import { credentialDefinitions } from './credentialDefinition';
 
 export const issuersToCredentialDefinitions = pgTable('issuersToCredentialDefinitions', {
         issuer: uuid().references(() => issuers.id, { onDelete: 'cascade' }).notNull(),
         credentialDefinition: uuid('credential_definition').references(() => credentialDefinitions.id, { onDelete: 'cascade' }).notNull(),
+        createdAt: timestamp('created_at').defaultNow().notNull(),
+        updatedAt: timestamp('updated_at').defaultNow().notNull().$onUpdate(() => new Date()),
     },
     (t) => [
         primaryKey({ columns: [t.issuer, t.credentialDefinition] })

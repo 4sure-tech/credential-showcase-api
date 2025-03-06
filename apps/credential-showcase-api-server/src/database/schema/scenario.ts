@@ -1,10 +1,11 @@
 import { relations, sql } from 'drizzle-orm';
-import { check, pgTable, text, uuid } from 'drizzle-orm/pg-core';
+import { check, pgTable, text, timestamp, uuid, boolean } from 'drizzle-orm/pg-core';
 import { steps } from './step';
 import { issuers } from './issuer';
 import { scenariosToPersonas } from './scenariosToPersonas';
 import { relyingParties } from './relyingParty';
 import { ScenarioTypePg } from './scenarioType';
+import { assets } from './asset';
 import { ScenarioType } from '../../types';
 
 export const scenarios = pgTable('scenario', {
@@ -13,14 +14,18 @@ export const scenarios = pgTable('scenario', {
     description: text().notNull(),
     scenarioType: ScenarioTypePg('scenario_type').notNull().$type<ScenarioType>(),
     issuer: uuid().references(() => issuers.id),
+    hidden: boolean().notNull().default(false),
     relyingParty: uuid('relying_party').references(() => relyingParties.id),
+    bannerImage: uuid('banner_image').references(() => assets.id),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull().$onUpdate(() => new Date()),
     },
     () => [
         check('scenario_type_check', sql`
             (scenario_type = 'PRESENTATION' AND relying_party IS NOT NULL) OR
             (scenario_type = 'ISSUANCE' AND issuer IS NOT NULL)
         `)
-    ]
+    ],
 )
 
 export const scenarioRelations = relations(scenarios, ({ one, many }) => ({
@@ -35,5 +40,9 @@ export const scenarioRelations = relations(scenarios, ({ one, many }) => ({
     relyingParty: one(relyingParties, {
         fields: [scenarios.relyingParty],
         references: [relyingParties.id],
+    }),
+    bannerImage: one(assets, {
+        fields: [scenarios.bannerImage],
+        references: [assets.id],
     }),
 }));

@@ -5,10 +5,12 @@
       "outputs": ["dist/**"],
       "dependsOn": ["^build"]
     },
+    "db:migrate": {
+      "dependsOn": ["^db:migrate"]
+    },
     "credential-showcase-api-server#build": {
       "dependsOn": [
-        "^build",
-        "credential-showcase-openapi#build"
+        "^build"
       ],
       "env": [
         "DB_URL"

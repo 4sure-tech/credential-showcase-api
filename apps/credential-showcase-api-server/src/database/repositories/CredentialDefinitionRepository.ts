@@ -25,10 +25,7 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
         return (await this.databaseService.getConnection()).transaction(async (tx): Promise<CredentialDefinition> => {
             const [credentialDefinitionResult] = await tx.insert(credentialDefinitions)
                 .values({
-                    name: credentialDefinition.name,
-                    version: credentialDefinition.version,
-                    icon: iconResult.id,
-                    type: credentialDefinition.type,
+                    ...credentialDefinition,
                 })
                 .returning();
 
@@ -82,10 +79,7 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
         return (await this.databaseService.getConnection()).transaction(async (tx): Promise<CredentialDefinition> => {
             const [credentialDefinitionResult] = await tx.update(credentialDefinitions)
                 .set({
-                    name: credentialDefinition.name,
-                    type: credentialDefinition.type,
-                    version: credentialDefinition.version,
-                    icon: credentialDefinition.icon
+                    ...credentialDefinition
                 })
                 .where(eq(credentialDefinitions.id, id))
                 .returning();

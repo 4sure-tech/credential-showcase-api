@@ -16,6 +16,7 @@ import {
     showcasesToScenarios,
 } from '../schema';
 import { Showcase, NewShowcase, RepositoryDefinition } from '../../types';
+import AssetRepository from './AssetRepository';
 
 @Service()
 class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> {
@@ -23,7 +24,8 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
         private readonly databaseService: DatabaseService,
         private readonly personaRepository: PersonaRepository,
         private readonly credentialDefinitionRepository: CredentialDefinitionRepository,
-        private readonly scenarioRepository: ScenarioRepository
+        private readonly scenarioRepository: ScenarioRepository,
+        private readonly assetRepository: AssetRepository,
     ) {}
 
     async create(showcase: NewShowcase): Promise<Showcase> {
@@ -36,7 +38,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
         if (showcase.scenarios.length === 0) {
             return Promise.reject(Error('At least one scenario is required'));
         }
-
+        const bannerImageResult = showcase.bannerImage ? await this.assetRepository.findById(showcase.bannerImage) : null
         const personaPromises = showcase.personas.map(async persona => await this.personaRepository.findById(persona))
         await Promise.all(personaPromises)
         const credentialDefinitionPromises = showcase.credentialDefinitions.map(async credentialDefinition => await this.credentialDefinitionRepository.findById(credentialDefinition))
@@ -112,7 +114,8 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                                 }
                             }
                         }
-                    }
+                    },
+                    bannerImage: true
                 }
             })
 
@@ -168,7 +171,8 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                     personas: scenario.personas.map(item => item.persona)
                 })),
                 credentialDefinitions: credentialDefinitionsResult,
-                personas: personasResult
+                personas: personasResult,
+                bannerImage: bannerImageResult
             }
         })
     }
@@ -191,6 +195,8 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
         if (showcase.scenarios.length === 0) {
             return Promise.reject(Error('At least one scenario is required'));
         }
+
+        const bannerImageResult = showcase.bannerImage ? await this.assetRepository.findById(showcase.bannerImage) : null
 
         const personaPromises = showcase.personas.map(async persona => await this.personaRepository.findById(persona))
         await Promise.all(personaPromises)
@@ -272,7 +278,8 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                                 }
                             }
                         }
-                    }
+                    },
+                    bannerImage: true
                 }
             })
 
@@ -328,7 +335,8 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                     personas: scenario.personas.map(item => item.persona)
                 })),
                 credentialDefinitions: credentialDefinitionsResult,
-                personas: personasResult
+                personas: personasResult,
+                bannerImage: bannerImageResult
             }
         })
     }
@@ -420,7 +428,8 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                             }
                         }
                     }
-                }
+                },
+                bannerImage: true
             }
         })
 
@@ -538,7 +547,8 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                             }
                         }
                     }
-                }
+                },
+                bannerImage: true
             }
         })
 

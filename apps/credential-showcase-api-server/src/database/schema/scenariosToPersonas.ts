@@ -1,11 +1,13 @@
 import { relations } from 'drizzle-orm';
-import { pgTable, primaryKey, uuid } from 'drizzle-orm/pg-core';
+import { pgTable, primaryKey, timestamp, uuid } from 'drizzle-orm/pg-core';
 import { scenarios } from './scenario';
 import { personas } from './persona';
 
 export const scenariosToPersonas = pgTable('scenariosToPersonas', {
         scenario: uuid().references(() => scenarios.id, { onDelete: 'cascade' }).notNull(),
         persona: uuid().references(() => personas.id, { onDelete: 'cascade' }).notNull(),
+        createdAt: timestamp('created_at').defaultNow().notNull(),
+        updatedAt: timestamp('updated_at').defaultNow().notNull().$onUpdate(() => new Date()),
     },
     (t) => [
         primaryKey({ columns: [t.scenario, t.persona] })

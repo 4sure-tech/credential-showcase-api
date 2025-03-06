@@ -120,6 +120,7 @@ export const personaDTOFrom = (persona: Persona): PersonaDTO => {
         ...persona,
         headshotImage: persona.headshotImage ? assetDTOFrom(persona.headshotImage) : undefined,
         bodyImage: persona.bodyImage ? assetDTOFrom(persona.bodyImage) : undefined,
+        hidden: persona.hidden
     }
 }
 
@@ -129,6 +130,8 @@ export const showcaseDTOFrom = (showcase: Showcase): ShowcaseDTO => {
         personas: showcase.personas.map(persona => personaDTOFrom(persona)),
         credentialDefinitions: showcase.credentialDefinitions.map(credentialsDefinition => credentialDefinitionDTOFrom(credentialsDefinition)),
         scenarios: showcase.scenarios.map(scenario => scenarioDTOFrom(scenario)),
+        bannerImage: showcase.bannerImage ? assetDTOFrom(showcase.bannerImage) : undefined,
+        completionMessage: showcase.completionMessage ? showcase.completionMessage : undefined,
     }
 }
 

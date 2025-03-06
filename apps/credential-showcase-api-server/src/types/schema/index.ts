@@ -24,7 +24,11 @@ export type Persona = Omit<typeof personas.$inferSelect, 'headshotImage' | 'body
     headshotImage: Asset | null
     bodyImage: Asset | null
 };
-export type NewPersona = typeof personas.$inferInsert & { headshotImage?: string | null, bodyImage?: string | null };
+export type NewPersona = typeof personas.$inferInsert & {
+    headshotImage?: string | null
+    bodyImage?: string | null
+    hidden: boolean
+};
 
 export type CredentialDefinition = Omit<typeof credentialDefinitions.$inferSelect, 'icon' | 'type'> & {
     type: CredentialType
@@ -108,26 +112,32 @@ export enum ScenarioType {
     PRESENTATION = 'PRESENTATION',
 }
 
-export type IssuanceScenario = Omit<typeof scenarios.$inferSelect, 'relyingParty' | 'issuer'> & {
+export type IssuanceScenario = Omit<typeof scenarios.$inferSelect, 'relyingParty' | 'issuer' | 'bannerImage'> & {
     personas: Persona[]
     steps: Step[]
     issuer?: Issuer | null
+    bannerImage?: Asset | null
 };
 export type NewIssuanceScenario = Omit<typeof scenarios.$inferInsert, 'relyingParty' | 'scenarioType'> & {
     personas: string[]
     issuer: string
     steps: NewStep[]
+    bannerImage?: string | null
+    hidden: boolean
 };
 
-export type PresentationScenario = Omit<typeof scenarios.$inferSelect, 'relyingParty' | 'issuer'> & {
+export type PresentationScenario = Omit<typeof scenarios.$inferSelect, 'relyingParty' | 'issuer' | 'bannerImage'> & {
     personas: Persona[]
     steps: Step[]
     relyingParty?: RelyingParty | null
+    bannerImage?: Asset | null
 };
 export type NewPresentationScenario = Omit<typeof scenarios.$inferInsert, 'issuer' | 'scenarioType'> & {
     personas: string[]
     relyingParty: string
     steps: NewStep[]
+    bannerImage?: string | null
+    hidden: boolean
 };
 
 export type Step = Omit<typeof steps.$inferSelect, 'asset'> & {
@@ -162,15 +172,19 @@ export type AriesRequestCredentialPredicate = {
 export type AriesProofRequest = typeof ariesProofRequests.$inferSelect;
 export type NewAriesProofRequest = Omit<typeof ariesProofRequests.$inferInsert, 'stepAction'>;
 
-export type Showcase = typeof showcases.$inferSelect & {
+export type Showcase = Omit<typeof showcases.$inferSelect, 'bannerImage'> & {
     scenarios: Scenario[]
     credentialDefinitions: CredentialDefinition[]
     personas: Persona[]
+    bannerImage?: Asset | null
 };
 export type NewShowcase = typeof showcases.$inferInsert & {
     scenarios: string[]
     credentialDefinitions: string[]
     personas: string[]
+    bannerImage?: string | null
+    hidden: boolean
+    completionMessage?: string | null
 };
 
 export type Scenario = IssuanceScenario | PresentationScenario

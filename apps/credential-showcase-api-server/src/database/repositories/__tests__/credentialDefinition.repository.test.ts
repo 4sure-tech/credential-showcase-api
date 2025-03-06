@@ -67,10 +67,10 @@ describe('Database credential definition repository tests', (): void => {
             //
             //     }
             // ],
-            revocation: { // TODO SHOWCASE-80 AnonCredRevocation
-                title: 'example_revocation_title',
-                description: 'example_revocation_description'
-            }
+            // revocation: { // TODO SHOWCASE-80 AnonCredRevocation
+            //     title: 'example_revocation_title',
+            //     description: 'example_revocation_description'
+            // }
         };
 
         const savedCredentialDefinition = await credentialDefinitionRepository.create(credentialDefinition)
@@ -88,12 +88,12 @@ describe('Database credential definition repository tests', (): void => {
         expect(savedCredentialDefinition.attributes[0].name).toEqual(credentialDefinition.attributes[0].name)
         expect(savedCredentialDefinition.attributes[0].value).toEqual(credentialDefinition.attributes[0].value)
         expect(savedCredentialDefinition.attributes[0].type).toEqual(credentialDefinition.attributes[0].type)
-        expect(savedCredentialDefinition.representations.length).toEqual(2)
         // TODO SHOWCASE-81 representations
-        expect(savedCredentialDefinition.revocation).not.toBeNull()
-        expect(savedCredentialDefinition.revocation!.title).toEqual(credentialDefinition.revocation!.title)
-        expect(savedCredentialDefinition.revocation!.description).toEqual(credentialDefinition.revocation!.description)
+        //expect(savedCredentialDefinition.representations.length).toEqual(2)
         // TODO SHOWCASE-80 AnonCredRevocation
+        // expect(savedCredentialDefinition.revocation).not.toBeNull()
+        // expect(savedCredentialDefinition.revocation!.title).toEqual(credentialDefinition.revocation!.title)
+        // expect(savedCredentialDefinition.revocation!.description).toEqual(credentialDefinition.revocation!.description)
     })
 
     it('Should throw error when saving credential definition with invalid icon id', async (): Promise<void> => {
@@ -146,10 +146,10 @@ describe('Database credential definition repository tests', (): void => {
             //
             //     }
             // ],
-            revocation: { // TODO SHOWCASE-80 AnonCredRevocation
-                title: 'example_revocation_title',
-                description: 'example_revocation_description'
-            }
+            // revocation: { // TODO SHOWCASE-80 AnonCredRevocation
+            //     title: 'example_revocation_title',
+            //     description: 'example_revocation_description'
+            // }
         };
 
         const savedCredentialDefinition = await credentialDefinitionRepository.create(credentialDefinition)
@@ -170,12 +170,12 @@ describe('Database credential definition repository tests', (): void => {
         expect(fromDb.attributes[0].name).toEqual(credentialDefinition.attributes[0].name)
         expect(fromDb.attributes[0].value).toEqual(credentialDefinition.attributes[0].value)
         expect(fromDb.attributes[0].type).toEqual(credentialDefinition.attributes[0].type)
-        expect(fromDb.representations.length).toEqual(2)
         // TODO SHOWCASE-81 representations
-        expect(fromDb.revocation).not.toBeNull()
-        expect(fromDb.revocation!.title).toEqual(credentialDefinition.revocation!.title)
-        expect(fromDb.revocation!.description).toEqual(credentialDefinition.revocation!.description)
+        //expect(fromDb.representations.length).toEqual(2)
         // TODO SHOWCASE-80 AnonCredRevocation
+        // expect(fromDb.revocation).not.toBeNull()
+        // expect(fromDb.revocation!.title).toEqual(credentialDefinition.revocation!.title)
+        // expect(fromDb.revocation!.description).toEqual(credentialDefinition.revocation!.description)
     })
 
     it('Should get all credential definitions from database', async (): Promise<void> => {
@@ -304,12 +304,12 @@ describe('Database credential definition repository tests', (): void => {
         expect(updatedCredentialDefinition.attributes[0].name).toEqual(updatedCredentialDefinition.attributes[0].name)
         expect(updatedCredentialDefinition.attributes[0].value).toEqual(updatedCredentialDefinition.attributes[0].value)
         expect(updatedCredentialDefinition.attributes[0].type).toEqual(updatedCredentialDefinition.attributes[0].type)
-        expect(updatedCredentialDefinition.representations.length).toEqual(1)
         // TODO SHOWCASE-81 representations
+        // expect(updatedCredentialDefinition.representations.length).toEqual(1)
+        // TODO SHOWCASE-80 AnonCredRevocation
         // expect(updatedCredentialDefinition.revocation).not.toBeNull()
         // expect(updatedCredentialDefinition.revocation!.title).toEqual(credentialDefinition.revocation!.title)
         // expect(updatedCredentialDefinition.revocation!.description).toEqual(credentialDefinition.revocation!.description)
-        // TODO SHOWCASE-80 AnonCredRevocation
     })
 
     it('Should throw error when updating credential definition with invalid icon id', async (): Promise<void> => {

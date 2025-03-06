@@ -10,6 +10,8 @@ CREATE TABLE "ariesProofRequest" (
 	"attributes" jsonb NOT NULL,
 	"predicates" jsonb NOT NULL,
 	"step_action" uuid NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "ariesProofRequest_step_action_unique" UNIQUE("step_action")
 );
 --> statement-breakpoint
@@ -18,7 +20,9 @@ CREATE TABLE "asset" (
 	"media_type" text NOT NULL,
 	"file_name" text,
 	"description" text,
-	"content" "bytea" NOT NULL
+	"content" "bytea" NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "credentialAttribute" (
@@ -26,7 +30,9 @@ CREATE TABLE "credentialAttribute" (
 	"name" text NOT NULL,
 	"value" text NOT NULL,
 	"type" "CredentialAttributeType" NOT NULL,
-	"credential_definition" uuid NOT NULL
+	"credential_definition" uuid NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "credentialDefinition" (
@@ -34,17 +40,23 @@ CREATE TABLE "credentialDefinition" (
 	"name" text NOT NULL,
 	"version" text NOT NULL,
 	"icon" uuid NOT NULL,
-	"type" "CredentialType" NOT NULL
+	"type" "CredentialType" NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "credentialRepresentation" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"credential_definition" uuid NOT NULL
+	"credential_definition" uuid NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "relyingPartiesToCredentialDefinitions" (
 	"relying_party" uuid NOT NULL,
 	"credential_definition" uuid NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "relyingPartiesToCredentialDefinitions_relying_party_credential_definition_pk" PRIMARY KEY("relying_party","credential_definition")
 );
 --> statement-breakpoint
@@ -54,7 +66,9 @@ CREATE TABLE "relyingParty" (
 	"type" "RelyingPartyType" NOT NULL,
 	"description" text NOT NULL,
 	"organization" text,
-	"logo" uuid
+	"logo" uuid,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "issuer" (
@@ -63,12 +77,16 @@ CREATE TABLE "issuer" (
 	"type" "IssuerType" NOT NULL,
 	"description" text NOT NULL,
 	"organization" text,
-	"logo" uuid
+	"logo" uuid,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "issuersToCredentialDefinitions" (
 	"issuer" uuid NOT NULL,
 	"credential_definition" uuid NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "issuersToCredentialDefinitions_issuer_credential_definition_pk" PRIMARY KEY("issuer","credential_definition")
 );
 --> statement-breakpoint
@@ -81,6 +99,8 @@ CREATE TABLE "step" (
 	"sub_scenario" uuid,
 	"scenario" uuid NOT NULL,
 	"asset" uuid,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "step_order_scenario_unique" UNIQUE("order","scenario")
 );
 --> statement-breakpoint
@@ -89,7 +109,9 @@ CREATE TABLE "stepAction" (
 	"action_type" text NOT NULL,
 	"title" text NOT NULL,
 	"text" text NOT NULL,
-	"step" uuid NOT NULL
+	"step" uuid NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "scenario" (
@@ -98,7 +120,11 @@ CREATE TABLE "scenario" (
 	"description" text NOT NULL,
 	"scenario_type" "ScenarioType" NOT NULL,
 	"issuer" uuid,
+	"hidden" boolean DEFAULT false NOT NULL,
 	"relying_party" uuid,
+	"banner_image" uuid,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "scenario_type_check" CHECK (
             (scenario_type = 'PRESENTATION' AND relying_party IS NOT NULL) OR
             (scenario_type = 'ISSUANCE' AND issuer IS NOT NULL)
@@ -110,6 +136,8 @@ CREATE TABLE "revocationInfo" (
 	"title" text NOT NULL,
 	"description" text NOT NULL,
 	"credential_definition" uuid NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "revocationInfo_credential_definition_unique" UNIQUE("credential_definition")
 );
 --> statement-breakpoint
@@ -119,12 +147,17 @@ CREATE TABLE "persona" (
 	"role" text NOT NULL,
 	"description" text NOT NULL,
 	"headshot_image" uuid,
-	"body_image" uuid
+	"body_image" uuid,
+	"hidden" boolean DEFAULT false NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "scenariosToPersonas" (
 	"scenario" uuid NOT NULL,
 	"persona" uuid NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "scenariosToPersonas_scenario_persona_pk" PRIMARY KEY("scenario","persona")
 );
 --> statement-breakpoint
@@ -132,25 +165,35 @@ CREATE TABLE "showcase" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
 	"description" text NOT NULL,
+	"completionMessage" text,
 	"status" "ShowcaseStatus" NOT NULL,
-	"hidden" boolean NOT NULL
+	"hidden" boolean DEFAULT false NOT NULL,
+	"banner_image" uuid,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "showcasesToCredentialDefinitions" (
 	"showcase" uuid NOT NULL,
 	"credential_definition" uuid NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "showcasesToCredentialDefinitions_showcase_credential_definition_pk" PRIMARY KEY("showcase","credential_definition")
 );
 --> statement-breakpoint
 CREATE TABLE "showcasesToPersonas" (
 	"showcase" uuid NOT NULL,
 	"persona" uuid NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "showcasesToPersonas_showcase_persona_pk" PRIMARY KEY("showcase","persona")
 );
 --> statement-breakpoint
 CREATE TABLE "showcasesToScenarios" (
 	"showcase" uuid NOT NULL,
 	"scenario" uuid NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "showcasesToScenarios_showcase_scenario_pk" PRIMARY KEY("showcase","scenario")
 );
 --> statement-breakpoint
@@ -170,11 +213,13 @@ ALTER TABLE "step" ADD CONSTRAINT "step_asset_asset_id_fk" FOREIGN KEY ("asset")
 ALTER TABLE "stepAction" ADD CONSTRAINT "stepAction_step_step_id_fk" FOREIGN KEY ("step") REFERENCES "public"."step"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "scenario" ADD CONSTRAINT "scenario_issuer_issuer_id_fk" FOREIGN KEY ("issuer") REFERENCES "public"."issuer"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "scenario" ADD CONSTRAINT "scenario_relying_party_relyingParty_id_fk" FOREIGN KEY ("relying_party") REFERENCES "public"."relyingParty"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "scenario" ADD CONSTRAINT "scenario_banner_image_asset_id_fk" FOREIGN KEY ("banner_image") REFERENCES "public"."asset"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "revocationInfo" ADD CONSTRAINT "revocationInfo_credential_definition_credentialDefinition_id_fk" FOREIGN KEY ("credential_definition") REFERENCES "public"."credentialDefinition"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "persona" ADD CONSTRAINT "persona_headshot_image_asset_id_fk" FOREIGN KEY ("headshot_image") REFERENCES "public"."asset"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "persona" ADD CONSTRAINT "persona_body_image_asset_id_fk" FOREIGN KEY ("body_image") REFERENCES "public"."asset"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "scenariosToPersonas" ADD CONSTRAINT "scenariosToPersonas_scenario_scenario_id_fk" FOREIGN KEY ("scenario") REFERENCES "public"."scenario"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "scenariosToPersonas" ADD CONSTRAINT "scenariosToPersonas_persona_persona_id_fk" FOREIGN KEY ("persona") REFERENCES "public"."persona"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "showcase" ADD CONSTRAINT "showcase_banner_image_asset_id_fk" FOREIGN KEY ("banner_image") REFERENCES "public"."asset"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "showcasesToCredentialDefinitions" ADD CONSTRAINT "showcasesToCredentialDefinitions_showcase_showcase_id_fk" FOREIGN KEY ("showcase") REFERENCES "public"."showcase"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "showcasesToCredentialDefinitions" ADD CONSTRAINT "showcasesToCredentialDefinitions_credential_definition_credentialDefinition_id_fk" FOREIGN KEY ("credential_definition") REFERENCES "public"."credentialDefinition"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "showcasesToPersonas" ADD CONSTRAINT "showcasesToPersonas_showcase_showcase_id_fk" FOREIGN KEY ("showcase") REFERENCES "public"."showcase"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
