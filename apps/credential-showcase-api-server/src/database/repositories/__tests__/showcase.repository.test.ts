@@ -13,6 +13,7 @@ import AssetRepository from '../AssetRepository';
 import PersonaRepository from '../PersonaRepository';
 import ScenarioRepository from '../ScenarioRepository';
 import {
+    Asset,
     CredentialAttributeType,
     CredentialDefinition,
     CredentialType,
@@ -39,6 +40,7 @@ describe('Database showcase repository tests', (): void => {
     let issuanceFlow2: IssuanceFlow
     let credentialDefinition1: CredentialDefinition
     let credentialDefinition2: CredentialDefinition
+    let asset: Asset
 
     beforeEach(async (): Promise<void> => {
         client = new PGlite();
@@ -58,7 +60,7 @@ describe('Database showcase repository tests', (): void => {
             description: 'some image',
             content: Buffer.from('some binary data')
         };
-        const asset = await assetRepository.create(newAsset);
+        asset = await assetRepository.create(newAsset);
         const newCredentialDefinition: NewCredentialDefinition = {
             name: 'example_name',
             version: 'example_version',
@@ -217,7 +219,8 @@ describe('Database showcase repository tests', (): void => {
             hidden: false,
             scenarios: [issuanceFlow1.id, issuanceFlow2.id],
             credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
-            personas: [persona1.id, persona2.id]
+            personas: [persona1.id, persona2.id],
+            bannerImage: asset.id
         };
 
         const savedShowcase = await repository.create(showcase)
@@ -230,6 +233,11 @@ describe('Database showcase repository tests', (): void => {
         expect(savedShowcase.scenarios.length).toEqual(2);
         expect(savedShowcase.credentialDefinitions.length).toEqual(2);
         expect(savedShowcase.personas.length).toEqual(2);
+        expect(savedShowcase.bannerImage!.id).toBeDefined()
+        expect(savedShowcase.bannerImage!.mediaType).toEqual(asset.mediaType)
+        expect(savedShowcase.bannerImage!.fileName).toEqual(asset.fileName)
+        expect(savedShowcase.bannerImage!.description).toEqual(asset.description)
+        expect(savedShowcase.bannerImage!.content).toStrictEqual(asset.content);
     })
 
     it('Should throw error when saving showcase with no personas', async (): Promise<void> => {
@@ -302,6 +310,22 @@ describe('Database showcase repository tests', (): void => {
         };
 
         await expect(repository.create(showcase)).rejects.toThrowError(`No credential definition found for id: ${unknownCredentialDefinitionId}`)
+    })
+
+    it('Should throw error when saving showcase with invalid banner image id', async (): Promise<void> => {
+        const unknownBannerImageId = 'a197e5b2-e4e5-4788-83b1-ecaa0e99ed3a'
+        const showcase: NewShowcase = {
+            name: 'example_name',
+            description: 'example_description',
+            status: ShowcaseStatus.ACTIVE,
+            hidden: false,
+            scenarios: [issuanceFlow1.id, issuanceFlow2.id],
+            credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
+            personas: [persona1.id, persona2.id],
+            bannerImage: unknownBannerImageId
+        };
+
+        await expect(repository.create(showcase)).rejects.toThrowError(`No asset found for id: ${unknownBannerImageId}`)
     })
 
     it('Should throw error when saving showcase with invalid scenario id', async (): Promise<void> => {
@@ -401,17 +425,20 @@ describe('Database showcase repository tests', (): void => {
         const savedShowcase = await repository.create(showcase)
 
         const newName = 'new_name'
+        const completionMessage = 'showcase completed'
         const updatedShowcase = await repository.update(savedShowcase.id, {
             ...savedShowcase,
             name: newName,
             scenarios: [issuanceFlow1.id, issuanceFlow2.id],
             credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
             personas: [persona1.id, persona2.id],
-            bannerImage: null
+            bannerImage: null,
+            completionMessage
         })
 
         expect(updatedShowcase).toBeDefined()
         expect(updatedShowcase.name).toEqual(newName)
+        expect(updatedShowcase.completionMessage).toEqual(completionMessage)
         expect(updatedShowcase.description).toEqual(showcase.description)
         expect(updatedShowcase.status).toEqual(showcase.status)
         expect(updatedShowcase.hidden).toEqual(showcase.hidden);
@@ -567,4 +594,28 @@ describe('Database showcase repository tests', (): void => {
         await expect(repository.update(savedShowcase.id, updatedShowcase)).rejects.toThrowError(`No scenario found for id: ${unknownScenarioId}`)
     })
 
+    it('Should throw error when updating showcase with invalid banner image id', async (): Promise<void> => {
+        const unknownBannerImageId = 'a197e5b2-e4e5-4788-83b1-ecaa0e99ed3a'
+        const showcase: NewShowcase = {
+            name: 'example_name',
+            description: 'example_description',
+            status: ShowcaseStatus.ACTIVE,
+            hidden: false,
+            scenarios: [issuanceFlow1.id, issuanceFlow2.id],
+            credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
+            personas: [persona1.id, persona2.id]
+        };
+
+        const savedShowcase = await repository.create(showcase)
+
+        const updatedShowcase: NewShowcase = {
+            ...savedShowcase,
+            scenarios: [issuanceFlow1.id, issuanceFlow2.id],
+            credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
+            personas: [persona1.id, persona2.id],
+            bannerImage: unknownBannerImageId
+        }
+
+        await expect(repository.update(savedShowcase.id, updatedShowcase)).rejects.toThrowError(`No asset found for id: ${unknownBannerImageId}`)
+    })
 })

@@ -108,26 +108,30 @@ export enum WorkflowType {
     PRESENTATION = 'PRESENTATION',
 }
 
-export type IssuanceFlow = Omit<typeof workflows.$inferSelect, 'relyingParty' | 'issuer'> & {
+export type IssuanceFlow = Omit<typeof workflows.$inferSelect, 'relyingParty' | 'issuer' | 'bannerImage'> & {
     personas: Persona[]
     steps: Step[]
     issuer?: Issuer | null
+    bannerImage?: Asset | null
 };
 export type NewIssuanceFlow = Omit<typeof workflows.$inferInsert, 'relyingParty' | 'workflowType'> & {
     personas: string[]
     issuer: string
     steps: NewStep[]
+    bannerImage?: string | null
 };
 
-export type PresentationFlow = Omit<typeof workflows.$inferSelect, 'relyingParty' | 'issuer'> & {
+export type PresentationFlow = Omit<typeof workflows.$inferSelect, 'relyingParty' | 'issuer' | 'bannerImage'> & {
     personas: Persona[]
     steps: Step[]
     relyingParty?: RelyingParty | null
+    bannerImage?: Asset | null
 };
 export type NewPresentationFlow = Omit<typeof workflows.$inferInsert, 'issuer' | 'workflowType'> & {
     personas: string[]
     relyingParty: string
     steps: NewStep[]
+    bannerImage?: string | null
 };
 
 export type Step = Omit<typeof steps.$inferSelect, 'asset'> & {
@@ -166,13 +170,15 @@ export type Showcase = Omit<typeof showcases.$inferSelect, 'bannerImage'> & {
     scenarios: Scenario[]
     credentialDefinitions: CredentialDefinition[]
     personas: Persona[]
-    bannerImage: Asset | null
+    bannerImage?: Asset | null
 };
 export type NewShowcase = typeof showcases.$inferInsert & {
     scenarios: string[]
     credentialDefinitions: string[]
     personas: string[]
     bannerImage?: string | null
+    hidden: boolean
+    completionMessage?: string | null
 };
 
 export type Scenario = IssuanceFlow | PresentationFlow

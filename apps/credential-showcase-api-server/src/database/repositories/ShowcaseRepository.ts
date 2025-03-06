@@ -115,6 +115,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                             }
                         }
                     },
+                    bannerImage: true
                 }
             })
 
@@ -277,7 +278,8 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                                 }
                             }
                         }
-                    }
+                    },
+                    bannerImage: true
                 }
             })
 

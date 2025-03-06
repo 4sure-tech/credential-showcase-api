@@ -15,6 +15,7 @@ classDiagram
         +hidden : Boolean
         +createdAt : DateTime
         +updatedAt : DateTime
+        bannerImage: Asset
         completionMessage : String
     }
     class Scenario {
@@ -25,6 +26,7 @@ classDiagram
         +personas: List~Persona~
         +createdAt : DateTime
         +updatedAt : DateTime
+        bannerImage: Asset
     }
     class IssuanceFlow {
         issuer: Issuer
@@ -171,9 +173,11 @@ classDiagram
     Showcase "1" <|-- "1..*" Scenario: has
     Showcase "1..*" o-- "1..*" Persona
     Showcase "1..*" o-- "1..*" CredentialDefinition : contains
+    Showcase "1" -- "0..*" Asset : references
     Scenario <|-- IssuanceFlow : specialization (onboarding)
     Scenario <|-- PresentationFlow : specialization (scenario)
     Scenario "1" *-- "1..*" Step : contains
+    Scenario "1" -- "0..*" Asset : references
     CredentialAttribute  o-- "1" CredentialAttributeType : of
     CredentialDefinition "1" *-- "1..*" CredentialAttribute : has
     CredentialDefinition "icon" --> Asset

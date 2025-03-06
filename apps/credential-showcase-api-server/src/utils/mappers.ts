@@ -139,6 +139,7 @@ export const showcaseDTOFrom = (showcase: Showcase): ShowcaseDTO => {
         bannerImage: showcase.bannerImage ? assetDTOFrom(showcase.bannerImage) : undefined,
         createdAt: showcase.createdAt.toISOString(),
         updatedAt: showcase.updatedAt.toISOString(),
+        completionMessage: showcase.completionMessage ? showcase.completionMessage : undefined,
     }
 }
 

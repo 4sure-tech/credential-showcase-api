@@ -52,6 +52,8 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
             return Promise.reject(Error('At least one persona is required'));
         }
 
+        const bannerImageResult = scenario.bannerImage ? await this.assetRepository.findById(scenario.bannerImage) : null
+
         const personaPromises = scenario.personas.map(async persona => await this.personaRepository.findById(persona))
         await Promise.all(personaPromises)
 
@@ -151,6 +153,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
                 createdAt: scenarioResult.createdAt,
                 updatedAt: scenarioResult.updatedAt,
                 hidden: scenarioResult.hidden,
+                bannerImage: bannerImageResult
             }
         })
     }
@@ -169,6 +172,8 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         if (scenario.personas.length === 0) {
             return Promise.reject(Error('At least one persona is required'));
         }
+
+        const bannerImageResult = scenario.bannerImage ? await this.assetRepository.findById(scenario.bannerImage) : null
 
         const personaPromises = scenario.personas.map(async persona => await this.personaRepository.findById(persona))
         await Promise.all(personaPromises)
@@ -274,6 +279,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
                 createdAt: scenarioResult.createdAt,
                 updatedAt: scenarioResult.updatedAt,
                 hidden: scenarioResult.hidden,
+                bannerImage: bannerImageResult
             }
         })
     }
@@ -335,7 +341,8 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
                             }
                         }
                     }
-                }
+                },
+                bannerImage: true
             }
         })
 
@@ -420,7 +427,8 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
                             }
                         }
                     }
-                }
+                },
+                bannerImage: true
             }
         });
 

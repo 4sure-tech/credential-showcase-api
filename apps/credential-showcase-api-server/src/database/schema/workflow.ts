@@ -5,6 +5,7 @@ import { issuers } from './issuer';
 import { workflowsToPersonas } from './workflowsToPersonas';
 import { relyingParties } from './relyingParty';
 import { WorkflowTypePg } from './workflowType';
+import { assets } from './asset';
 import { WorkflowType } from '../../types';
 
 export const workflows = pgTable('workflow', {
@@ -15,6 +16,7 @@ export const workflows = pgTable('workflow', {
     issuer: uuid().references(() => issuers.id),
     hidden: boolean().notNull().default(false),
     relyingParty: uuid('relying_party').references(() => relyingParties.id),
+    bannerImage: uuid('banner_image').references(() => assets.id),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull().$onUpdate(() => new Date()),
     },
@@ -38,5 +40,9 @@ export const workflowRelations = relations(workflows, ({ one, many }) => ({
     relyingParty: one(relyingParties, {
         fields: [workflows.relyingParty],
         references: [relyingParties.id],
+    }),
+    bannerImage: one(assets, {
+        fields: [workflows.bannerImage],
+        references: [assets.id],
     }),
 }));

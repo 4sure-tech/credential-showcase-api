@@ -10,6 +10,7 @@ import IssuerRepository from '../../../database/repositories/IssuerRepository';
 import CredentialDefinitionRepository from '../../../database/repositories/CredentialDefinitionRepository';
 import AssetRepository from '../../../database/repositories/AssetRepository';
 import PersonaRepository from '../PersonaRepository';
+import RelyingPartyRepository from '../RelyingPartyRepository';
 import * as schema from '../../../database/schema';
 import {
     Asset,
@@ -23,14 +24,18 @@ import {
     NewCredentialDefinition,
     NewIssuanceFlow,
     NewIssuer,
-    NewPersona, NewPresentationFlow, NewRelyingParty,
+    NewPersona,
+    NewPresentationFlow,
+    NewRelyingParty,
     NewStep,
-    Persona, PresentationFlow, RelyingParty, RelyingPartyType,
+    Persona,
+    PresentationFlow,
+    RelyingParty,
+    RelyingPartyType,
     StepActionType,
     StepType,
     WorkflowType
 } from '../../../types';
-import RelyingPartyRepository from '../RelyingPartyRepository';
 
 describe('Database scenario repository tests', (): void => {
     let client: PGlite;
