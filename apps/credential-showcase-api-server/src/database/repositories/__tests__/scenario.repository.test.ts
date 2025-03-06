@@ -121,7 +121,8 @@ describe('Database scenario repository tests', (): void => {
             role: 'Software Engineer',
             description: 'Experienced developer',
             headshotImage: asset.id,
-            bodyImage: asset.id
+            bodyImage: asset.id,
+            hidden: false
         };
         persona1 = await personaRepository.create(newPersona);
         persona2 = await personaRepository.create(newPersona);
