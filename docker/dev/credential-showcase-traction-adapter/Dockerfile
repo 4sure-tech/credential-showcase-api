@@ -21,18 +21,26 @@
 # RUN echo PORT=3000  > .env
 # CMD ["node", "dist/index.js"]
 # Build stage
+# Build stage
+
 FROM node:20-bookworm AS builder
 SHELL ["/bin/bash", "-c"]
 ENV SHELL=bash
 ENV PNPM_HOME=/usr/local/share/pnpm
 ENV PATH=$PNPM_HOME:$PATH
 
-RUN apt-get update && apt-get install -y maven && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y \
+    maven \
+    build-essential \
+    python3 \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN npm -g install pnpm && pnpm setup && source /root/.bashrc && pnpm self-update && pnpm setup && pnpm config set store-dir "/usr/local/share/pnpm/store/v10" --global
 
 WORKDIR /build
 COPY . /build
+
+RUN mvn -version
 
 RUN pnpm store prune && pnpm install -g rimraf typescript tslib turbo
 RUN pnpm install --no-frozen-lockfile
@@ -46,3 +54,4 @@ COPY --from=builder /deploy /app
 ENV NODE_ENV=production
 RUN echo PORT=3000  > .env
 CMD ["node", "dist/index.js"]
+
