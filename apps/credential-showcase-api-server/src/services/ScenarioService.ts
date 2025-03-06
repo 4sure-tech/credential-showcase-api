@@ -3,7 +3,7 @@ import ScenarioRepository from '../database/repositories/ScenarioRepository'
 import { AriesOOBAction, Scenario, NewAriesOOBAction, NewScenario, NewStep, Step, ScenarioFindAllArgs } from '../types'
 
 @Service()
-class IssuanceFlowService {
+class ScenarioService {
   constructor(private readonly scenarioRepository: ScenarioRepository) {}
 
   public getScenarios = async (args: ScenarioFindAllArgs): Promise<Scenario[]> => {
@@ -72,4 +72,4 @@ class IssuanceFlowService {
   }
 }
 
-export default IssuanceFlowService
+export default ScenarioService

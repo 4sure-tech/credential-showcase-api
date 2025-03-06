@@ -6,8 +6,8 @@ import AssetController from './controllers/AssetController'
 import PersonaController from './controllers/PersonaController'
 import RelyingPartyController from './controllers/RelyingPartyController'
 import IssuerController from './controllers/IssuerController'
-import IssuanceFlowController from './controllers/IssuanceFlowController'
-import PresentationFlowController from './controllers/PresentationFlowController'
+import IssuanceScenarioController from './controllers/IssuanceScenarioController'
+import PresentationScenarioController from './controllers/PresentationScenarioController'
 import ShowcaseController from './controllers/ShowcaseController'
 import { CredentialDefinitionController } from './controllers/CredentialDefinitionController'
 
@@ -23,8 +23,8 @@ const app = createExpressServer({
     CredentialDefinitionController,
     RelyingPartyController,
     IssuerController,
-    IssuanceFlowController,
-    PresentationFlowController,
+    IssuanceScenarioController,
+    PresentationScenarioController,
     ShowcaseController,
   ],
   middlewares: [ExpressErrorHandler],

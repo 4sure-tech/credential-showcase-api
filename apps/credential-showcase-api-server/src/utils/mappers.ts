@@ -4,8 +4,8 @@ import {
   CredentialSchema as CredentialSchemaDTO,
   RelyingParty as RelyingPartyDTO,
   Issuer as IssuerDTO,
-  IssuanceFlow as IssuanceFlowDTO,
-  PresentationFlow as PresentationFlowDTO,
+  IssuanceScenario as IssuanceScenarioDTO,
+  PresentationScenario as PresentationScenarioDTO,
   Step as StepDTO,
   Persona as PersonaDTO,
   Showcase as ShowcaseDTO,
@@ -18,10 +18,10 @@ import {
   CredentialDefinition,
   RelyingParty,
   Issuer,
-  IssuanceFlow,
-  PresentationFlow,
+  IssuanceScenario,
+  PresentationScenario,
   Step,
-  WorkflowType,
+  ScenarioType,
   Persona,
   Showcase,
   Scenario,
@@ -77,42 +77,42 @@ export const issuerDTOFrom = (issuer: Issuer): IssuerDTO => {
   }
 }
 
-export const issuanceFlowDTOFrom = (issuanceFlow: IssuanceFlow): IssuanceFlowDTO => {
-  if (!issuanceFlow.issuer) {
-    throw Error('Missing issuer in issuance flow')
+export const issuanceScenarioDTOFrom = (issuanceScenario: IssuanceScenario): IssuanceScenarioDTO => {
+  if (!issuanceScenario.issuer) {
+    throw Error('Missing issuer in issuance scenario')
   }
 
   return {
-    ...issuanceFlow,
-    issuer: issuerDTOFrom(issuanceFlow.issuer),
-    type: WorkflowType.ISSUANCE,
-    steps: issuanceFlow.steps.map((step) => stepDTOFrom(step)),
-    personas: issuanceFlow.personas.map((persona) => personaDTOFrom(persona)),
+    ...issuanceScenario,
+    issuer: issuerDTOFrom(issuanceScenario.issuer),
+    type: ScenarioType.ISSUANCE,
+    steps: issuanceScenario.steps.map((step) => stepDTOFrom(step)),
+    personas: issuanceScenario.personas.map((persona) => personaDTOFrom(persona)),
   }
 }
 
-export const presentationFlowDTOFrom = (presentationFlow: PresentationFlow): PresentationFlowDTO => {
-  if (!presentationFlow.relyingParty) {
-    throw Error('Missing relying party in presentation flow')
+export const presentationScenarioDTOFrom = (presentationScenario: PresentationScenario): PresentationScenarioDTO => {
+  if (!presentationScenario.relyingParty) {
+    throw Error('Missing relying party in presentation scenario')
   }
 
   return {
-    ...presentationFlow,
-    relyingParty: relyingPartyDTOFrom(presentationFlow.relyingParty),
-    type: WorkflowType.PRESENTATION,
-    steps: presentationFlow.steps.map((step) => stepDTOFrom(step)),
-    personas: presentationFlow.personas.map((persona) => personaDTOFrom(persona)),
+    ...presentationScenario,
+    relyingParty: relyingPartyDTOFrom(presentationScenario.relyingParty),
+    type: ScenarioType.PRESENTATION,
+    steps: presentationScenario.steps.map((step) => stepDTOFrom(step)),
+    personas: presentationScenario.personas.map((persona) => personaDTOFrom(persona)),
   }
 }
 
-export const scenarioDTOFrom = (scenario: Scenario): IssuanceFlowDTO | PresentationFlowDTO => {
-  switch (scenario.workflowType) {
-    case WorkflowType.PRESENTATION:
-      return presentationFlowDTOFrom(scenario)
-    case WorkflowType.ISSUANCE:
-      return issuanceFlowDTOFrom(scenario)
+export const scenarioDTOFrom = (scenario: Scenario): IssuanceScenarioDTO | PresentationScenarioDTO => {
+  switch (scenario.scenarioType) {
+    case ScenarioType.PRESENTATION:
+      return presentationScenarioDTOFrom(scenario)
+    case ScenarioType.ISSUANCE:
+      return issuanceScenarioDTOFrom(scenario)
     default:
-      throw Error(`Unsupported scenario type ${scenario.workflowType}`)
+      throw Error(`Unsupported scenario type ${scenario.scenarioType}`)
   }
 }
 
@@ -120,7 +120,7 @@ export const stepDTOFrom = (step: Step): StepDTO => {
   return {
     ...step,
     asset: step.asset ? assetDTOFrom(step.asset) : undefined,
-    subFlow: step.subFlow ? step.subFlow : undefined,
+    subScenario: step.subScenario ? step.subScenario : undefined,
   }
 }
 

@@ -4,7 +4,7 @@ import DatabaseService from '../../services/DatabaseService'
 import AssetRepository from './AssetRepository'
 import { NotFoundError } from '../../errors'
 import { credentialDefinitions, credentialRepresentations, revocationInfo } from '../schema'
-import { CredentialDefinition, NewCredentialDefinition, NewCredentialRepresentation, RepositoryDefinition } from '../../types'
+import { CredentialDefinition, NewCredentialDefinition, RepositoryDefinition } from '../../types'
 import { CredentialSchemaRepository } from './CredentialSchemaRepository'
 
 @Service()
@@ -33,26 +33,24 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
         })
         .returning()
 
-      const credentialRepresentationsResult = await tx
-        .insert(credentialRepresentations)
-        .values(
-          credentialDefinition.representations.map((representation: NewCredentialRepresentation) => ({
-            ...representation,
-            credentialDefinition: credentialDefinitionResult.id,
-          })),
-        )
-        .returning()
+      // TODO SHOWCASE-81 enable
+      // const credentialRepresentationsResult = await tx.insert(credentialRepresentations)
+      //     .values(credentialDefinition.representations.map((representation: NewCredentialRepresentation) => ({
+      //         ...representation,
+      //         credentialDefinition: credentialDefinitionResult.id
+      //     })))
+      //     .returning();
 
+      // TODO SHOWCASE-80 enable
       let revocationResult = null
-      if (credentialDefinition.revocation) {
-        ;[revocationResult] = await tx
-          .insert(revocationInfo)
-          .values({
-            ...credentialDefinition.revocation,
-            credentialDefinition: credentialDefinitionResult.id,
-          })
-          .returning()
-      }
+      // if (credentialDefinition.revocation) {
+      //     [revocationResult] = await tx.insert(revocationInfo)
+      //         .values({
+      //             ...credentialDefinition.revocation,
+      //             credentialDefinition: credentialDefinitionResult.id
+      //         })
+      //         .returning();
+      // }
 
       const credentialSchemaResult = await this.credentialSchemaRepository.findById(credentialDefinition.credentialSchemaId)
 
@@ -60,7 +58,7 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
         ...credentialDefinitionResult,
         credentialSchema: credentialSchemaResult,
         icon: iconResult,
-        representations: credentialRepresentationsResult,
+        representations: [], //credentialRepresentationsResult, TODO SHOWCASE-81 enable
         revocation: revocationResult,
       }
     })
@@ -90,34 +88,31 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
       await tx.delete(credentialRepresentations).where(eq(credentialRepresentations.credentialDefinition, id))
       await tx.delete(revocationInfo).where(eq(revocationInfo.credentialDefinition, id))
 
-      const credentialRepresentationsResult = await tx
-        .insert(credentialRepresentations)
-        .values(
-          credentialDefinition.representations.map((representation: NewCredentialRepresentation) => ({
-            ...representation,
-            credentialDefinition: credentialDefinitionResult.id,
-          })),
-        )
-        .returning()
+      // TODO SHOWCASE-81 enable
+      // const credentialRepresentationsResult = await tx.insert(credentialRepresentations)
+      //     .values(credentialDefinition.representations.map((representation: NewCredentialRepresentation) => ({
+      //         ...representation,
+      //         credentialDefinition: credentialDefinitionResult.id
+      //     })))
+      //     .returning();
 
+      // TODO SHOWCASE-80 enable
       let revocationResult = null
-      if (credentialDefinition.revocation) {
-        ;[revocationResult] = await tx
-          .insert(revocationInfo)
-          .values({
-            ...credentialDefinition.revocation,
-            credentialDefinition: credentialDefinitionResult.id,
-          })
-          .returning()
-      }
-
+      // if (credentialDefinition.revocation) {
+      //     [revocationResult] = await tx.insert(revocationInfo)
+      //         .values({
+      //             ...credentialDefinition.revocation,
+      //             credentialDefinition: credentialDefinitionResult.id
+      //         })
+      //         .returning();
+      // }
       const credentialSchemaResult = await this.credentialSchemaRepository.findById(credentialDefinition.credentialSchemaId)
 
       return {
         ...credentialDefinitionResult,
         credentialSchema: credentialSchemaResult,
         icon: iconResult,
-        representations: credentialRepresentationsResult,
+        representations: [], //credentialRepresentationsResult, TODO SHOWCASE-81 enable
         revocation: revocationResult,
       }
     })

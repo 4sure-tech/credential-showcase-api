@@ -62,19 +62,18 @@ describe('Database issuer repository tests', (): void => {
           type: CredentialAttributeType.STRING,
         },
       ],
-      representations: [
-        {
-          // TODO SHOWCASE-81 OCARepresentation
-        },
-        {
-          // TODO SHOWCASE-81 OCARepresentation
-        },
-      ],
-      revocation: {
-        // TODO SHOWCASE-80 AnonCredRevocation
-        title: 'example_revocation_title',
-        description: 'example_revocation_description',
-      },
+      // representations: [
+      //   { // TODO SHOWCASE-81 OCARepresentation
+      //
+      //   },
+      //   { // TODO SHOWCASE-81 OCARepresentation
+      //
+      //   }
+      // ],
+      // revocation: { // TODO SHOWCASE-80 AnonCredRevocation
+      //   title: 'example_revocation_title',
+      //   description: 'example_revocation_description'
+      // }
     }
     credentialDefinition1 = await credentialDefinitionRepository.create(newCredentialDefinition)
     credentialDefinition2 = await credentialDefinitionRepository.create(newCredentialDefinition)

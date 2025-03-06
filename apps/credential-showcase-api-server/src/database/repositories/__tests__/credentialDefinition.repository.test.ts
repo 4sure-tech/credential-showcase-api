@@ -58,14 +58,14 @@ describe('Database credential definition repository tests', (): void => {
           type: CredentialAttributeType.STRING,
         },
       ],
-      representations: [
-        {
-          // TODO SHOWCASE-81 OCARepresentation
-        },
-        {
-          // TODO SHOWCASE-81 OCARepresentation
-        },
-      ],
+      // representations: [
+      //     { // TODO SHOWCASE-81 OCARepresentation
+      //
+      //     },
+      //     { // TODO SHOWCASE-81 OCARepresentation
+      //
+      //     }
+      // ],
       revocation: {
         // TODO SHOWCASE-80 AnonCredRevocation
         title: 'example_revocation_title',
@@ -110,11 +110,11 @@ describe('Database credential definition repository tests', (): void => {
           type: CredentialAttributeType.STRING,
         },
       ],
-      representations: [
-        {
-          // TODO SHOWCASE-81 OCARepresentation
-        },
-      ],
+      // representations: [
+      //     { // TODO SHOWCASE-81 OCARepresentation
+      //
+      //     }
+      // ]
     }
 
     await expect(credentialDefinitionRepository.create(credentialDefinition)).rejects.toThrowError(`No asset found for id: ${unknownIconId}`)
@@ -138,14 +138,14 @@ describe('Database credential definition repository tests', (): void => {
           type: CredentialAttributeType.STRING,
         },
       ],
-      representations: [
-        {
-          // TODO SHOWCASE-81 OCARepresentation
-        },
-        {
-          // TODO SHOWCASE-81 OCARepresentation
-        },
-      ],
+      // representations: [
+      //     { // TODO SHOWCASE-81 OCARepresentation
+      //
+      //     },
+      //     { // TODO SHOWCASE-81 OCARepresentation
+      //
+      //     }
+      // ],
       revocation: {
         // TODO SHOWCASE-80 AnonCredRevocation
         title: 'example_revocation_title',
@@ -192,11 +192,11 @@ describe('Database credential definition repository tests', (): void => {
           type: CredentialAttributeType.STRING,
         },
       ],
-      representations: [
-        {
-          // TODO SHOWCASE-81 OCARepresentation
-        },
-      ],
+      // representations: [
+      //     { // TODO SHOWCASE-81 OCARepresentation
+      //
+      //     }
+      // ]
     }
 
     const savedCredentialDefinition1 = await credentialDefinitionRepository.create(credentialDefinition)
@@ -223,11 +223,11 @@ describe('Database credential definition repository tests', (): void => {
           type: CredentialAttributeType.STRING,
         },
       ],
-      representations: [
-        {
-          // TODO SHOWCASE-81 OCARepresentation
-        },
-      ],
+      // representations: [
+      //     { // TODO SHOWCASE-81 OCARepresentation
+      //
+      //     }
+      // ]
     }
 
     const savedCredentialDefinition = await credentialDefinitionRepository.create(credentialDefinition)
@@ -258,19 +258,18 @@ describe('Database credential definition repository tests', (): void => {
           type: CredentialAttributeType.STRING,
         },
       ],
-      representations: [
-        {
-          // TODO SHOWCASE-81 OCARepresentation
-        },
-        {
-          // TODO SHOWCASE-81 OCARepresentation
-        },
-      ],
-      revocation: {
-        // TODO SHOWCASE-80 AnonCredRevocation
-        title: 'example_revocation_title',
-        description: 'example_revocation_description',
-      },
+      // representations: [
+      //     { // TODO SHOWCASE-81 OCARepresentation
+      //
+      //     },
+      //     { // TODO SHOWCASE-81 OCARepresentation
+      //
+      //     }
+      // ],
+      // revocation: { // TODO SHOWCASE-80 AnonCredRevocation
+      //     title: 'example_revocation_title',
+      //     description: 'example_revocation_description'
+      // }
     }
 
     const savedCredentialDefinition = await credentialDefinitionRepository.create(credentialDefinition)
@@ -288,11 +287,11 @@ describe('Database credential definition repository tests', (): void => {
           type: CredentialAttributeType.BOOLEAN,
         },
       ],
-      representations: [
-        {
-          // TODO SHOWCASE-81 OCARepresentation
-        },
-      ],
+      // representations: [
+      //     { // TODO SHOWCASE-81 OCARepresentation
+      //
+      //     }
+      // ]
     })
 
     expect(updatedCredentialDefinition).toBeDefined()
@@ -335,19 +334,18 @@ describe('Database credential definition repository tests', (): void => {
           type: CredentialAttributeType.STRING,
         },
       ],
-      representations: [
-        {
-          // TODO SHOWCASE-81 OCARepresentation
-        },
-        {
-          // TODO SHOWCASE-81 OCARepresentation
-        },
-      ],
-      revocation: {
-        // TODO SHOWCASE-80 AnonCredRevocation
-        title: 'example_revocation_title',
-        description: 'example_revocation_description',
-      },
+      // representations: [
+      //     { // TODO SHOWCASE-81 OCARepresentation
+      //
+      //     },
+      //     { // TODO SHOWCASE-81 OCARepresentation
+      //
+      //     }
+      // ],
+      // revocation: { // TODO SHOWCASE-80 AnonCredRevocation
+      //     title: 'example_revocation_title',
+      //     description: 'example_revocation_description'
+      // }
     }
 
     const savedCredentialDefinition = await credentialDefinitionRepository.create(credentialDefinition)

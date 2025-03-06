@@ -8,13 +8,13 @@ import AssetRepository from './AssetRepository'
 import { isIssuanceScenario, isPresentationScenario } from '../../utils/mappers'
 import { sortSteps } from '../../utils/sortUtils'
 import { NotFoundError } from '../../errors'
-import { ariesProofRequests, assets, credentialDefinitions, stepActions, steps, workflows, workflowsToPersonas } from '../schema'
+import { ariesProofRequests, assets, credentialDefinitions, stepActions, steps, scenarios, scenariosToPersonas } from '../schema'
 import {
   AriesOOBAction,
   Issuer,
   NewAriesOOBAction,
-  NewIssuanceFlow,
-  NewPresentationFlow,
+  NewIssuanceScenario,
+  NewPresentationScenario,
   NewScenario,
   NewStep,
   RelyingParty,
@@ -22,7 +22,7 @@ import {
   Scenario,
   ScenarioFindAllArgs,
   Step,
-  WorkflowType,
+  ScenarioType,
 } from '../../types'
 
 @Service()
@@ -46,15 +46,15 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
     const personaPromises = scenario.personas.map(async (persona) => await this.personaRepository.findById(persona))
     await Promise.all(personaPromises)
 
-    const scenarioType = isIssuanceScenario(scenario) ? WorkflowType.ISSUANCE : WorkflowType.PRESENTATION
+    const scenarioType = isIssuanceScenario(scenario) ? ScenarioType.ISSUANCE : ScenarioType.PRESENTATION
 
     const scenarioPartyResult: Issuer | RelyingParty = isIssuanceScenario(scenario)
-      ? await this.issuerRepository.findById((<NewIssuanceFlow>scenario).issuer)
-      : await this.relyingPartyRepository.findById((<NewPresentationFlow>scenario).relyingParty)
+      ? await this.issuerRepository.findById((<NewIssuanceScenario>scenario).issuer)
+      : await this.relyingPartyRepository.findById((<NewPresentationScenario>scenario).relyingParty)
 
     return (await this.databaseService.getConnection()).transaction(async (tx): Promise<Scenario> => {
       const [scenarioResult] = await tx
-        .insert(workflows)
+        .insert(scenarios)
         .values({
           name: scenario.name,
           description: scenario.description,
@@ -64,15 +64,15 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
           ...(isPresentationScenario(scenario) && {
             relyingParty: scenarioPartyResult.id,
           }),
-          workflowType: scenarioType,
+          scenarioType: scenarioType,
         })
         .returning()
 
-      const workflowsToPersonasResult = await tx
-        .insert(workflowsToPersonas)
+      const scenariosToPersonasResult = await tx
+        .insert(scenariosToPersonas)
         .values(
           scenario.personas.map((personaId: string) => ({
-            workflow: scenarioResult.id,
+            scenario: scenarioResult.id,
             persona: personaId,
           })),
         )
@@ -81,7 +81,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
       const personasResult = await tx.query.personas.findMany({
         where: inArray(
           credentialDefinitions.id,
-          workflowsToPersonasResult.map((item) => item.persona),
+          scenariosToPersonasResult.map((item) => item.persona),
         ),
         with: {
           headshotImage: true,
@@ -94,7 +94,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         .values(
           scenario.steps.map((step: NewStep) => ({
             ...step,
-            workflow: scenarioResult.id,
+            scenario: scenarioResult.id,
           })),
         )
         .returning()
@@ -133,7 +133,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         ),
       })
 
-      const flowSteps = stepsResult.map((stepResult) => ({
+      const scenarioSteps = stepsResult.map((stepResult) => ({
         ...stepResult,
         actions: stepActionsResult
           .filter((stepActionResult) => stepActionResult.step === stepResult.id)
@@ -148,8 +148,8 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         id: scenarioResult.id,
         name: scenarioResult.name,
         description: scenarioResult.description,
-        steps: sortSteps(flowSteps),
-        workflowType: scenarioType,
+        steps: sortSteps(scenarioSteps),
+        scenarioType: scenarioType,
         ...(isIssuanceScenario(scenario) && {
           issuer: <Issuer>scenarioPartyResult,
         }),
@@ -163,7 +163,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
 
   async delete(scenarioId: string): Promise<void> {
     await this.findById(scenarioId)
-    await (await this.databaseService.getConnection()).delete(workflows).where(eq(workflows.id, scenarioId))
+    await (await this.databaseService.getConnection()).delete(scenarios).where(eq(scenarios.id, scenarioId))
   }
 
   async update(scenarioId: string, scenario: NewScenario): Promise<Scenario> {
@@ -177,15 +177,15 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
     const personaPromises = scenario.personas.map(async (persona) => await this.personaRepository.findById(persona))
     await Promise.all(personaPromises)
 
-    const scenarioType = isIssuanceScenario(scenario) ? WorkflowType.ISSUANCE : WorkflowType.PRESENTATION
+    const scenarioType = isIssuanceScenario(scenario) ? ScenarioType.ISSUANCE : ScenarioType.PRESENTATION
 
     const scenarioPartyResult: Issuer | RelyingParty = isIssuanceScenario(scenario)
-      ? await this.issuerRepository.findById((<NewIssuanceFlow>scenario).issuer)
-      : await this.relyingPartyRepository.findById((<NewPresentationFlow>scenario).relyingParty)
+      ? await this.issuerRepository.findById((<NewIssuanceScenario>scenario).issuer)
+      : await this.relyingPartyRepository.findById((<NewPresentationScenario>scenario).relyingParty)
 
     return (await this.databaseService.getConnection()).transaction(async (tx): Promise<Scenario> => {
       const [scenarioResult] = await tx
-        .update(workflows)
+        .update(scenarios)
         .set({
           name: scenario.name,
           description: scenario.description,
@@ -195,18 +195,18 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
           ...(isPresentationScenario(scenario) && {
             relyingParty: scenarioPartyResult.id,
           }),
-          workflowType: scenarioType,
+          scenarioType: scenarioType,
         })
-        .where(eq(workflows.id, scenarioId))
+        .where(eq(scenarios.id, scenarioId))
         .returning()
 
-      await tx.delete(workflowsToPersonas).where(eq(workflowsToPersonas.workflow, scenarioId))
+      await tx.delete(scenariosToPersonas).where(eq(scenariosToPersonas.scenario, scenarioId))
 
-      const workflowsToPersonasResult = await tx
-        .insert(workflowsToPersonas)
+      const scenariosToPersonasResult = await tx
+        .insert(scenariosToPersonas)
         .values(
           scenario.personas.map((personaId: string) => ({
-            workflow: scenarioResult.id,
+            scenario: scenarioResult.id,
             persona: personaId,
           })),
         )
@@ -215,7 +215,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
       const personasResult = await tx.query.personas.findMany({
         where: inArray(
           credentialDefinitions.id,
-          workflowsToPersonasResult.map((item) => item.persona),
+          scenariosToPersonasResult.map((item) => item.persona),
         ),
         with: {
           headshotImage: true,
@@ -223,14 +223,14 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         },
       })
 
-      await tx.delete(steps).where(eq(steps.workflow, scenarioId))
+      await tx.delete(steps).where(eq(steps.scenario, scenarioId))
 
       const stepsResult = await tx
         .insert(steps)
         .values(
           scenario.steps.map((step: NewStep) => ({
             ...step,
-            workflow: scenarioResult.id,
+            scenario: scenarioResult.id,
           })),
         )
         .returning()
@@ -269,7 +269,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         ),
       })
 
-      const flowSteps = stepsResult.map((stepResult) => ({
+      const scenarioSteps = stepsResult.map((stepResult) => ({
         ...stepResult,
         actions: stepActionsResult
           .filter((stepActionResult) => stepActionResult.step === stepResult.id)
@@ -284,8 +284,8 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         id: scenarioResult.id,
         name: scenarioResult.name,
         description: scenarioResult.description,
-        steps: sortSteps(flowSteps),
-        workflowType: scenarioType,
+        steps: sortSteps(scenarioSteps),
+        scenarioType: scenarioType,
         ...(isIssuanceScenario(scenario) && {
           issuer: <Issuer>scenarioPartyResult,
         }),
@@ -300,8 +300,8 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
   async findById(scenarioId: string): Promise<Scenario> {
     const result = await (
       await this.databaseService.getConnection()
-    ).query.workflows.findFirst({
-      where: and(eq(workflows.id, scenarioId)),
+    ).query.scenarios.findFirst({
+      where: and(eq(scenarios.id, scenarioId)),
       with: {
         steps: {
           with: {
@@ -395,8 +395,8 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
     const { filter } = args
     const result = await (
       await this.databaseService.getConnection()
-    ).query.workflows.findMany({
-      where: eq(workflows.workflowType, filter.scenarioType),
+    ).query.scenarios.findMany({
+      where: eq(scenarios.scenarioType, filter.scenarioType),
       with: {
         steps: {
           with: {
@@ -495,7 +495,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         .insert(steps)
         .values({
           ...step,
-          workflow: scenarioId,
+          scenario: scenarioId,
         })
         .returning()
 
@@ -535,7 +535,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
 
   async deleteStep(scenarioId: string, stepId: string): Promise<void> {
     await this.findByStepId(scenarioId, stepId)
-    await (await this.databaseService.getConnection()).delete(steps).where(and(eq(steps.id, stepId), eq(steps.workflow, scenarioId)))
+    await (await this.databaseService.getConnection()).delete(steps).where(and(eq(steps.id, stepId), eq(steps.scenario, scenarioId)))
   }
 
   async updateStep(scenarioId: string, stepId: string, step: NewStep): Promise<Step> {
@@ -551,7 +551,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         .update(steps)
         .set({
           ...step,
-          workflow: scenarioId,
+          scenario: scenarioId,
         })
         .where(eq(steps.id, stepId))
         .returning()
@@ -596,7 +596,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
     const result = await (
       await this.databaseService.getConnection()
     ).query.steps.findFirst({
-      where: and(and(eq(steps.id, stepId), eq(steps.workflow, scenarioId))),
+      where: and(and(eq(steps.id, stepId), eq(steps.scenario, scenarioId))),
       with: {
         actions: {
           with: {
@@ -618,7 +618,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
     const result = await (
       await this.databaseService.getConnection()
     ).query.steps.findMany({
-      where: eq(steps.workflow, scenarioId),
+      where: eq(steps.scenario, scenarioId),
       with: {
         asset: true,
         actions: {

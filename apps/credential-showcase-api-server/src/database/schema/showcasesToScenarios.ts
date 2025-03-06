@@ -1,7 +1,7 @@
 import { relations } from 'drizzle-orm'
 import { pgTable, primaryKey, uuid } from 'drizzle-orm/pg-core'
 import { showcases } from './showcase'
-import { workflows } from './workflow'
+import { scenarios } from './scenario'
 
 export const showcasesToScenarios = pgTable(
   'showcasesToScenarios',
@@ -10,16 +10,16 @@ export const showcasesToScenarios = pgTable(
       .references(() => showcases.id, { onDelete: 'cascade' })
       .notNull(),
     scenario: uuid()
-      .references(() => workflows.id, { onDelete: 'cascade' })
+      .references(() => scenarios.id, { onDelete: 'cascade' })
       .notNull(),
   },
   (t) => [primaryKey({ columns: [t.showcase, t.scenario] })],
 )
 
 export const showcasesToScenariosRelations = relations(showcasesToScenarios, ({ one }) => ({
-  scenario: one(workflows, {
+  scenario: one(scenarios, {
     fields: [showcasesToScenarios.scenario],
-    references: [workflows.id],
+    references: [scenarios.id],
   }),
   showcase: one(showcases, {
     fields: [showcasesToScenarios.showcase],

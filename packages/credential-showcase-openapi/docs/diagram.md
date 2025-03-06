@@ -21,10 +21,10 @@ classDiagram
         +steps: List~Steps~
         +personas: List~Persona~
     }
-    class IssuanceFlow {
+    class IssuanceScenario {
         issuer: Issuer
     }
-    class PresentationFlow {
+    class PresentationScenario {
         relyingParty: RelyingParty
     }
     class Step {
@@ -144,8 +144,8 @@ classDiagram
     Showcase "1" <|-- "1..*" Scenario: has
     Showcase "1..*" o-- "1..*" Persona
     Showcase "1..*" o-- "1..*" CredentialDefinition : contains
-    Scenario <|-- IssuanceFlow : specialization (onboarding)
-    Scenario <|-- PresentationFlow : specialization (scenario)
+    Scenario <|-- IssuanceScenario : specialization (onboarding)
+    Scenario <|-- PresentationScenario : specialization (scenario)
     Scenario "1" *-- "1..*" Step : contains
     CredentialAttribute  o-- "1" CredentialAttributeType : of
     CredentialDefinition "1" *-- "1..*" CredentialAttribute : has
@@ -170,7 +170,7 @@ classDiagram
     AriesProofRequest "1" *-- "1..*" AriesRequestCredentialAttributes: attributes
     AriesProofRequest "1" *-- "1..*" AriesRequestCredentialPredicates: predicates
     Scenario "0..*" o-- "1..*" Persona : involves
-    IssuanceFlow "0..*" o-- "1" Issuer : includes
-    PresentationFlow "0..*" o-- "1" RelyingParty : includes
+    IssuanceScenario "0..*" o-- "1" Issuer : includes
+    PresentationScenario "0..*" o-- "1" RelyingParty : includes
 
 ```

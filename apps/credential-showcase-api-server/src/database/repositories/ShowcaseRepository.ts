@@ -10,7 +10,7 @@ import {
   credentialDefinitions,
   showcasesToCredentialDefinitions,
   showcases,
-  workflows,
+  scenarios,
   personas,
   showcasesToPersonas,
   showcasesToScenarios,
@@ -59,9 +59,9 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
         )
         .returning()
 
-      const scenariosResult = await tx.query.workflows.findMany({
+      const scenariosResult = await tx.query.scenarios.findMany({
         where: inArray(
-          workflows.id,
+          scenarios.id,
           showcasesToScenariosResult.map((item) => item.scenario),
         ),
         with: {
@@ -252,9 +252,9 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
         )
         .returning()
 
-      const scenariosResult = await tx.query.workflows.findMany({
+      const scenariosResult = await tx.query.scenarios.findMany({
         where: inArray(
-          workflows.id,
+          scenarios.id,
           showcasesToScenariosResult.map((item) => item.scenario),
         ),
         with: {
