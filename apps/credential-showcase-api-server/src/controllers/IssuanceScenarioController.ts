@@ -17,7 +17,9 @@ import {
   StepActionResponse,
   StepActionResponseFromJSONTyped,
   StepActionRequest,
-  StepActionRequestToJSONTyped, IssuanceScenarioRequest, IssuanceScenarioRequestToJSONTyped,
+  StepActionRequestToJSONTyped,
+  IssuanceScenarioRequest,
+  IssuanceScenarioRequestToJSONTyped,
 } from 'credential-showcase-openapi'
 import { issuanceScenarioDTOFrom, stepDTOFrom } from '../utils/mappers'
 import { ScenarioType } from '../types'

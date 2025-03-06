@@ -9,6 +9,7 @@
     "prepare": "husky",
     "preinstall": "npx only-allow pnpm",
     "build": "turbo run build",
+    "build:clean": "pnpm -r --if-present --stream run build:clean",
     "prettier": "prettier --write \"{packages,apps,__tests__,!dist}/**/*.{ts,js,json,md}\"",
     "prettier:check": "prettier --check \"{packages,apps,__tests__,!dist}/**/*.{ts,js,json,md}\"",
     "test:ci": "jest --config=jest.json",
