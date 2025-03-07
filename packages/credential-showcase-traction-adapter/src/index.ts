@@ -1,8 +1,6 @@
-
 // FAKE controller
 
 async function main() {
-
   try {
     console.log('AMQ 1.0 message processor started')
 
