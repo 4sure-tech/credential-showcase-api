@@ -6,6 +6,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "dev": "tsc --watch",
+    "prebuild": "mvn -U clean install",
     "build": "tsc",
     "build:clean": "tsc --build --clean && tsc --build"
   },

@@ -6,20 +6,17 @@ ENV PNPM_HOME=/usr/local/share/pnpm
 ENV PATH=$PNPM_HOME:$PATH
 RUN npm -g install pnpm && pnpm setup && source /root/.bashrc && pnpm self-update && pnpm setup && pnpm config set store-dir "/usr/local/share/pnpm/store/v10" --global
 
-# Install Maven
-# In your builder stage, add:
+# Install Maven and other dependencies
 RUN apt-get update && \
-  apt-get install -y maven build-essential python3 make g++ && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/*
-# Install Drizzle CLI
+    apt-get install -y maven build-essential python3 make g++ openjdk-17-jdk && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 RUN pnpm install -g drizzle-kit
-
 WORKDIR /build
 COPY . /build
 RUN rm -rf $(pnpm store path) && pnpm install -g rimraf typescript tslib
 RUN pnpm install
-
+RUN cd packages/credential-showcase-openapi && mvn -U clean install && cd ../..
 RUN pnpm build
 RUN pnpm deploy /deploy --filter credential-showcase-api-server --prod --no-optional
 
