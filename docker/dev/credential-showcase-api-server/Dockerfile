@@ -27,4 +27,9 @@ COPY --from=builder /deploy /app
 COPY --from=builder /build/apps/credential-showcase-api-server/src/database/migrations /app/dist/database/migrations
 ENV NODE_ENV=production
 RUN echo PORT=3000  > .env
-CMD ["node", "dist/index.js"]
+
+# USE THIS SCRIPT IF YOU ARE USING DOCKER-COMPOSE. SINCE APP IS STARTING BEFORE DATABASE IS READY.
+# RUN echo '#!/bin/sh\necho "Waiting for database to start..."\nsleep 10\necho "Starting application..."\nexec node dist/index.js' > /start.sh && \
+#     chmod +x /start.sh
+
+CMD ["/start.sh"]
