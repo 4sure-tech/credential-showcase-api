@@ -100,6 +100,7 @@ classDiagram
         +name : String
         +type: IssuerType
         +credentialDefinitions: List~CredentialDefinition~
+        +credentialSchemas: List~CredentialSchema~
         +description: String
         +createdAt : DateTime
         +updatedAt : DateTime
@@ -124,12 +125,24 @@ classDiagram
         <<enumeration>>
         ARIES
     }
+    class CredentialSchema {
+        +name: String
+        +version: String
+        +identifierType: IdentifierType
+        +identifier: String
+        +attributes: List~CredentialAttribute~
+    }
+    class IdentifierType {
+        <<enumeration>>
+    }
     class CredentialDefinition {
         +name : String
         +version : String
+        +identifierType: IdentifierType
+        +identifier: String
         +icon: Asset
         +type: CredentialType
-        +attributes: List~CredentialAttribute~
+         credentialSchema: CredentialSchema
         +representations: List~CredentialRepresentation~
         +createdAt : DateTime
         +updatedAt : DateTime
@@ -181,13 +194,17 @@ classDiagram
     Scenario "1" *-- "1..*" Step : contains
     Scenario "1" -- "0..*" Asset : references
     CredentialAttribute  o-- "1" CredentialAttributeType : of
-    CredentialDefinition "1" *-- "1..*" CredentialAttribute : has
+    CredentialSchema "1" *-- "1..*" CredentialAttribute : has
+    CredentialSchema o-- "1" IdentifierType : of
     CredentialDefinition "icon" --> Asset
     CredentialDefinition "1" *-- "1..*" CredentialRepresentation : has
     CredentialDefinition "1" *-- "0..*" RevocationInfo : has
     CredentialDefinition  o-- "1" CredentialType : of
+    CredentialDefinition o-- "1" IdentifierType : of
+    CredentialDefinition "1" o-- "1" CredentialSchema : references
     CredentialRepresentation <|-- OCARepresentation: specialization (OCA)
     Issuer "0..*" o-- "1..*" CredentialDefinition : issues with
+    Issuer "0..*" o-- "1..*" CredentialSchema : issues with
     RelyingParty "0..*" o-- "1..*" CredentialDefinition : accepts
     RelyingParty o-- "1" RelyingPartyType: of
     RevocationInfo <|-- AnonCredRevocation : specialization
