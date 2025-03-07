@@ -1,6 +1,4 @@
 {
   "files": [],
-  "references": [
-    { "path": "credential-showcase-api-server" }
-  ]
+  "references": [{ "path": "credential-showcase-api-server" }]
 }

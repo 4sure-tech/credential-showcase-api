@@ -1,118 +1,136 @@
-import { eq, inArray } from 'drizzle-orm';
-import { Service } from 'typedi';
-import DatabaseService from '../../services/DatabaseService';
-import CredentialDefinitionRepository from './CredentialDefinitionRepository';
-import AssetRepository from './AssetRepository';
-import { NotFoundError } from '../../errors';
-import { credentialDefinitions, issuers, issuersToCredentialDefinitions } from '../schema';
-import { Issuer, NewIssuer, RepositoryDefinition } from '../../types';
+import { eq, inArray } from 'drizzle-orm'
+import { Service } from 'typedi'
+import DatabaseService from '../../services/DatabaseService'
+import CredentialDefinitionRepository from './CredentialDefinitionRepository'
+import AssetRepository from './AssetRepository'
+import { NotFoundError } from '../../errors'
+import { credentialDefinitions, issuers, issuersToCredentialDefinitions } from '../schema'
+import { Issuer, NewIssuer, RepositoryDefinition } from '../../types'
 
 @Service()
 class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
   constructor(
-      private readonly databaseService: DatabaseService,
-      private readonly credentialDefinitionRepository: CredentialDefinitionRepository,
-      private readonly assetRepository: AssetRepository
+    private readonly databaseService: DatabaseService,
+    private readonly credentialDefinitionRepository: CredentialDefinitionRepository,
+    private readonly assetRepository: AssetRepository,
   ) {}
 
   async create(issuer: NewIssuer): Promise<Issuer> {
     if (issuer.credentialDefinitions.length === 0) {
-      return Promise.reject(Error('At least one credential definition is required'));
+      return Promise.reject(Error('At least one credential definition is required'))
     }
 
-    const credentialDefinitionPromises = issuer.credentialDefinitions.map(async credentialDefinition => await this.credentialDefinitionRepository.findById(credentialDefinition))
+    const credentialDefinitionPromises = issuer.credentialDefinitions.map(
+      async (credentialDefinition) => await this.credentialDefinitionRepository.findById(credentialDefinition),
+    )
     await Promise.all(credentialDefinitionPromises)
     const logoResult = issuer.logo ? await this.assetRepository.findById(issuer.logo) : null
 
     return (await this.databaseService.getConnection()).transaction(async (tx): Promise<Issuer> => {
-      const [issuerResult] = (await tx.insert(issuers)
-          .values({
-            ...issuer,
-            logo: logoResult ? logoResult.id : null
-          })
-          .returning())
+      const [issuerResult] = await tx
+        .insert(issuers)
+        .values({
+          ...issuer,
+          logo: logoResult ? logoResult.id : null,
+        })
+        .returning()
 
-      const issuersToCredentialDefinitionsResult = await tx.insert(issuersToCredentialDefinitions)
-          .values(issuer.credentialDefinitions.map((credentialDefinitionId: string) => ({
+      const issuersToCredentialDefinitionsResult = await tx
+        .insert(issuersToCredentialDefinitions)
+        .values(
+          issuer.credentialDefinitions.map((credentialDefinitionId: string) => ({
             issuer: issuerResult.id,
-            credentialDefinition: credentialDefinitionId
-          })))
-          .returning();
+            credentialDefinition: credentialDefinitionId,
+          })),
+        )
+        .returning()
 
       const credentialDefinitionsResult = await tx.query.credentialDefinitions.findMany({
-        where: inArray(credentialDefinitions.id, issuersToCredentialDefinitionsResult.map(item => item.credentialDefinition)),
+        where: inArray(
+          credentialDefinitions.id,
+          issuersToCredentialDefinitionsResult.map((item) => item.credentialDefinition),
+        ),
         with: {
           attributes: true,
           representations: true,
           revocation: true,
-          icon: true
+          icon: true,
         },
       })
 
       return {
         ...issuerResult,
         logo: logoResult,
-        credentialDefinitions: credentialDefinitionsResult
-      };
+        credentialDefinitions: credentialDefinitionsResult,
+      }
     })
   }
 
   async delete(id: string): Promise<void> {
     await this.findById(id)
-    await (await this.databaseService.getConnection())
-      .delete(issuers)
-      .where(eq(issuers.id, id))
+    await (await this.databaseService.getConnection()).delete(issuers).where(eq(issuers.id, id))
   }
 
   async update(id: string, issuer: NewIssuer): Promise<Issuer> {
     await this.findById(id)
 
     if (issuer.credentialDefinitions.length === 0) {
-      return Promise.reject(Error('At least one credential definition is required'));
+      return Promise.reject(Error('At least one credential definition is required'))
     }
 
-    const credentialDefinitionPromises = issuer.credentialDefinitions.map(async credentialDefinition => await this.credentialDefinitionRepository.findById(credentialDefinition))
+    const credentialDefinitionPromises = issuer.credentialDefinitions.map(
+      async (credentialDefinition) => await this.credentialDefinitionRepository.findById(credentialDefinition),
+    )
     await Promise.all(credentialDefinitionPromises)
     const logoResult = issuer.logo ? await this.assetRepository.findById(issuer.logo) : null
 
     return (await this.databaseService.getConnection()).transaction(async (tx): Promise<Issuer> => {
-      const [issuerResult] = await tx.update(issuers)
-          .set({
-            ...issuer,
-            logo: logoResult ? logoResult.id : null
-          })
-          .where(eq(issuers.id, id))
-          .returning();
+      const [issuerResult] = await tx
+        .update(issuers)
+        .set({
+          ...issuer,
+          logo: logoResult ? logoResult.id : null,
+        })
+        .where(eq(issuers.id, id))
+        .returning()
 
       await tx.delete(issuersToCredentialDefinitions).where(eq(issuersToCredentialDefinitions.issuer, id))
 
-      const issuersToCredentialDefinitionsResult = await tx.insert(issuersToCredentialDefinitions)
-          .values(issuer.credentialDefinitions.map((credentialDefinitionId: string) => ({
+      const issuersToCredentialDefinitionsResult = await tx
+        .insert(issuersToCredentialDefinitions)
+        .values(
+          issuer.credentialDefinitions.map((credentialDefinitionId: string) => ({
             issuer: issuerResult.id,
-            credentialDefinition: credentialDefinitionId
-          })))
-          .returning();
+            credentialDefinition: credentialDefinitionId,
+          })),
+        )
+        .returning()
 
       const credentialDefinitionsResult = await tx.query.credentialDefinitions.findMany({
-        where: inArray(credentialDefinitions.id, issuersToCredentialDefinitionsResult.map(item => item.credentialDefinition)),
+        where: inArray(
+          credentialDefinitions.id,
+          issuersToCredentialDefinitionsResult.map((item) => item.credentialDefinition),
+        ),
         with: {
           attributes: true,
           representations: true,
           revocation: true,
-          icon: true
+          icon: true,
         },
       })
 
       return {
         ...issuerResult,
         logo: logoResult,
-        credentialDefinitions: credentialDefinitionsResult
-      };
+        credentialDefinitions: credentialDefinitionsResult,
+      }
     })
   }
 
   async findById(id: string): Promise<Issuer> {
-    const result = await (await this.databaseService.getConnection()).query.issuers.findFirst({
+    const result = await (
+      await this.databaseService.getConnection()
+    ).query.issuers.findFirst({
       where: eq(issuers.id, id),
       with: {
         cds: {
@@ -122,12 +140,12 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
                 icon: true,
                 attributes: true,
                 representations: true,
-                revocation: true
-              }
-            }
-          }
+                revocation: true,
+              },
+            },
+          },
         },
-        logo: true
+        logo: true,
       },
     })
 
@@ -137,12 +155,14 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
 
     return {
       ...result,
-      credentialDefinitions: result.cds.map(item => item.cd)
+      credentialDefinitions: result.cds.map((item) => item.cd),
     }
   }
 
   async findAll(): Promise<Issuer[]> {
-    const result = await (await this.databaseService.getConnection()).query.issuers.findMany({
+    const result = await (
+      await this.databaseService.getConnection()
+    ).query.issuers.findMany({
       with: {
         cds: {
           with: {
@@ -151,18 +171,18 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
                 icon: true,
                 attributes: true,
                 representations: true,
-                revocation: true
-              }
-            }
-          }
+                revocation: true,
+              },
+            },
+          },
         },
-        logo: true
+        logo: true,
       },
     })
 
-    return result.map(issuer => ({
+    return result.map((issuer) => ({
       ...issuer,
-      credentialDefinitions: issuer.cds.map(item => item.cd)
+      credentialDefinitions: issuer.cds.map((item) => item.cd),
     }))
   }
 }

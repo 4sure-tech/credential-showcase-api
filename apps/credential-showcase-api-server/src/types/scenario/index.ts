@@ -1,9 +1,9 @@
-import { ScenarioType } from '../schema';
+import { ScenarioType } from '../schema'
 
 export type ScenarioFindAllArgs = {
-    filter: ScenarioFilter
+  filter: ScenarioFilter
 }
 
 export type ScenarioFilter = {
-    scenarioType: ScenarioType
+  scenarioType: ScenarioType
 }
