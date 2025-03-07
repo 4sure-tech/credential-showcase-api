@@ -36,7 +36,10 @@ export class CredentialSchemaController {
 
   @Put('/:id')
   public async put(@Param('id') id: string, @Body() credentialSchemaRequest: CredentialSchemaRequest): Promise<CredentialSchemaResponse> {
-    const credentialSchema = await this.credentialSchemaService.updateCredentialSchema(id, CredentialSchemaRequestToJSONTyped(credentialSchemaRequest))
+    const credentialSchema = await this.credentialSchemaService.updateCredentialSchema(
+      id,
+      CredentialSchemaRequestToJSONTyped(credentialSchemaRequest),
+    )
     return CredentialSchemaResponseFromJSONTyped({ credentialSchema }, false)
   }
 

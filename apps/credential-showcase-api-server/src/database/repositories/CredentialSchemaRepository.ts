@@ -14,7 +14,7 @@ export class CredentialSchemaRepository implements RepositoryDefinition<Credenti
       const [credentialSchemaResult] = await tx
         .insert(credentialSchemas)
         .values({
-          ...credentialSchema
+          ...credentialSchema,
         })
         .returning()
 
@@ -47,7 +47,7 @@ export class CredentialSchemaRepository implements RepositoryDefinition<Credenti
       const [credentialSchemaResult] = await tx
         .update(credentialSchemas)
         .set({
-          ...credentialSchema
+          ...credentialSchema,
         })
         .where(eq(credentialSchemas.id, id))
         .returning()
