@@ -8,7 +8,7 @@ import DatabaseService from '../../../services/DatabaseService'
 import AssetRepository from '../AssetRepository'
 import CredentialDefinitionRepository from '../CredentialDefinitionRepository'
 import * as schema from '../../schema'
-import { Asset, NewAsset, CredentialAttributeType, CredentialType, NewCredentialDefinition, NewCredentialSchema } from '../../../types'
+import { Asset, NewAsset, CredentialAttributeType, CredentialType, NewCredentialDefinition, NewCredentialSchema, IdentifierType } from '../../../types'
 import { CredentialSchemaRepository } from '../CredentialSchemaRepository'
 
 describe('Database credential definition repository tests', (): void => {
@@ -47,7 +47,7 @@ describe('Database credential definition repository tests', (): void => {
     const newCredentialSchema: NewCredentialSchema = {
       name: 'example_name',
       version: 'example_version',
-      identifierType: 'DID',
+      identifierType: IdentifierType.DID,
       identifier: 'did:sov:XUeUZauFLeBNofY3NhaZCB',
       attributes: [
         {
@@ -67,11 +67,11 @@ describe('Database credential definition repository tests', (): void => {
     const credentialDefinition: NewCredentialDefinition = {
       name: 'example_name',
       version: 'example_version',
-      identifierType: 'DID',
+      identifierType: IdentifierType.DID,
       identifier: 'did:sov:XUeUZauFLeBNofY3NhaZCB',
       icon: asset.id,
       type: CredentialType.ANONCRED,
-      credentialSchemaId: savedCredentialSchema.id,
+      credentialSchema: savedCredentialSchema.id,
       // representations: [
       //     { // TODO SHOWCASE-81 OCARepresentation
       //
@@ -117,7 +117,7 @@ describe('Database credential definition repository tests', (): void => {
     const newCredentialSchema: NewCredentialSchema = {
       name: 'example_name',
       version: 'example_version',
-      identifierType: 'DID',
+      identifierType: IdentifierType.DID,
       identifier: 'did:sov:XUeUZauFLeBNofY3NhaZCB',
       attributes: [
         {
@@ -137,11 +137,11 @@ describe('Database credential definition repository tests', (): void => {
     const credentialDefinition: NewCredentialDefinition = {
       name: 'example_name',
       version: 'example_version',
-      identifierType: 'DID',
+      identifierType: IdentifierType.DID,
       identifier: 'did:sov:XUeUZauFLeBNofY3NhaZCB',
       icon: unknownIconId,
       type: CredentialType.ANONCRED,
-      credentialSchemaId: savedCredentialSchema.id,
+      credentialSchema: savedCredentialSchema.id,
       // representations: [
       //     { // TODO SHOWCASE-81 OCARepresentation
       //
@@ -156,7 +156,7 @@ describe('Database credential definition repository tests', (): void => {
     const newCredentialSchema: NewCredentialSchema = {
       name: 'example_name',
       version: 'example_version',
-      identifierType: 'DID',
+      identifierType: IdentifierType.DID,
       identifier: 'did:sov:XUeUZauFLeBNofY3NhaZCB',
       attributes: [
         {
@@ -176,11 +176,11 @@ describe('Database credential definition repository tests', (): void => {
     const credentialDefinition: NewCredentialDefinition = {
       name: 'example_name',
       version: 'example_version',
-      identifierType: 'DID',
+      identifierType: IdentifierType.DID,
       identifier: 'did:sov:XUeUZauFLeBNofY3NhaZCB',
       icon: asset.id,
       type: CredentialType.ANONCRED,
-      credentialSchemaId: savedCredentialSchema.id,
+      credentialSchema: savedCredentialSchema.id,
       // representations: [
       //     { // TODO SHOWCASE-81 OCARepresentation
       //
@@ -218,7 +218,7 @@ describe('Database credential definition repository tests', (): void => {
     //expect(savedCredentialSchema.representations.length).toEqual(2)
     // expect(fromDb.revocation).not.toBeNull()
     //expect(fromDb.revocation!.title).toEqual(credentialDefinition.revocation!.title)
-    e //xpect(fromDb.revocation!.description).toEqual(credentialDefinition.revocation!.description)
+    //expect(fromDb.revocation!.description).toEqual(credentialDefinition.revocation!.description)
     // TODO SHOWCASE-80 AnonCredRevocation
     // expect(fromDb.revocation).not.toBeNull()
     // expect(fromDb.revocation!.title).toEqual(credentialDefinition.revocation!.title)
@@ -229,7 +229,7 @@ describe('Database credential definition repository tests', (): void => {
     const newCredentialSchema: NewCredentialSchema = {
       name: 'example_name',
       version: 'example_version',
-      identifierType: 'DID',
+      identifierType: IdentifierType.DID,
       identifier: 'did:sov:XUeUZauFLeBNofY3NhaZCB',
       attributes: [
         {
@@ -249,9 +249,9 @@ describe('Database credential definition repository tests', (): void => {
     const credentialDefinition: NewCredentialDefinition = {
       name: 'example_name',
       version: 'example_version',
-      identifierType: 'DID',
+      identifierType: IdentifierType.DID,
       identifier: 'did:sov:XUeUZauFLeBNofY3NhaZCB',
-      credentialSchemaId: savedCredentialSchema.id,
+      credentialSchema: savedCredentialSchema.id,
       icon: asset.id,
       type: CredentialType.ANONCRED,
 
@@ -277,7 +277,7 @@ describe('Database credential definition repository tests', (): void => {
     const newCredentialSchema: NewCredentialSchema = {
       name: 'example_name',
       version: 'example_version',
-      identifierType: 'DID',
+      identifierType: IdentifierType.DID,
       identifier: 'did:sov:XUeUZauFLeBNofY3NhaZCB',
       attributes: [
         {
@@ -297,11 +297,11 @@ describe('Database credential definition repository tests', (): void => {
     const credentialDefinition: NewCredentialDefinition = {
       name: 'example_name',
       version: 'example_version',
-      identifierType: 'DID',
+      identifierType: IdentifierType.DID,
       identifier: 'did:sov:XUeUZauFLeBNofY3NhaZCB',
       icon: asset.id,
       type: CredentialType.ANONCRED,
-      credentialSchemaId: savedCredentialSchema.id,
+      credentialSchema: savedCredentialSchema.id,
       // representations: [
       //     { // TODO SHOWCASE-81 OCARepresentation
       //
@@ -323,7 +323,7 @@ describe('Database credential definition repository tests', (): void => {
     const newCredentialSchema: NewCredentialSchema = {
       name: 'example_name',
       version: 'example_version',
-      identifierType: 'DID',
+      identifierType: IdentifierType.DID,
       identifier: 'did:sov:XUeUZauFLeBNofY3NhaZCB',
       attributes: [
         {
@@ -380,7 +380,7 @@ describe('Database credential definition repository tests', (): void => {
     const newCredentialSchema: NewCredentialSchema = {
       name: 'example_name',
       version: 'example_version',
-      identifierType: 'DID',
+      identifierType: IdentifierType.DID,
       identifier: 'did:sov:XUeUZauFLeBNofY3NhaZCB',
       attributes: [
         {
@@ -402,9 +402,9 @@ describe('Database credential definition repository tests', (): void => {
       version: 'example_version',
       icon: asset.id,
       type: CredentialType.ANONCRED,
-      identifierType: 'DID',
+      identifierType: IdentifierType.DID,
       identifier: 'did:sov:XUeUZauFLeBNofY3NhaZCB',
-      credentialSchemaId: credentialSchema.id,
+      credentialSchema: credentialSchema.id,
       // representations: [
       //     { // TODO SHOWCASE-81 OCARepresentation
       //
@@ -424,6 +424,7 @@ describe('Database credential definition repository tests', (): void => {
 
     const updatedCredentialDefinition: NewCredentialDefinition = {
       ...savedCredentialDefinition,
+      credentialSchema: savedCredentialDefinition.credentialSchema.id,
       icon: unknownIconId,
     }
 

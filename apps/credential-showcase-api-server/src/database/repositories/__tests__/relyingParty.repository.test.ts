@@ -17,12 +17,14 @@ import {
   NewAsset,
   NewCredentialDefinition,
   NewRelyingParty,
-  RelyingPartyType,
+  RelyingPartyType, NewCredentialSchema, IdentifierType, CredentialSchema,
 } from '../../../types'
+import { CredentialSchemaRepository } from '../CredentialSchemaRepository'
 
 describe('Database relying party repository tests', (): void => {
   let client: PGlite
   let repository: RelyingPartyRepository
+  let credentialSchema: CredentialSchema
   let credentialDefinition1: CredentialDefinition
   let credentialDefinition2: CredentialDefinition
   let asset: Asset
@@ -45,11 +47,13 @@ describe('Database relying party repository tests', (): void => {
     }
     asset = await assetRepository.create(newAsset)
     const credentialDefinitionRepository = Container.get(CredentialDefinitionRepository)
-    const newCredentialDefinition: NewCredentialDefinition = {
+    const credentialSchemaRepository = Container.get(CredentialSchemaRepository)
+
+    const newCredentialSchema: NewCredentialSchema = {
       name: 'example_name',
       version: 'example_version',
-      icon: asset.id,
-      type: CredentialType.ANONCRED,
+      identifierType: IdentifierType.DID,
+      identifier: 'did:sov:XUeUZauFLeBNofY3NhaZCB',
       attributes: [
         {
           name: 'example_attribute_name1',
@@ -62,6 +66,18 @@ describe('Database relying party repository tests', (): void => {
           type: CredentialAttributeType.STRING,
         },
       ],
+    }
+    credentialSchema = await credentialSchemaRepository.create(newCredentialSchema)
+
+    const newCredentialDefinition: NewCredentialDefinition = {
+      name: 'example_name',
+      version: 'example_version',
+      identifierType: IdentifierType.DID,
+      identifier: 'did:sov:XUeUZauFLeBNofY3NhaZCB',
+      icon: asset.id,
+      type: CredentialType.ANONCRED,
+      credentialSchema: credentialSchema.id
+
       // representations: [
       //     { // TODO SHOWCASE-81 OCARepresentation
       //

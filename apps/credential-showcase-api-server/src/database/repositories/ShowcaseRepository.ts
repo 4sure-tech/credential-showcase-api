@@ -84,7 +84,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                   cd: {
                     with: {
                       icon: true,
-                      credentialSchema: {
+                      cs: {
                         with: {
                           attributes: true,
                         },
@@ -105,7 +105,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                   cd: {
                     with: {
                       icon: true,
-                      credentialSchema: {
+                      cs: {
                         with: {
                           attributes: true,
                         },
@@ -150,7 +150,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
           showcasesToCredentialDefinitionsResult.map((item) => item.credentialDefinition),
         ),
         with: {
-          credentialSchema: {
+          cs: {
             with: {
               attributes: true,
             },
@@ -202,7 +202,10 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
           }),
           personas: scenario.personas.map((item) => item.persona),
         })),
-        credentialDefinitions: credentialDefinitionsResult,
+        credentialDefinitions: credentialDefinitionsResult.map((item: any) => ({
+          ...item,
+          credentialSchema: item.cs,
+        })),
         personas: personasResult,
         bannerImage: bannerImageResult,
       }
@@ -277,7 +280,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                   cd: {
                     with: {
                       icon: true,
-                      credentialSchema: {
+                      cs: {
                         with: {
                           attributes: true,
                         },
@@ -298,7 +301,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                   cd: {
                     with: {
                       icon: true,
-                      credentialSchema: {
+                      cs: {
                         with: {
                           attributes: true,
                         },
@@ -342,7 +345,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
           showcasesToCredentialDefinitionsResult.map((item) => item.credentialDefinition),
         ),
         with: {
-          credentialSchema: {
+          cs: {
             with: {
               attributes: true,
             },
@@ -393,7 +396,10 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
           }),
           personas: scenario.personas.map((item) => item.persona),
         })),
-        credentialDefinitions: credentialDefinitionsResult,
+        credentialDefinitions: credentialDefinitionsResult.map((item: any) => ({
+          ...item,
+          credentialSchema: item.cs,
+        })),
         personas: personasResult,
         bannerImage: bannerImageResult,
       }
@@ -411,7 +417,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
             credentialDefinition: {
               with: {
                 icon: true,
-                credentialSchema: {
+                cs: {
                   with: {
                     attributes: true,
                   },
@@ -443,7 +449,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                         cd: {
                           with: {
                             icon: true,
-                            credentialSchema: {
+                            cs: {
                               with: {
                                 attributes: true,
                               },
@@ -464,7 +470,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                         cd: {
                           with: {
                             icon: true,
-                            credentialSchema: {
+                            cs: {
                               with: {
                                 attributes: true,
                               },
@@ -529,7 +535,10 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
         }),
         personas: scenario.scenario.personas.map((item) => item.persona),
       })),
-      credentialDefinitions: result.credentialDefinitions.map((item) => item.credentialDefinition),
+      credentialDefinitions: result.credentialDefinitions.map((item: any) => ({
+      ...item,
+      credentialSchema: item.cs,
+      })),
       personas: result.personas.map((item) => item.persona),
     }
   }
@@ -544,7 +553,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
             credentialDefinition: {
               with: {
                 icon: true,
-                credentialSchema: {
+                cs: {
                   with: {
                     attributes: true,
                   },
@@ -576,7 +585,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                         cd: {
                           with: {
                             icon: true,
-                            credentialSchema: {
+                            cs: {
                               with: {
                                 attributes: true,
                               },
@@ -597,7 +606,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                         cd: {
                           with: {
                             icon: true,
-                            credentialSchema: {
+                            cs: {
                               with: {
                                 attributes: true,
                               },

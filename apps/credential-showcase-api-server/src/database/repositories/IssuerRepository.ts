@@ -7,12 +7,14 @@ import { NotFoundError } from '../../errors'
 import { credentialDefinitions, credentialSchemas, issuers, issuersToCredentialDefinitions } from '../schema'
 import { Issuer, NewIssuer, RepositoryDefinition } from '../../types'
 import { issuersToCredentialSchemas } from '../schema/issuersToCredentialSchemas'
+import { CredentialSchemaRepository } from './CredentialSchemaRepository'
 
 @Service()
 class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
   constructor(
     private readonly databaseService: DatabaseService,
     private readonly credentialDefinitionRepository: CredentialDefinitionRepository,
+    private readonly credentialSchemaRepository: CredentialSchemaRepository,
     private readonly assetRepository: AssetRepository,
   ) {}
 
@@ -20,11 +22,18 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
     if (issuer.credentialDefinitions.length === 0) {
       return Promise.reject(Error('At least one credential definition is required'))
     }
+    if (issuer.credentialSchemas.length === 0) {
+      return Promise.reject(Error('At least one credential schema is required'))
+    }
 
     const credentialDefinitionPromises = issuer.credentialDefinitions.map(
       async (credentialDefinition) => await this.credentialDefinitionRepository.findById(credentialDefinition),
     )
     await Promise.all(credentialDefinitionPromises)
+    const credentialSchemaPromises = issuer.credentialSchemas.map(
+      async (credentialDefinition) => await this.credentialSchemaRepository.findById(credentialDefinition),
+    )
+    await Promise.all(credentialSchemaPromises)
     const logoResult = issuer.logo ? await this.assetRepository.findById(issuer.logo) : null
 
     return (await this.databaseService.getConnection()).transaction(async (tx): Promise<Issuer> => {
@@ -52,7 +61,7 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
           issuersToCredentialDefinitionsResult.map((item) => item.credentialDefinition),
         ),
         with: {
-          credentialSchema: {
+          cs: {
             with: {
               attributes: true,
             },
@@ -66,9 +75,9 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
       const issuersToCredentialSchemasResult = await tx
         .insert(issuersToCredentialSchemas)
         .values(
-          issuer.credentialSchemas.map((credentialSchemaId: string) => ({
+          issuer.credentialSchemas.map((credentialSchema: string) => ({
             issuer: issuerResult.id,
-            credentialSchema: credentialSchemaId,
+            credentialSchema: credentialSchema,
           })),
         )
         .returning()
@@ -86,7 +95,10 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
       return {
         ...issuerResult,
         logo: logoResult,
-        credentialDefinitions: credentialDefinitionsResult,
+        credentialDefinitions: credentialDefinitionsResult.map((item: any) => ({
+          ...item,
+          credentialSchema: item.cs,
+        })),
         credentialSchemas: credentialSchemasResult,
       }
     })
@@ -103,11 +115,18 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
     if (issuer.credentialDefinitions.length === 0) {
       return Promise.reject(Error('At least one credential definition is required'))
     }
+    if (issuer.credentialSchemas.length === 0) {
+      return Promise.reject(Error('At least one credential schema is required'))
+    }
 
     const credentialDefinitionPromises = issuer.credentialDefinitions.map(
       async (credentialDefinition) => await this.credentialDefinitionRepository.findById(credentialDefinition),
     )
     await Promise.all(credentialDefinitionPromises)
+    const credentialSchemaPromises = issuer.credentialSchemas.map(
+      async (credentialDefinition) => await this.credentialSchemaRepository.findById(credentialDefinition),
+    )
+    await Promise.all(credentialSchemaPromises)
     const logoResult = issuer.logo ? await this.assetRepository.findById(issuer.logo) : null
 
     return (await this.databaseService.getConnection()).transaction(async (tx): Promise<Issuer> => {
@@ -121,6 +140,7 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
         .returning()
 
       await tx.delete(issuersToCredentialDefinitions).where(eq(issuersToCredentialDefinitions.issuer, id))
+      await tx.delete(issuersToCredentialSchemas).where(eq(issuersToCredentialSchemas.issuer, id))
 
       const issuersToCredentialDefinitionsResult = await tx
         .insert(issuersToCredentialDefinitions)
@@ -138,7 +158,7 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
           issuersToCredentialDefinitionsResult.map((item) => item.credentialDefinition),
         ),
         with: {
-          credentialSchema: {
+          cs: {
             with: {
               attributes: true,
             },
@@ -152,9 +172,9 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
       const issuersToCredentialSchemasResult = await tx
         .insert(issuersToCredentialSchemas)
         .values(
-          issuer.credentialSchemas.map((credentialSchemaId: string) => ({
+          issuer.credentialSchemas.map((credentialSchema: string) => ({
             issuer: issuerResult.id,
-            credentialSchema: credentialSchemaId,
+            credentialSchema: credentialSchema,
           })),
         )
         .returning()
@@ -172,7 +192,10 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
       return {
         ...issuerResult,
         logo: logoResult,
-        credentialDefinitions: credentialDefinitionsResult,
+        credentialDefinitions: credentialDefinitionsResult.map((item: any) => ({
+          ...item,
+          credentialSchema: item.cs,
+        })),
         credentialSchemas: credentialSchemasResult,
       }
     })
@@ -189,7 +212,7 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
             cd: {
               with: {
                 icon: true,
-                credentialSchema: {
+                cs: {
                   with: {
                     attributes: true,
                   },
@@ -204,10 +227,10 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
           with: {
             cs: {
               with: {
-                attributes: true
-              }
-            }
-          }
+                attributes: true,
+              },
+            },
+          },
         },
         logo: true,
       },
@@ -219,7 +242,10 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
 
     return {
       ...result,
-      credentialDefinitions: result.cds.map((item) => item.cd),
+      credentialDefinitions: result.cds.map((item: any) => ({
+        ...item,
+        credentialSchema: item.cs,
+      })),
       credentialSchemas: result.css.map((item) => item.cs),
     }
   }
@@ -234,7 +260,7 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
             cd: {
               with: {
                 icon: true,
-                credentialSchema: {
+                cs: {
                   with: {
                     attributes: true,
                   },
@@ -249,10 +275,10 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
           with: {
             cs: {
               with: {
-                attributes: true
-              }
-            }
-          }
+                attributes: true,
+              },
+            },
+          },
         },
         logo: true,
       },
@@ -260,7 +286,10 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
 
     return result.map((issuer) => ({
       ...issuer,
-      credentialDefinitions: issuer.cds.map((item) => item.cd),
+      credentialDefinitions: issuer.cds.map((item: any) => ({
+        ...item,
+        credentialSchema: item.cs,
+      })),
       credentialSchemas: issuer.css.map((item) => item.cs),
     }))
   }

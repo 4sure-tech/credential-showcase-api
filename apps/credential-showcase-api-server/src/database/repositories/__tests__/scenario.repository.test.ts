@@ -15,7 +15,7 @@ import * as schema from '../../../database/schema'
 import {
   Asset,
   CredentialAttributeType,
-  CredentialType,
+  CredentialType, IdentifierType,
   IssuanceScenario,
   Issuer,
   IssuerType,
@@ -73,7 +73,7 @@ describe('Database scenario repository tests', (): void => {
     const newCredentialSchema: NewCredentialSchema = {
       name: 'example_name',
       version: 'example_version',
-      identifierType: 'DID',
+      identifierType: IdentifierType.DID,
       identifier: 'did:sov:XUeUZauFLeBNofY3NhaZCB',
       attributes: [
         {
@@ -93,11 +93,11 @@ describe('Database scenario repository tests', (): void => {
     const newCredentialDefinition: NewCredentialDefinition = {
       name: 'example_name',
       version: 'example_version',
-      identifierType: 'DID',
+      identifierType: IdentifierType.DID,
       identifier: 'did:sov:XUeUZauFLeBNofY3NhaZCB',
       icon: asset.id,
       type: CredentialType.ANONCRED,
-      credentialSchemaId: credentialSchema.id,
+      credentialSchema: credentialSchema.id,
       // representations: [
       //     { // TODO SHOWCASE-81 OCARepresentation
       //

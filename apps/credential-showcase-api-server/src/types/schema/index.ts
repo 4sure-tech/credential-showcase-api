@@ -31,16 +31,16 @@ export type NewPersona = typeof personas.$inferInsert & {
   hidden: boolean
 }
 
-export type CredentialDefinition = Omit<typeof credentialDefinitions.$inferSelect, 'icon' | 'type'> & {
+export type CredentialDefinition = Omit<typeof credentialDefinitions.$inferSelect, 'icon' | 'type' | 'credentialSchema'> & {
   type: CredentialType
   icon: Asset
   credentialSchema: CredentialSchema
   representations: CredentialRepresentation[]
   revocation?: RevocationInfo | null
 }
+
 export type NewCredentialDefinition = Omit<typeof credentialDefinitions.$inferInsert, 'type'> & {
   type: CredentialType
-  credentialSchemaId: string
   representations?: NewCredentialRepresentation[] // TODO SHOWCASE-81 make required
   revocation?: NewRevocationInfo | null
 }
@@ -102,6 +102,10 @@ export enum CredentialAttributeType {
 
 export enum RelyingPartyType {
   ARIES = 'ARIES',
+}
+
+export enum IdentifierType {
+  DID = 'DID',
 }
 
 export enum IssuerType {

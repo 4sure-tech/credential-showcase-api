@@ -16,7 +16,7 @@ export const credentialDefinitions = pgTable('credentialDefinition', {
   version: text().notNull(),
   identifierType: IdentifierTypePg('identifier_type').notNull().$type<IdentifierType>(),
   identifier: text().notNull(),
-  credentialSchemaId: uuid('credential_schema_id')
+  credentialSchema: uuid('credential_schema')
     .references(() => credentialSchemas.id)
     .notNull(),
   icon: uuid()
@@ -31,8 +31,8 @@ export const credentialDefinitions = pgTable('credentialDefinition', {
 })
 
 export const credentialDefinitionRelations = relations(credentialDefinitions, ({ one, many }) => ({
-  credentialSchema: one(credentialSchemas, {
-    fields: [credentialDefinitions.credentialSchemaId],
+  cs: one(credentialSchemas, {
+    fields: [credentialDefinitions.credentialSchema],
     references: [credentialSchemas.id],
   }),
   icon: one(assets, {

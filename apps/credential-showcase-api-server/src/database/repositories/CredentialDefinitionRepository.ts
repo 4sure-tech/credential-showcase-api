@@ -17,7 +17,7 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
 
   async create(credentialDefinition: NewCredentialDefinition): Promise<CredentialDefinition> {
     const iconResult = await this.assetRepository.findById(credentialDefinition.icon)
-    const credentialSchemaResult = await this.credentialSchemaRepository.findById(credentialDefinition.credentialSchemaId)
+    const credentialSchemaResult = await this.credentialSchemaRepository.findById(credentialDefinition.credentialSchema)
 
     return (await this.databaseService.getConnection()).transaction(async (tx): Promise<CredentialDefinition> => {
       const [credentialDefinitionResult] = await tx
@@ -95,7 +95,7 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
       //         })
       //         .returning();
       // }
-      const credentialSchemaResult = await this.credentialSchemaRepository.findById(credentialDefinition.credentialSchemaId)
+      const credentialSchemaResult = await this.credentialSchemaRepository.findById(credentialDefinition.credentialSchema)
 
       return {
         ...credentialDefinitionResult,
@@ -114,7 +114,7 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
       where: eq(credentialDefinitions.id, id),
       with: {
         icon: true,
-        credentialSchema: {
+        cs: {
           with: {
             attributes: true,
           },
@@ -127,14 +127,17 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
     if (!result) {
       return Promise.reject(new NotFoundError(`No credential definition found for id: ${id}`))
     }
-    return result
+    return {
+      ...result,
+      credentialSchema: result.cs,
+    }
   }
 
   async findAll(): Promise<CredentialDefinition[]> {
-    return (await this.databaseService.getConnection()).query.credentialDefinitions.findMany({
+    const result = await (await this.databaseService.getConnection()).query.credentialDefinitions.findMany({
       with: {
         icon: true,
-        credentialSchema: {
+        cs: {
           with: {
             attributes: true,
           },
@@ -143,6 +146,10 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
         revocation: true,
       },
     })
+    return result.map((item: any) => ({
+      ...item,
+      credentialSchema: item.cs,
+    }))
   }
 }
 

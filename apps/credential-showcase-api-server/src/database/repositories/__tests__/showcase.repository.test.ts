@@ -16,7 +16,7 @@ import {
   Asset,
   CredentialAttributeType,
   CredentialDefinition,
-  CredentialType,
+  CredentialType, IdentifierType,
   IssuanceScenario,
   IssuerType,
   NewAsset,
@@ -68,7 +68,7 @@ describe('Database showcase repository tests', (): void => {
     const newCredentialSchema: NewCredentialSchema = {
       name: 'example_name',
       version: 'example_version',
-      identifierType: 'DID',
+      identifierType: IdentifierType.DID,
       identifier: 'did:sov:XUeUZauFLeBNofY3NhaZCB',
       attributes: [
         {
@@ -88,11 +88,11 @@ describe('Database showcase repository tests', (): void => {
     const newCredentialDefinition: NewCredentialDefinition = {
       name: 'example_name',
       version: 'example_version',
-      identifierType: 'DID',
+      identifierType: IdentifierType.DID,
       identifier: 'did:sov:XUeUZauFLeBNofY3NhaZCB',
       icon: asset.id,
       type: CredentialType.ANONCRED,
-      credentialSchemaId: credentialSchema.id,
+      credentialSchema: credentialSchema.id,
       // representations: [
       //     { // TODO SHOWCASE-81 OCARepresentation
       //
