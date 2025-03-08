@@ -12,11 +12,10 @@ export const credentialAttributes = pgTable('credentialAttribute', {
   credentialSchema: uuid('credential_schema')
     .references(() => credentialSchemas.id, { onDelete: 'cascade' })
     .notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at')
+  createdAt: timestamp('created_at', { mode: 'string' }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { mode: 'string' })
     .defaultNow()
     .notNull()
-    .$onUpdate(() => new Date()),
 })
 
 export const credentialAttributeRelations = relations(credentialAttributes, ({ one }) => ({
