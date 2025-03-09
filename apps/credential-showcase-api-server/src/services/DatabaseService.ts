@@ -39,10 +39,10 @@ export class DatabaseService {
       // Run migrations
       await migrate(db, { migrationsFolder })
 
-      console.log("Database migrations completed successfully")
+      console.log('Database migrations completed successfully')
     } catch (error) {
-      console.error("Error running database migrations:", error)
-     // return Promise.reject(Error("Failed to run database migrations")) // TODO test with enabled later
+      console.error('Error running database migrations:', error)
+      // return Promise.reject(Error("Failed to run database migrations")) // TODO test with enabled later
     }
   }
 }

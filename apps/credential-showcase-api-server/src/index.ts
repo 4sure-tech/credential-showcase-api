@@ -26,27 +26,27 @@ async function bootstrap() {
     console.log('Database migrations completed successfully')
 
     // Create and configure Express server
-const app = createExpressServer({
-  controllers: [
-    AssetController,
-    PersonaController,
-    CredentialSchemaController,
-    CredentialDefinitionController,
-    RelyingPartyController,
-    IssuerController,
-    IssuanceScenarioController,
-    PresentationScenarioController,
-    ShowcaseController,
-  ],
-  middlewares: [ExpressErrorHandler],
-  defaultErrorHandler: false,
-})
+    const app = createExpressServer({
+      controllers: [
+        AssetController,
+        PersonaController,
+        CredentialSchemaController,
+        CredentialDefinitionController,
+        RelyingPartyController,
+        IssuerController,
+        IssuanceScenarioController,
+        PresentationScenarioController,
+        ShowcaseController,
+      ],
+      middlewares: [ExpressErrorHandler],
+      defaultErrorHandler: false,
+    })
 
     // Start the server
-const port = Number(process.env.PORT)
-app.listen(port, (): void => {
-  console.log(`Server is running on port ${port}`)
-})
+    const port = Number(process.env.PORT)
+    app.listen(port, (): void => {
+      console.log(`Server is running on port ${port}`)
+    })
   } catch (error) {
     console.error('Failed to start application:', error)
     process.exit(1)
