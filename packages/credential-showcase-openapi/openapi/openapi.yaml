@@ -2518,6 +2518,7 @@ components:
         - description
         - type
         - credentialDefinitions
+        - credentialSchemas
       properties:
         name:
           type: string
@@ -2543,6 +2544,11 @@ components:
           type: string
           example: 123e4567-e89b-12d3-a456-426614174469
         credentialDefinitions:
+          type: array
+          items:
+            type: string
+            example: 123e4567-e89b-12d3-a456-426614174469
+        credentialSchemas:
           type: array
           items:
             type: string

@@ -15,6 +15,7 @@ describe('CredentialSchemaController Integration Tests', () => {
   beforeAll(async () => {
     // Start a new Postgres container
     container = await new PostgreSqlContainer().start()
+
     // Set the connection URL environment variable for your DatabaseService
     process.env.DB_URL = container.getConnectionUri()
     process.env.DB_USERNAME = 'postgres'
@@ -23,10 +24,8 @@ describe('CredentialSchemaController Integration Tests', () => {
     process.env.DB_PORT = container.getMappedPort(5432).toString()
     process.env.DB_NAME = 'postgres'
 
-    // Configure routing-controllers to use TypeDI
     useContainer(Container)
 
-    // Create Express server with the CredentialSchemaController.
     app = createExpressServer({
       controllers: [CredentialSchemaController],
     })

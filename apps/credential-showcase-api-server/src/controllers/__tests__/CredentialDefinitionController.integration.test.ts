@@ -28,11 +28,8 @@ describe('CredentialDefinitionController Integration Tests', () => {
     process.env.DB_PORT = container.getMappedPort(5432).toString()
     process.env.DB_NAME = 'postgres'
 
-    // Configure routing-controllers to use TypeDI
     useContainer(Container)
 
-    // The repositories and services are auto-registered via @Service decorators.
-    // Ensure they are instantiated in the container.
     Container.get(AssetRepository)
     Container.get(CredentialSchemaRepository)
     Container.get(CredentialDefinitionRepository)

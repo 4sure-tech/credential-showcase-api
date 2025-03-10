@@ -52,7 +52,7 @@ export const credentialSchemaDTOFrom = (credentialDefinition: CredentialSchema):
   return {
     ...credentialDefinition,
     identifierType: credentialDefinition.identifierType as IdentifierType,
-    identifier: credentialDefinition.identifierType as IdentifierType,
+    identifier: credentialDefinition.identifier as string | undefined,
   }
 }
 

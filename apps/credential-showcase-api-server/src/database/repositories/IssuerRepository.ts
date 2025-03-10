@@ -288,7 +288,7 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
       ...issuer,
       credentialDefinitions: issuer.cds.map((item: any) => ({
         ...item,
-        credentialSchema: item.cs,
+        credentialSchema: item.cd.cs,
       })),
       credentialSchemas: issuer.css.map((item) => item.cs),
     }))
