@@ -22,7 +22,9 @@ export class CredentialSchemaController {
       const result = await this.credentialSchemaService.getCredentialSchemas()
       return CredentialSchemasResponseFromJSONTyped({ result }, false)
     } catch (e) {
-      console.error('getAll schemas failed:', e)
+      if (!(e instanceof NotFoundError)) {
+        console.error('getAll schemas failed:', e)
+      }
       return Promise.reject(e)
     }
   }
@@ -33,7 +35,9 @@ export class CredentialSchemaController {
       const credentialSchema = await this.credentialSchemaService.getCredentialSchema(id)
       return CredentialSchemaResponseFromJSONTyped({ credentialSchema }, false)
     } catch (e) {
-      console.error(`getOne schema id=${id} failed:`, e)
+      if (!(e instanceof NotFoundError)) {
+        console.error(`getOne schema id=${id} failed:`, e)
+      }
       return Promise.reject(e)
     }
   }
