@@ -3001,6 +3001,7 @@ components:
         - hidden
         - createdAt
         - updatedAt
+        - version
       properties:
         id:
           type: string
@@ -3051,6 +3052,10 @@ components:
           description: Date and time the showcase was last updated
           format: date-time
           example: 2025-03-06T11:30:16.573Z
+        version:
+          type: string
+          description: The version of the showcase
+          example: '1.0'
     ShowcasesResponse:
       type: object
       properties:
