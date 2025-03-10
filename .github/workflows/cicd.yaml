@@ -1,0 +1,29 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'apps/credential-showcase-api-server/**'
+      - 'packages/credential-showcase-traction-adapter/**'
+  workflow_dispatch:
+    inputs:
+      api_server:
+        description: 'Build and deploy API server'
+        type: boolean
+        default: false
+      traction_adapter:
+        description: 'Build and deploy Traction adapter'
+        type: boolean
+        default: false
+      branch:
+        description: 'Branch to deploy from'
+        type: string
+        required: true
+
+jobs:
+  echo:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Placeholder workflow - will be overridden by branch workflow"
