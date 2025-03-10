@@ -8,25 +8,16 @@ import { CredentialSchemaRepository } from '../../database/repositories/Credenti
 import AssetRepository from '../../database/repositories/AssetRepository'
 import { Application } from 'express'
 import { CredentialAttributeType, IdentifierType, NewCredentialSchema } from '../../types'
-import { PostgreSqlContainer, StartedPostgreSqlContainer } from '@testcontainers/postgresql'
 import { CredentialDefinitionRequest } from 'credential-showcase-openapi'
+import testDbContainer from './testDbContainer'
 import supertest = require('supertest')
 
 let app: Application
 let request: any
-let container: StartedPostgreSqlContainer
 
 describe('CredentialDefinitionController Integration Tests', () => {
   beforeAll(async () => {
-    // Start a new Postgres container
-    container = await new PostgreSqlContainer().start()
-    // Set the connection URL environment variable for your DatabaseService
-    process.env.DB_URL = container.getConnectionUri()
-    process.env.DB_USERNAME = 'postgres'
-    process.env.DB_PASSWORD = 'postgres'
-    process.env.DB_HOST = container.getHost()
-    process.env.DB_PORT = container.getMappedPort(5432).toString()
-    process.env.DB_NAME = 'postgres'
+    await testDbContainer.start()
 
     useContainer(Container)
 
@@ -43,6 +34,7 @@ describe('CredentialDefinitionController Integration Tests', () => {
   })
 
   afterAll(async () => {
+    await testDbContainer.stop()
     Container.reset()
   })
 

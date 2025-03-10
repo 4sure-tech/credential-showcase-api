@@ -5,22 +5,15 @@ import AssetController from '../AssetController'
 import AssetService from '../../services/AssetService'
 import AssetRepository from '../../database/repositories/AssetRepository'
 import { Application } from 'express'
-import { PostgreSqlContainer, StartedPostgreSqlContainer } from '@testcontainers/postgresql'
+import testDbContainer from './testDbContainer'
 import supertest = require('supertest')
 
 describe('AssetController Integration Tests', () => {
   let app: Application
   let request: any
-  let container: StartedPostgreSqlContainer
 
   beforeAll(async () => {
-    container = await new PostgreSqlContainer().start()
-    process.env.DB_URL = container.getConnectionUri()
-    process.env.DB_USERNAME = 'postgres'
-    process.env.DB_PASSWORD = 'postgres'
-    process.env.DB_HOST = container.getHost()
-    process.env.DB_PORT = container.getMappedPort(5432).toString()
-    process.env.DB_NAME = 'postgres'
+    await testDbContainer.start()
 
     useContainer(Container)
     Container.get(AssetRepository)
@@ -34,7 +27,7 @@ describe('AssetController Integration Tests', () => {
 
   afterAll(async () => {
     Container.reset()
-    await container.stop()
+    await testDbContainer.stop()
   })
 
   it('should create, retrieve, update, and delete an asset', async () => {
