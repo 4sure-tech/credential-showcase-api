@@ -79,10 +79,7 @@ class PresentationScenarioController {
   }
 
   @Get('/:slug/steps/:stepId')
-  public async getOnePresentationScenarioStep(
-    @Param('slug') slug: string,
-    @Param('stepId') stepId: string,
-  ): Promise<StepResponse> {
+  public async getOnePresentationScenarioStep(@Param('slug') slug: string, @Param('stepId') stepId: string): Promise<StepResponse> {
     const presentationScenarioId = await this.scenarioService.getIdBySlug(slug)
     const result = await this.scenarioService.getScenarioStep(presentationScenarioId, stepId)
     return StepResponseFromJSONTyped({ step: stepDTOFrom(result) }, false)
@@ -90,10 +87,7 @@ class PresentationScenarioController {
 
   @HttpCode(201)
   @Post('/:slug/steps')
-  public async postPresentationScenarioStep(
-    @Param('slug') slug: string,
-    @Body() stepRequest: StepRequest,
-  ): Promise<StepResponse> {
+  public async postPresentationScenarioStep(@Param('slug') slug: string, @Body() stepRequest: StepRequest): Promise<StepResponse> {
     const presentationScenarioId = await this.scenarioService.getIdBySlug(slug)
     const result = await this.scenarioService.createScenarioStep(presentationScenarioId, StepRequestToJSONTyped(stepRequest))
     return StepResponseFromJSONTyped({ step: stepDTOFrom(result) }, false)
@@ -112,19 +106,13 @@ class PresentationScenarioController {
 
   @OnUndefined(204)
   @Delete('/:slug/steps/:stepId')
-  public async deletePresentationScenarioStep(
-    @Param('slug') slug: string,
-    @Param('stepId') stepId: string,
-  ): Promise<void> {
+  public async deletePresentationScenarioStep(@Param('slug') slug: string, @Param('stepId') stepId: string): Promise<void> {
     const presentationScenarioId = await this.scenarioService.getIdBySlug(slug)
     return this.scenarioService.deleteScenarioStep(presentationScenarioId, stepId)
   }
 
   @Get('/:slug/steps/:stepId/actions')
-  public async getAllPresentationScenarioStepActions(
-    @Param('slug') slug: string,
-    @Param('stepId') stepId: string,
-  ): Promise<StepActionsResponse> {
+  public async getAllPresentationScenarioStepActions(@Param('slug') slug: string, @Param('stepId') stepId: string): Promise<StepActionsResponse> {
     const presentationScenarioId = await this.scenarioService.getIdBySlug(slug)
     const result = await this.scenarioService.getScenarioStepActions(presentationScenarioId, stepId)
     const actions = result.map((action) => action)

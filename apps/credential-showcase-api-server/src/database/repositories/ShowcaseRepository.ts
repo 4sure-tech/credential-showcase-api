@@ -53,14 +53,17 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
     const slug = await generateSlug({
       value: showcase.name,
       connection,
-      schema: showcases
+      schema: showcases,
     })
 
     return connection.transaction(async (tx): Promise<Showcase> => {
-      const [showcaseResult] = await tx.insert(showcases).values({
-        ...showcase,
-        slug
-      }).returning()
+      const [showcaseResult] = await tx
+        .insert(showcases)
+        .values({
+          ...showcase,
+          slug,
+        })
+        .returning()
 
       const showcasesToScenariosResult = await tx
         .insert(showcasesToScenarios)
@@ -256,14 +259,18 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
       value: showcase.name,
       id,
       connection,
-      schema: showcases
+      schema: showcases,
     })
 
     return connection.transaction(async (tx): Promise<Showcase> => {
-      const [showcaseResult] = await tx.update(showcases).set({
-        ...showcase,
-        slug
-      }).where(eq(showcases.id, id)).returning()
+      const [showcaseResult] = await tx
+        .update(showcases)
+        .set({
+          ...showcase,
+          slug,
+        })
+        .where(eq(showcases.id, id))
+        .returning()
 
       await tx.delete(showcasesToCredentialDefinitions).where(eq(showcasesToCredentialDefinitions.showcase, id))
       await tx.delete(showcasesToPersonas).where(eq(showcasesToPersonas.showcase, id))
@@ -695,10 +702,11 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
   }
 
   async findIdBySlug(slug: string): Promise<string> {
-    const result = await (await this.databaseService.getConnection()).query.showcases.findFirst({
-      where: eq(showcases.slug, slug)
+    const result = await (
+      await this.databaseService.getConnection()
+    ).query.showcases.findFirst({
+      where: eq(showcases.slug, slug),
     })
-
 
     if (!result) {
       return Promise.reject(new NotFoundError(`No showcase found for slug: ${slug}`))
@@ -706,7 +714,6 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
 
     return result.id
   }
-
 }
 
 export default ShowcaseRepository

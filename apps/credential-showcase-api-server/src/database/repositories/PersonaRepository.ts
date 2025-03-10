@@ -21,7 +21,7 @@ class PersonaRepository implements RepositoryDefinition<Persona, NewPersona> {
     const slug = await generateSlug({
       value: persona.name,
       connection,
-      schema: personas
+      schema: personas,
     })
 
     const [result] = await connection
@@ -58,7 +58,7 @@ class PersonaRepository implements RepositoryDefinition<Persona, NewPersona> {
       value: persona.name,
       id,
       connection,
-      schema: personas
+      schema: personas,
     })
 
     const [result] = await connection
@@ -110,10 +110,11 @@ class PersonaRepository implements RepositoryDefinition<Persona, NewPersona> {
   }
 
   async findIdBySlug(slug: string): Promise<string> {
-    const result = await (await this.databaseService.getConnection()).query.personas.findFirst({
-      where: eq(personas.slug, slug)
+    const result = await (
+      await this.databaseService.getConnection()
+    ).query.personas.findFirst({
+      where: eq(personas.slug, slug),
     })
-
 
     if (!result) {
       return Promise.reject(new NotFoundError(`No persona found for slug: ${slug}`))

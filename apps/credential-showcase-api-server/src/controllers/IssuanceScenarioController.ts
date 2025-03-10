@@ -76,10 +76,7 @@ class IssuanceScenarioController {
   }
 
   @Get('/:slug/steps/:stepId')
-  public async getOneIssuanceScenarioStep(
-    @Param('slug') slug: string,
-    @Param('stepId') stepId: string,
-  ): Promise<StepResponse> {
+  public async getOneIssuanceScenarioStep(@Param('slug') slug: string, @Param('stepId') stepId: string): Promise<StepResponse> {
     const issuanceScenarioId = await this.scenarioService.getIdBySlug(slug)
     const result = await this.scenarioService.getScenarioStep(issuanceScenarioId, stepId)
     return StepResponseFromJSONTyped({ step: stepDTOFrom(result) }, false)
@@ -87,10 +84,7 @@ class IssuanceScenarioController {
 
   @HttpCode(201)
   @Post('/:slug/steps')
-  public async postIssuanceScenarioStep(
-    @Param('slug') slug: string,
-    @Body() stepRequest: StepRequest,
-  ): Promise<StepResponse> {
+  public async postIssuanceScenarioStep(@Param('slug') slug: string, @Body() stepRequest: StepRequest): Promise<StepResponse> {
     const issuanceScenarioId = await this.scenarioService.getIdBySlug(slug)
     const result = await this.scenarioService.createScenarioStep(issuanceScenarioId, StepRequestToJSONTyped(stepRequest))
     return StepResponseFromJSONTyped({ step: stepDTOFrom(result) }, false)
@@ -115,10 +109,7 @@ class IssuanceScenarioController {
   }
 
   @Get('/:slug/steps/:stepId/actions')
-  public async getAllIssuanceScenarioStepActions(
-    @Param('slug') slug: string,
-    @Param('stepId') stepId: string,
-  ): Promise<StepActionsResponse> {
+  public async getAllIssuanceScenarioStepActions(@Param('slug') slug: string, @Param('stepId') stepId: string): Promise<StepActionsResponse> {
     const issuanceScenarioId = await this.scenarioService.getIdBySlug(slug)
     const result = await this.scenarioService.getScenarioStepActions(issuanceScenarioId, stepId)
     const actions = result.map((action) => action)

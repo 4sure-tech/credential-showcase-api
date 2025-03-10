@@ -9,15 +9,7 @@ import { isIssuanceScenario, isPresentationScenario } from '../../utils/mappers'
 import { sortSteps } from '../../utils/sortUtils'
 import { generateSlug } from '../../utils/slugUtils'
 import { NotFoundError } from '../../errors'
-import {
-  ariesProofRequests,
-  assets,
-  credentialDefinitions,
-  stepActions,
-  steps,
-  scenarios,
-  scenariosToPersonas,
-} from '../schema'
+import { ariesProofRequests, assets, credentialDefinitions, stepActions, steps, scenarios, scenariosToPersonas } from '../schema'
 import {
   AriesOOBAction,
   Issuer,
@@ -67,7 +59,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
     const slug = await generateSlug({
       value: scenario.name,
       connection,
-      schema: scenarios
+      schema: scenarios,
     })
 
     return connection.transaction(async (tx): Promise<Scenario> => {
@@ -213,7 +205,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
       value: scenario.name,
       id: scenarioId,
       connection,
-      schema: scenarios
+      schema: scenarios,
     })
 
     return connection.transaction(async (tx): Promise<Scenario> => {
@@ -763,10 +755,11 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
   }
 
   async findIdBySlug(slug: string): Promise<string> {
-    const result = await (await this.databaseService.getConnection()).query.scenarios.findFirst({
-      where: eq(scenarios.slug, slug)
+    const result = await (
+      await this.databaseService.getConnection()
+    ).query.scenarios.findFirst({
+      where: eq(scenarios.slug, slug),
     })
-
 
     if (!result) {
       return Promise.reject(new NotFoundError(`No scenario found for slug: ${slug}`))

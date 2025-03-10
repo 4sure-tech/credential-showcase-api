@@ -11,10 +11,7 @@ class CredentialSchemaRepository implements RepositoryDefinition<CredentialSchem
 
   async create(credentialSchema: NewCredentialSchema): Promise<CredentialSchema> {
     return (await this.databaseService.getConnection()).transaction(async (tx): Promise<CredentialSchema> => {
-      const [credentialSchemaResult] = await tx
-        .insert(credentialSchemas)
-        .values(credentialSchema)
-        .returning()
+      const [credentialSchemaResult] = await tx.insert(credentialSchemas).values(credentialSchema).returning()
 
       const credentialAttributesResult = await tx
         .insert(credentialAttributes)
@@ -42,11 +39,7 @@ class CredentialSchemaRepository implements RepositoryDefinition<CredentialSchem
     await this.findById(id)
 
     return (await this.databaseService.getConnection()).transaction(async (tx): Promise<CredentialSchema> => {
-      const [credentialSchemaResult] = await tx
-        .update(credentialSchemas)
-        .set(credentialSchema)
-        .where(eq(credentialSchemas.id, id))
-        .returning()
+      const [credentialSchemaResult] = await tx.update(credentialSchemas).set(credentialSchema).where(eq(credentialSchemas.id, id)).returning()
 
       await tx.delete(credentialAttributes).where(eq(credentialAttributes.credentialSchema, id))
 

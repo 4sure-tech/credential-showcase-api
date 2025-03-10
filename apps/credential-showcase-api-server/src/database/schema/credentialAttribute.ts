@@ -14,9 +14,9 @@ export const credentialAttributes = pgTable('credentialAttribute', {
     .notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at')
-      .defaultNow()
-      .notNull()
-      .$onUpdate(() => new Date()),
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
 })
 
 export const credentialAttributeRelations = relations(credentialAttributes, ({ one }) => ({
