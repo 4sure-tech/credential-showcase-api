@@ -11,6 +11,7 @@
     "migration:generate": "npx drizzle-kit generate --config=drizzle.config.ts --name=credential-showcase-api"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "credential-showcase-openapi": "workspace:*",
     "dotenv-flow": "^4.1.0",
     "drizzle-orm": "^0.39.3",
@@ -22,6 +23,7 @@
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.2.17",
+    "@types/cors": "^2.8.17",
     "@types/dotenv-flow": "^3.3.3",
     "@types/express": "^5.0.0",
     "@types/pg": "^8.11.11",

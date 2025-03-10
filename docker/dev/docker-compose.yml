@@ -19,6 +19,12 @@ services:
       - DB_NAME=${DB_NAME}
       - APP_NAME=${APP_NAME}
       - LOG_LEVEL=${LOG_LEVEL}
+      # cors settings
+      - CORS_DISABLED=${CORS_DISABLED}
+      - ALLOW_ORIGINS=${ALLOW_ORIGINS}
+      - ALLOW_METHODS=${ALLOW_METHODS}
+      - ALLOW_HEADERS=${ALLOW_HEADERS}
+      - ALLOW_CREDENTIALS=${ALLOW_CREDENTIALS}
     depends_on:
       - postgres  # Ensure Postgres starts first
     ports:

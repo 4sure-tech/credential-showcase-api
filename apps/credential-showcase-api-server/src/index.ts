@@ -1,6 +1,7 @@
 import 'reflect-metadata'
 import { createExpressServer, useContainer } from 'routing-controllers'
 import Container from 'typedi'
+
 import { ExpressErrorHandler } from './middleware/ExpressErrorHandler'
 import AssetController from './controllers/AssetController'
 import PersonaController from './controllers/PersonaController'
@@ -9,6 +10,7 @@ import IssuerController from './controllers/IssuerController'
 import IssuanceScenarioController from './controllers/IssuanceScenarioController'
 import PresentationScenarioController from './controllers/PresentationScenarioController'
 import ShowcaseController from './controllers/ShowcaseController'
+import { corsOptions, corsDisabled } from './utils/cors'
 import { CredentialDefinitionController } from './controllers/CredentialDefinitionController'
 import { CredentialSchemaController } from './controllers/CredentialSchemaController'
 import DatabaseService from './services/DatabaseService'
@@ -40,10 +42,12 @@ async function bootstrap() {
       ],
       middlewares: [ExpressErrorHandler],
       defaultErrorHandler: false,
+  cors: corsDisabled ? false : corsOptions,
     })
 
     // Start the server
     const port = Number(process.env.PORT)
+
     app.listen(port, (): void => {
       console.log(`Server is running on port ${port}`)
     })
