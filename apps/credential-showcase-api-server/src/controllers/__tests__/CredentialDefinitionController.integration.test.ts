@@ -1,6 +1,5 @@
 import 'reflect-metadata'
 import { createExpressServer, useContainer } from 'routing-controllers'
-import supertest = require('supertest')
 import { Container } from 'typedi'
 import { CredentialDefinitionController } from '../CredentialDefinitionController'
 import CredentialDefinitionService from '../../services/CredentialDefinitionService'
@@ -11,6 +10,7 @@ import { Application } from 'express'
 import { CredentialAttributeType, IdentifierType, NewCredentialSchema } from '../../types'
 import { PostgreSqlContainer, StartedPostgreSqlContainer } from '@testcontainers/postgresql'
 import { CredentialDefinitionRequest } from 'credential-showcase-openapi'
+import supertest = require('supertest')
 
 let app: Application
 let request: any
@@ -88,7 +88,7 @@ describe('CredentialDefinitionController Integration Tests', () => {
         version: '1.0',
         identifierType: 'DID',
         identifier: 'did:test:456',
-        schemaId: credentialSchema.id,
+        credentialSchema: credentialSchema.id,
         icon: asset.id,
         type: 'ANONCRED',
         representations: [],
@@ -96,6 +96,7 @@ describe('CredentialDefinitionController Integration Tests', () => {
       .expect(201)
     const created = createResponse.body.credentialDefinition
     expect(created).toHaveProperty('id')
+    expect(created.credentialSchema).toHaveProperty('id')
 
     // Retrieve the created definition
     const getResponse = await request.get(`/credentials/definitions/${created.id}`).expect(200)
@@ -107,7 +108,7 @@ describe('CredentialDefinitionController Integration Tests', () => {
       .send({
         name: 'Updated Credential',
         version: '1.0',
-        schemaId: credentialSchema.id,
+        credentialSchema: credentialSchema.id,
         icon: asset.id,
         type: 'ANONCRED',
         representations: [],

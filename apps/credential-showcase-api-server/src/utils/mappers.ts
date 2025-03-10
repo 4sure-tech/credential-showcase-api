@@ -2,6 +2,8 @@ import {
   Asset as AssetDTO,
   AssetRequest,
   CredentialDefinition as CredentialDefinitionDTO,
+  CredentialDefinitionRequest,
+  CredentialSchema as CredentialSchemaDTO,
   IssuanceScenario as IssuanceScenarioDTO,
   Issuer as IssuerDTO,
   Persona as PersonaDTO,
@@ -13,6 +15,9 @@ import {
 import {
   Asset,
   CredentialDefinition,
+  CredentialSchema,
+  CredentialType,
+  IdentifierType,
   IssuanceScenario,
   Issuer,
   NewAsset,
@@ -43,20 +48,30 @@ export const assetDTOFrom = (asset: Asset): AssetDTO => {
   }
 }
 
-export const credentialDefinitionFromDTO = (dto: any): NewCredentialDefinition => {
-  const { schemaId, ...dtoMinusSchemaId } = dto
+export const credentialSchemaDTOFrom = (credentialDefinition: CredentialSchema): CredentialSchemaDTO => {
   return {
-    ...dtoMinusSchemaId,
-    credentialSchema: dto.schemaId,
+    ...credentialDefinition,
+    identifierType: credentialDefinition.identifierType as IdentifierType,
+    identifier: credentialDefinition.identifierType as IdentifierType,
+  }
+}
+
+export const credentialDefinitionFromDTO = (dto: CredentialDefinitionRequest): NewCredentialDefinition => {
+  return {
+    ...dto,
+    type: dto.type as unknown as CredentialType,
+    identifierType: dto.identifierType as IdentifierType | null | undefined,
   }
 }
 
 export const credentialDefinitionDTOFrom = (credentialDefinition: CredentialDefinition): CredentialDefinitionDTO => {
   return {
     ...credentialDefinition,
-    schemaId: credentialDefinition.credentialSchema.id,
+    identifierType: credentialDefinition.identifierType as IdentifierType,
+    identifier: credentialDefinition.identifier || undefined,
+    credentialSchema: credentialSchemaDTOFrom(credentialDefinition.credentialSchema),
     representations: credentialDefinition.representations,
-    revocation: credentialDefinition.revocation ? credentialDefinition.revocation : undefined,
+    revocation: credentialDefinition.revocation || undefined,
     icon: assetDTOFrom(credentialDefinition.icon),
   }
 }
@@ -76,7 +91,11 @@ export const issuerDTOFrom = (issuer: Issuer): IssuerDTO => {
     organization: issuer.organization ? issuer.organization : undefined,
     logo: issuer.logo ? assetDTOFrom(issuer.logo) : undefined,
     credentialDefinitions: issuer.credentialDefinitions.map((credentialDefinition) => credentialDefinitionDTOFrom(credentialDefinition)),
-    credentialSchemas: issuer.credentialSchemas,
+    credentialSchemas: issuer.credentialSchemas.map((schema) => ({
+      ...schema,
+      identifierType: schema.identifierType || undefined,
+      identifier: schema.identifier || undefined,
+    })),
   }
 }
 

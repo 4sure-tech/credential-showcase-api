@@ -1178,9 +1178,9 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /credentials/schemas/{schemaId}:
+  /credentials/schemas/{credentialSchema}:
     parameters:
-      - name: schemaId
+      - name: credentialSchema
         in: path
         required: true
         schema:
@@ -2672,7 +2672,7 @@ components:
         - name
         - version
         - type
-        - schemaId
+        - credentialSchema
         - icon
         # TODO enable back in SHOWCASE-81
         # - representations
@@ -2687,10 +2687,8 @@ components:
           type: string
           description: Name of the credential definition
           example: Credential Definition Name
-        schemaId:
-          type: string
-          description:  Identifier of the associated credential schema
-          example:  123e4567-e89b-12d3-a456-426614174123
+        credentialSchema:
+          $ref: '#/components/schemas/CredentialSchema'
         identifierType:
           $ref: '#/components/schemas/IdentifierType'
         identifier:
@@ -2732,7 +2730,7 @@ components:
         - version
         - type
         - icon
-        - schemaId
+        - credentialSchema
         - representations
       properties:
         name:
@@ -2751,7 +2749,7 @@ components:
           example: '1.0'
         type:
           $ref: '#/components/schemas/CredentialType'
-        schemaId:
+        credentialSchema:
           type: string
           description: Reference to the associated credential schema
           example: 456e4567-e89b-12d3-a456-426614174789
