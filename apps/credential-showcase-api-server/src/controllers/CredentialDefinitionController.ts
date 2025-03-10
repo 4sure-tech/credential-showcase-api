@@ -32,6 +32,9 @@ export class CredentialDefinitionController {
   @HttpCode(201)
   @Post('/')
   public async post(@Body() credentialDefinitionRequest: CredentialDefinitionRequest): Promise<CredentialDefinitionResponse> {
+
+    console.log(`credentialDefinitionRequest: ${JSON.stringify(credentialDefinitionRequest)}`)
+
     const result = await this.credentialDefinitionService.createCredentialDefinition(
       CredentialDefinitionRequestToJSONTyped(credentialDefinitionRequest),
     )

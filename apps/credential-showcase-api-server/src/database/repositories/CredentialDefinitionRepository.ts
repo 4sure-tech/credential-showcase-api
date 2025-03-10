@@ -19,6 +19,8 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
     const iconResult = await this.assetRepository.findById(credentialDefinition.icon)
     const credentialSchemaResult = await this.credentialSchemaRepository.findById(credentialDefinition.credentialSchema)
 
+    console.log(`credentialDefinition: ${JSON.stringify(credentialDefinition)}`)
+
     return (await this.databaseService.getConnection()).transaction(async (tx): Promise<CredentialDefinition> => {
       const [credentialDefinitionResult] = await tx.insert(credentialDefinitions).values(credentialDefinition).returning()
 

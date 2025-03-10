@@ -43,7 +43,7 @@ export type NewCredentialDefinition = Omit<typeof credentialDefinitions.$inferIn
   type: CredentialType
   representations?: NewCredentialRepresentation[] // TODO SHOWCASE-81 make required
   revocation?: NewRevocationInfo | null
-  schemaId: string
+  credentialSchema: string
 }
 
 export type CredentialAttribute = Omit<typeof credentialAttributes.$inferSelect, 'credentialSchema'> & {

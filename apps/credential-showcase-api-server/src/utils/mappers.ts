@@ -45,7 +45,7 @@ export const assetDTOFrom = (asset: Asset): AssetDTO => {
 export const credentialDefinitionDTOFrom = (credentialDefinition: CredentialDefinition): CredentialDefinitionDTO => {
   return {
     ...credentialDefinition,
-    schemaId: credentialDefinition.credentialSchema.id,
+    credentialSchema: credentialDefinition.credentialSchema,
     revocation: credentialDefinition.revocation ? credentialDefinition.revocation : undefined,
     icon: assetDTOFrom(credentialDefinition.icon),
   }
