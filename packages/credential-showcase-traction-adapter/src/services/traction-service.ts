@@ -115,12 +115,12 @@ export class TractionService {
    * @param issuerId
    * @returns The credential definition ID if found, otherwise null
    */
-  public async findExistingCredentialDefinition(schemaId: string, version: string, issuerId:string): Promise<CredDefResult | undefined> {
+  public async findExistingCredentialDefinition(schemaId: string, version: string, issuerId: string): Promise<CredDefResult | undefined> {
     try {
       const response = await this.anoncredsApi.anoncredsCredentialDefinitionsGet({
         schemaId,
         schemaVersion: version,
-        issuerId
+        issuerId,
       })
 
       if (response.credentialDefinitionIds && response.credentialDefinitionIds.length > 0) {
@@ -155,15 +155,19 @@ export class TractionService {
       for (const credentialSchema of issuer.credentialSchemas) {
         const schemaId = await this.findExistingSchema(credentialSchema.name, credentialSchema.version, issuerId)
         if (schemaId) {
-          return Promise.reject(Error(`Credential schema ${credentialSchema.name} version ${credentialSchema.version} for issuer ${issuer.identifier} for issuer ${issuer.id} / ${issuer.name} already exists on the ledger`))
+          return Promise.reject(
+            Error(
+              `Credential schema ${credentialSchema.name} version ${credentialSchema.version} for issuer ${issuer.identifier} for issuer ${issuer.id} / ${issuer.name} already exists on the ledger`,
+            ),
+          )
         }
         await this.createSchema(credentialSchema, issuerId)
       }
     }
 
-    if(issuer.credentialDefinitions) {
+    if (issuer.credentialDefinitions) {
       for (const credentialDef of issuer.credentialDefinitions) {
-        const existingCredDef = await this.findExistingCredentialDefinition(credentialDef.id, credentialDef.version, )
+        const existingCredDef = await this.findExistingCredentialDefinition(credentialDef.id, credentialDef.version)
         if (existingCredDef) {
           return existingCredDef
         }
@@ -175,7 +179,6 @@ export class TractionService {
         return this.handleApiResponse(apiResponse)
       }
     }
-
   }
 
   private async getOrCreateIssuerId(issuer: Issuer) {

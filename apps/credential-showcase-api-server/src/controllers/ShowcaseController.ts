@@ -6,7 +6,8 @@ import {
   ShowcaseRequest,
   ShowcaseRequestToJSONTyped,
   ShowcasesResponse,
-  ShowcasesResponseFromJSONTyped, ShowcaseStatus,
+  ShowcasesResponseFromJSONTyped,
+  ShowcaseStatus,
 } from 'credential-showcase-openapi'
 import ShowcaseService from '../services/ShowcaseService'
 import { credentialDefinitionDTOFrom, showcaseDTOFrom } from '../utils/mappers'
@@ -14,7 +15,10 @@ import { credentialDefinitionDTOFrom, showcaseDTOFrom } from '../utils/mappers'
 @JsonController('/showcases')
 @Service()
 class ShowcaseController {
-  constructor(private showcaseService: ShowcaseService, private adapterClientApi:AdapterClientApi) {}
+  constructor(
+    private showcaseService: ShowcaseService,
+    private adapterClientApi: AdapterClientApi,
+  ) {}
 
   @Get('/')
   public async getAll(): Promise<ShowcasesResponse> {
@@ -39,14 +43,13 @@ class ShowcaseController {
   @Put('/:id')
   public async put(@Param('id') id: string, @Body() showcaseRequest: ShowcaseRequest): Promise<ShowcaseResponse> {
     const result = await this.showcaseService.updateShowcase(id, ShowcaseRequestToJSONTyped(showcaseRequest))
-    if(showcaseRequest.status === ShowcaseStatus.Active) {
+    if (showcaseRequest.status === ShowcaseStatus.Active) {
       console.log(`Publishing showcase ${showcaseRequest.name} to Traction`)
-      result.credentialDefinitions.forEach(credentialDef => {
+      result.credentialDefinitions.forEach((credentialDef) => {
         // TODO create issuer
         // TODO create credential schema
         adapterClientApi.storeCredentialDefinition(credentialDefinitionDTOFrom(credentialDef))
       })
-
     }
     return ShowcaseResponseFromJSONTyped({ showcase: showcaseDTOFrom(result) }, false)
   }
