@@ -11,6 +11,7 @@ import CredentialDefinitionRepository from '../../../database/repositories/Crede
 import AssetRepository from '../../../database/repositories/AssetRepository'
 import PersonaRepository from '../PersonaRepository'
 import RelyingPartyRepository from '../RelyingPartyRepository'
+import CredentialSchemaRepository from '../CredentialSchemaRepository'
 import * as schema from '../../../database/schema'
 import {
   Asset,
@@ -38,7 +39,6 @@ import {
   StepActionType,
   StepType,
 } from '../../../types'
-import { CredentialSchemaRepository } from '../CredentialSchemaRepository'
 
 describe('Database scenario repository tests', (): void => {
   let client: PGlite
@@ -248,6 +248,7 @@ describe('Database scenario repository tests', (): void => {
 
     expect(savedIssuanceScenario).toBeDefined()
     expect(savedIssuanceScenario.name).toEqual(issuanceScenario.name)
+    expect(savedIssuanceScenario.slug).toEqual('example-name')
     expect(savedIssuanceScenario.description).toEqual(issuanceScenario.description)
     expect(savedIssuanceScenario.hidden).toEqual(issuanceScenario.hidden)
     expect(savedIssuanceScenario.steps).toBeDefined()
@@ -1381,6 +1382,7 @@ describe('Database scenario repository tests', (): void => {
 
     expect(updatedIssuanceScenarioResult).toBeDefined()
     expect(updatedIssuanceScenarioResult.name).toEqual(updatedIssuanceScenario.name)
+    expect(updatedIssuanceScenarioResult.slug).toEqual('new-name')
     expect(updatedIssuanceScenarioResult.description).toEqual(updatedIssuanceScenario.description)
     expect(updatedIssuanceScenarioResult.hidden).toEqual(updatedIssuanceScenario.hidden)
     expect(updatedIssuanceScenarioResult.steps).toBeDefined()

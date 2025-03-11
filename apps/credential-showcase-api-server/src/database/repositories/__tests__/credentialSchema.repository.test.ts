@@ -5,9 +5,9 @@ import { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { migrate } from 'drizzle-orm/node-postgres/migrator'
 import { Container } from 'typedi'
 import DatabaseService from '../../../services/DatabaseService'
+import CredentialSchemaRepository from '../CredentialSchemaRepository'
 import * as schema from '../../schema'
 import { CredentialAttributeType, IdentifierType, NewCredentialSchema } from '../../../types'
-import { CredentialSchemaRepository } from '../CredentialSchemaRepository'
 
 describe('Database credential schema repository tests', (): void => {
   let client: PGlite

@@ -20,6 +20,9 @@
     "pg": "^8.13.3",
     "reflect-metadata": "^0.2.2",
     "routing-controllers": "^0.11.1",
+    "supertest": "^7.0.0",
+    "nanoid": "3.3.6",
+    "slugify": "1.6.6",
     "typedi": "^0.10.0"
   },
   "devDependencies": {
@@ -28,7 +31,8 @@
     "@types/dotenv-flow": "^3.3.3",
     "@types/express": "^5.0.0",
     "@types/pg": "^8.11.11",
-    "drizzle-kit": "^0.30.4"
+    "drizzle-kit": "^0.30.4",
+    "testcontainers": "^10.18.0"
   },
   "files": [
     "dist/**/*",

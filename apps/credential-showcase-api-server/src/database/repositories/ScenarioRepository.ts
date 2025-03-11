@@ -1,12 +1,14 @@
 import { and, eq, inArray } from 'drizzle-orm'
 import { Service } from 'typedi'
+import { BadRequestError } from 'routing-controllers'
 import DatabaseService from '../../services/DatabaseService'
 import PersonaRepository from './PersonaRepository'
 import IssuerRepository from './IssuerRepository'
 import RelyingPartyRepository from './RelyingPartyRepository'
 import AssetRepository from './AssetRepository'
 import { isIssuanceScenario, isPresentationScenario } from '../../utils/mappers'
-import { sortSteps } from '../../utils/sortUtils'
+import { sortSteps } from '../../utils/sort'
+import { generateSlug } from '../../utils/slug'
 import { NotFoundError } from '../../errors'
 import { ariesProofRequests, assets, credentialDefinitions, stepActions, steps, scenarios, scenariosToPersonas } from '../schema'
 import {
@@ -37,10 +39,10 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
 
   async create(scenario: NewScenario): Promise<Scenario> {
     if (scenario.steps.length === 0) {
-      return Promise.reject(Error('At least one step is required'))
+      return Promise.reject(new BadRequestError('At least one step is required'))
     }
     if (scenario.personas.length === 0) {
-      return Promise.reject(Error('At least one persona is required'))
+      return Promise.reject(new BadRequestError('At least one persona is required'))
     }
 
     const bannerImageResult = scenario.bannerImage ? await this.assetRepository.findById(scenario.bannerImage) : null
@@ -54,11 +56,19 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
       ? await this.issuerRepository.findById((<NewIssuanceScenario>scenario).issuer)
       : await this.relyingPartyRepository.findById((<NewPresentationScenario>scenario).relyingParty)
 
-    return (await this.databaseService.getConnection()).transaction(async (tx): Promise<Scenario> => {
+    const connection = await this.databaseService.getConnection()
+    const slug = await generateSlug({
+      value: scenario.name,
+      connection,
+      schema: scenarios,
+    })
+
+    return connection.transaction(async (tx): Promise<Scenario> => {
       const [scenarioResult] = await tx
         .insert(scenarios)
         .values({
           ...scenario,
+          slug,
           ...(isIssuanceScenario(scenario) && {
             issuer: scenarioPartyResult.id,
           }),
@@ -148,6 +158,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
       return {
         id: scenarioResult.id,
         name: scenarioResult.name,
+        slug: scenarioResult.slug,
         description: scenarioResult.description,
         steps: sortSteps(scenarioSteps),
         scenarioType: scenarioType,
@@ -173,10 +184,10 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
 
   async update(scenarioId: string, scenario: NewScenario): Promise<Scenario> {
     if (scenario.steps.length === 0) {
-      return Promise.reject(Error('At least one step is required'))
+      return Promise.reject(new BadRequestError('At least one step is required'))
     }
     if (scenario.personas.length === 0) {
-      return Promise.reject(Error('At least one persona is required'))
+      return Promise.reject(new BadRequestError('At least one persona is required'))
     }
 
     const bannerImageResult = scenario.bannerImage ? await this.assetRepository.findById(scenario.bannerImage) : null
@@ -190,11 +201,20 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
       ? await this.issuerRepository.findById((<NewIssuanceScenario>scenario).issuer)
       : await this.relyingPartyRepository.findById((<NewPresentationScenario>scenario).relyingParty)
 
-    return (await this.databaseService.getConnection()).transaction(async (tx): Promise<Scenario> => {
+    const connection = await this.databaseService.getConnection()
+    const slug = await generateSlug({
+      value: scenario.name,
+      id: scenarioId,
+      connection,
+      schema: scenarios,
+    })
+
+    return connection.transaction(async (tx): Promise<Scenario> => {
       const [scenarioResult] = await tx
         .update(scenarios)
         .set({
           ...scenario,
+          slug,
           ...(isIssuanceScenario(scenario) && {
             issuer: scenarioPartyResult.id,
           }),
@@ -289,6 +309,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
       return {
         id: scenarioResult.id,
         name: scenarioResult.name,
+        slug: scenarioResult.slug, // TODO
         description: scenarioResult.description,
         steps: sortSteps(scenarioSteps),
         scenarioType: scenarioType,
@@ -362,6 +383,15 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
                 },
               },
             },
+            css: {
+              with: {
+                cs: {
+                  with: {
+                    attributes: true,
+                  },
+                },
+              },
+            },
             logo: true,
           },
         },
@@ -390,6 +420,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         issuer: {
           ...(result.issuer as any), // TODO check this typing issue at a later point in time
           credentialDefinitions: result.issuer!.cds.map((credentialDefinition) => credentialDefinition.cd),
+          credentialSchemas: result.issuer!.css.map((credentialSchema: any) => credentialSchema.cs),
         },
       }),
       ...(result.relyingParty && {
@@ -458,6 +489,15 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
                 },
               },
             },
+            css: {
+              with: {
+                cs: {
+                  with: {
+                    attributes: true,
+                  },
+                },
+              },
+            },
             logo: true,
           },
         },
@@ -482,6 +522,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         issuer: {
           ...(scenario.issuer as any), // TODO check this typing issue at a later point in time
           credentialDefinitions: scenario.issuer!.cds.map((credentialDefinition: any) => credentialDefinition.cd),
+          credentialSchemas: scenario.issuer!.css.map((credentialSchema: any) => credentialSchema.cs),
         },
       }),
       ...(scenario.relyingParty && {
@@ -498,7 +539,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
     await this.findById(scenarioId)
 
     if (step.actions.length === 0) {
-      return Promise.reject(Error('At least one action is required'))
+      return Promise.reject(new BadRequestError('At least one action is required'))
     }
 
     const assetResult = step.asset ? await this.assetRepository.findById(step.asset) : null
@@ -554,7 +595,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
     await this.findById(scenarioId)
 
     if (step.actions.length === 0) {
-      return Promise.reject(Error('At least one action is required'))
+      return Promise.reject(new BadRequestError('At least one action is required'))
     }
 
     const assetResult = step.asset ? await this.assetRepository.findById(step.asset) : null
@@ -627,6 +668,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
   }
 
   async findAllSteps(scenarioId: string): Promise<Step[]> {
+    await this.findById(scenarioId)
     const result = await (
       await this.databaseService.getConnection()
     ).query.steps.findMany({
@@ -732,6 +774,20 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         proofRequest: true,
       },
     })
+  }
+
+  async findIdBySlug(slug: string): Promise<string> {
+    const result = await (
+      await this.databaseService.getConnection()
+    ).query.scenarios.findFirst({
+      where: eq(scenarios.slug, slug),
+    })
+
+    if (!result) {
+      return Promise.reject(new NotFoundError(`No scenario found for slug: ${slug}`))
+    }
+
+    return result.id
   }
 }
 

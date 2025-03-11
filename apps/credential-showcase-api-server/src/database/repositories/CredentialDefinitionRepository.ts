@@ -4,8 +4,8 @@ import DatabaseService from '../../services/DatabaseService'
 import AssetRepository from './AssetRepository'
 import { NotFoundError } from '../../errors'
 import { credentialDefinitions, credentialRepresentations, revocationInfo } from '../schema'
+import CredentialSchemaRepository from './CredentialSchemaRepository'
 import { CredentialDefinition, NewCredentialDefinition, RepositoryDefinition } from '../../types'
-import { CredentialSchemaRepository } from './CredentialSchemaRepository'
 
 @Service()
 class CredentialDefinitionRepository implements RepositoryDefinition<CredentialDefinition, NewCredentialDefinition> {
@@ -20,12 +20,7 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
     const credentialSchemaResult = await this.credentialSchemaRepository.findById(credentialDefinition.credentialSchema)
 
     return (await this.databaseService.getConnection()).transaction(async (tx): Promise<CredentialDefinition> => {
-      const [credentialDefinitionResult] = await tx
-        .insert(credentialDefinitions)
-        .values({
-          ...credentialDefinition,
-        })
-        .returning()
+      const [credentialDefinitionResult] = await tx.insert(credentialDefinitions).values(credentialDefinition).returning()
 
       // TODO SHOWCASE-81 enable
       // const credentialRepresentationsResult = await tx.insert(credentialRepresentations)
@@ -65,12 +60,11 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
     await this.findById(id)
 
     const iconResult = await this.assetRepository.findById(credentialDefinition.icon)
+    const credentialSchemaResult = await this.credentialSchemaRepository.findById(credentialDefinition.credentialSchema)
     return (await this.databaseService.getConnection()).transaction(async (tx): Promise<CredentialDefinition> => {
       const [credentialDefinitionResult] = await tx
         .update(credentialDefinitions)
-        .set({
-          ...credentialDefinition,
-        })
+        .set(credentialDefinition)
         .where(eq(credentialDefinitions.id, id))
         .returning()
 
@@ -95,7 +89,6 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
       //         })
       //         .returning();
       // }
-      const credentialSchemaResult = await this.credentialSchemaRepository.findById(credentialDefinition.credentialSchema)
 
       return {
         ...credentialDefinitionResult,
@@ -127,6 +120,7 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
     if (!result) {
       return Promise.reject(new NotFoundError(`No credential definition found for id: ${id}`))
     }
+
     return {
       ...result,
       credentialSchema: result.cs,
@@ -148,6 +142,7 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
         revocation: true,
       },
     })
+
     return result.map((item: any) => ({
       ...item,
       credentialSchema: item.cs,

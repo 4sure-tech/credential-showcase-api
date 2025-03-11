@@ -7,6 +7,7 @@
   "scripts": {
     "generate-models": "rimraf ./src && mvn clean generate-sources",
     "dev": "tsc --watch",
+    "prebuild": "mvn -U clean install",
     "build": "tsc",
     "build:clean": "tsc --build --clean && tsc --build"
   },
@@ -22,5 +23,8 @@
   "repository": "git@github.com:Sphereon-Opensource/credential-showcase-api.git",
   "author": "4Sure",
   "license": "Apache-2.0",
-  "keywords": []
+  "keywords": [],
+  "dependencies": {
+    "supertest": "^7.0.0"
+  }
 }

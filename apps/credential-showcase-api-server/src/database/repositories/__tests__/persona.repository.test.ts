@@ -54,6 +54,7 @@ describe('Database persona repository tests', (): void => {
 
     expect(savedPersona).toBeDefined()
     expect(savedPersona.name).toEqual(persona.name)
+    expect(savedPersona.slug).toEqual('john-doe')
     expect(savedPersona.role).toEqual(persona.role)
     expect(savedPersona.description).toEqual(persona.description)
     expect(savedPersona.hidden).toEqual(persona.hidden)
@@ -210,6 +211,7 @@ describe('Database persona repository tests', (): void => {
 
     expect(updatedPersona).toBeDefined()
     expect(updatedPersona.name).toEqual(newName)
+    expect(updatedPersona.slug).toEqual('jane-doe')
     expect(updatedPersona.role).toEqual(persona.role)
     expect(updatedPersona.description).toEqual(persona.description)
     expect(updatedPersona.hidden).toEqual(persona.hidden)

@@ -2,6 +2,7 @@ import { eq } from 'drizzle-orm'
 import { Service } from 'typedi'
 import DatabaseService from '../../services/DatabaseService'
 import AssetRepository from './AssetRepository'
+import { generateSlug } from '../../utils/slug'
 import { NotFoundError } from '../../errors'
 import { personas } from '../schema'
 import { Persona, NewPersona, RepositoryDefinition } from '../../types'
@@ -16,13 +17,18 @@ class PersonaRepository implements RepositoryDefinition<Persona, NewPersona> {
   async create(persona: NewPersona): Promise<Persona> {
     const headshotImageResult = persona.headshotImage ? await this.assetRepository.findById(persona.headshotImage) : null
     const bodyImageResult = persona.bodyImage ? await this.assetRepository.findById(persona.bodyImage) : null
+    const connection = await this.databaseService.getConnection()
+    const slug = await generateSlug({
+      value: persona.name,
+      connection,
+      schema: personas,
+    })
 
-    const [result] = await (
-      await this.databaseService.getConnection()
-    )
+    const [result] = await connection
       .insert(personas)
       .values({
         ...persona,
+        slug,
         headshotImage: headshotImageResult ? headshotImageResult.id : null,
         bodyImage: bodyImageResult ? bodyImageResult.id : null,
       })
@@ -47,13 +53,19 @@ class PersonaRepository implements RepositoryDefinition<Persona, NewPersona> {
     await this.findById(id)
     const headshotImageResult = persona.headshotImage ? await this.assetRepository.findById(persona.headshotImage) : null
     const bodyImageResult = persona.bodyImage ? await this.assetRepository.findById(persona.bodyImage) : null
+    const connection = await this.databaseService.getConnection()
+    const slug = await generateSlug({
+      value: persona.name,
+      id,
+      connection,
+      schema: personas,
+    })
 
-    const [result] = await (
-      await this.databaseService.getConnection()
-    )
+    const [result] = await connection
       .update(personas)
       .set({
         ...persona,
+        slug,
         headshotImage: headshotImageResult ? headshotImageResult.id : null,
         bodyImage: bodyImageResult ? bodyImageResult.id : null,
       })
@@ -82,7 +94,7 @@ class PersonaRepository implements RepositoryDefinition<Persona, NewPersona> {
     })
 
     if (!result) {
-      throw new NotFoundError(`No persona found for id: ${id}`)
+      return Promise.reject(new NotFoundError(`No persona found for id: ${id}`))
     }
 
     return result
@@ -95,6 +107,20 @@ class PersonaRepository implements RepositoryDefinition<Persona, NewPersona> {
         bodyImage: true,
       },
     })
+  }
+
+  async findIdBySlug(slug: string): Promise<string> {
+    const result = await (
+      await this.databaseService.getConnection()
+    ).query.personas.findFirst({
+      where: eq(personas.slug, slug),
+    })
+
+    if (!result) {
+      return Promise.reject(new NotFoundError(`No persona found for slug: ${slug}`))
+    }
+
+    return result.id
   }
 }
 

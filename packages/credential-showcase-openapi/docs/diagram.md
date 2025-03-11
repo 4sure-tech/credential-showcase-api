@@ -7,6 +7,7 @@ config:
 classDiagram
     class Showcase {
         +name : String
+        +slug : String
         +description : String
         +status : String
         +scenarios: List~String~
@@ -21,6 +22,7 @@ classDiagram
     class Scenario {
         <!-- Scenarios is a collection of workflows -->
         +name : String
+        +slug : String
         +description : String
         +steps: List~Steps~
         +personas: List~Persona~
@@ -88,6 +90,7 @@ classDiagram
     }
     class Persona {
         +name : String
+        +slug : String
         +role: String
         +description: String
         +createdAt : DateTime
@@ -128,8 +131,8 @@ classDiagram
     class CredentialSchema {
         +name: String
         +version: String
-        +identifierType: IdentifierType
-        +identifier: String
+        identifierType: IdentifierType
+        identifier: String
         +attributes: List~CredentialAttribute~
     }
     class IdentifierType {
@@ -138,8 +141,8 @@ classDiagram
     class CredentialDefinition {
         +name : String
         +version : String
-        +identifierType: IdentifierType
-        +identifier: String
+        identifierType: IdentifierType
+        identifier: String
         +icon: Asset
         +type: CredentialType
          credentialSchema: CredentialSchema

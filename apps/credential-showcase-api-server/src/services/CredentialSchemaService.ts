@@ -1,6 +1,6 @@
 import { Service } from 'typedi'
+import CredentialSchemaRepository from '../database/repositories/CredentialSchemaRepository'
 import { CredentialSchema, NewCredentialSchema } from '../types'
-import { CredentialSchemaRepository } from '../database/repositories/CredentialSchemaRepository'
 
 @Service()
 class CredentialSchemaService {

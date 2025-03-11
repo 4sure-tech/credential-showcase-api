@@ -1,5 +1,7 @@
-export class NotFoundError extends Error {
+import { HttpError } from 'routing-controllers'
+
+export class NotFoundError extends HttpError {
   constructor(message: string) {
-    super(message)
+    super(404, message)
   }
 }

@@ -10,7 +10,7 @@ import IssuerController from './controllers/IssuerController'
 import IssuanceScenarioController from './controllers/IssuanceScenarioController'
 import PresentationScenarioController from './controllers/PresentationScenarioController'
 import ShowcaseController from './controllers/ShowcaseController'
-import { corsOptions, corsDisabled } from './utils/cors'
+import { corsDisabled, corsOptions } from './utils/cors'
 import { CredentialDefinitionController } from './controllers/CredentialDefinitionController'
 import { CredentialSchemaController } from './controllers/CredentialSchemaController'
 
@@ -19,25 +19,37 @@ require('dotenv-flow').config()
 // Ensure routing-controllers uses typedi for DI
 useContainer(Container)
 
-const app = createExpressServer({
-  controllers: [
-    AssetController,
-    PersonaController,
-    CredentialSchemaController,
-    CredentialDefinitionController,
-    RelyingPartyController,
-    IssuerController,
-    IssuanceScenarioController,
-    PresentationScenarioController,
-    ShowcaseController,
-  ],
-  middlewares: [ExpressErrorHandler],
-  defaultErrorHandler: false,
-  cors: corsDisabled ? false : corsOptions,
-})
+async function bootstrap() {
+  try {
+    // Create and configure Express server
+    const app = createExpressServer({
+      controllers: [
+        AssetController,
+        PersonaController,
+        CredentialSchemaController,
+        CredentialDefinitionController,
+        RelyingPartyController,
+        IssuerController,
+        IssuanceScenarioController,
+        PresentationScenarioController,
+        ShowcaseController,
+      ],
+      middlewares: [ExpressErrorHandler],
+      defaultErrorHandler: false,
+      cors: corsDisabled ? false : corsOptions,
+    })
 
-const port = Number(process.env.PORT)
+    // Start the server
+    const port = Number(process.env.PORT)
 
-app.listen(port, (): void => {
-  console.log(`Server is running on port ${port}`)
-})
+    app.listen(port, (): void => {
+      console.log(`Server is running on port ${port}`)
+    })
+  } catch (error) {
+    console.error('Failed to start application:', error)
+    process.exit(1)
+  }
+}
+
+// Start the application
+bootstrap()

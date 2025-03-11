@@ -8,6 +8,7 @@ import DatabaseService from '../../../services/DatabaseService'
 import IssuerRepository from '../IssuerRepository'
 import AssetRepository from '../AssetRepository'
 import CredentialDefinitionRepository from '../CredentialDefinitionRepository'
+import CredentialSchemaRepository from '../CredentialSchemaRepository'
 import * as schema from '../../schema'
 import {
   Asset,
@@ -22,7 +23,6 @@ import {
   CredentialSchema,
   IdentifierType,
 } from '../../../types'
-import { CredentialSchemaRepository } from '../CredentialSchemaRepository'
 
 describe('Database issuer repository tests', (): void => {
   let client: PGlite

@@ -1,5 +1,6 @@
 import { eq, inArray } from 'drizzle-orm'
 import { Service } from 'typedi'
+import { BadRequestError } from 'routing-controllers'
 import DatabaseService from '../../services/DatabaseService'
 import CredentialDefinitionRepository from './CredentialDefinitionRepository'
 import AssetRepository from './AssetRepository'
@@ -16,8 +17,8 @@ class RelyingPartyRepository implements RepositoryDefinition<RelyingParty, NewRe
   ) {}
 
   async create(relyingParty: NewRelyingParty): Promise<RelyingParty> {
-    if (relyingParty.credentialDefinitions.length === 0) {
-      return Promise.reject(Error('At least one credential definition is required'))
+    if (!relyingParty.credentialDefinitions || relyingParty.credentialDefinitions.length === 0) {
+      return Promise.reject(new BadRequestError('At least one credential definition is required'))
     }
 
     const credentialDefinitionPromises = relyingParty.credentialDefinitions.map(
@@ -81,8 +82,8 @@ class RelyingPartyRepository implements RepositoryDefinition<RelyingParty, NewRe
   async update(id: string, relyingParty: NewRelyingParty): Promise<RelyingParty> {
     await this.findById(id)
 
-    if (relyingParty.credentialDefinitions.length === 0) {
-      return Promise.reject(Error('At least one credential definition is required'))
+    if (!relyingParty.credentialDefinitions || relyingParty.credentialDefinitions.length === 0) {
+      return Promise.reject(new BadRequestError('At least one credential definition is required'))
     }
 
     const credentialDefinitionPromises = relyingParty.credentialDefinitions.map(
@@ -174,8 +175,8 @@ class RelyingPartyRepository implements RepositoryDefinition<RelyingParty, NewRe
     return {
       ...result,
       credentialDefinitions: result.cds.map((item: any) => ({
-        ...item,
-        credentialSchema: item.cs,
+        ...item.cd,
+        credentialSchema: item.cd.cs,
       })),
     }
   }
@@ -208,8 +209,8 @@ class RelyingPartyRepository implements RepositoryDefinition<RelyingParty, NewRe
     return result.map((relyingParty) => ({
       ...relyingParty,
       credentialDefinitions: relyingParty.cds.map((item: any) => ({
-        ...item,
-        credentialSchema: item.cs,
+        ...item.cd,
+        credentialSchema: item.cd.cs,
       })),
     }))
   }

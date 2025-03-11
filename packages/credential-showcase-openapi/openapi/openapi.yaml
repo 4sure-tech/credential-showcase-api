@@ -78,17 +78,17 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /scenarios/issuances/{issuanceScenarioId}:
+  /scenarios/issuances/{slug}:
+    parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
     get:
       tags: [ "Issuance Scenario" ]
       summary: Retrieve a single issuance scenario
       operationId: getIssuanceScenario
-      parameters:
-        - name: issuanceScenarioId
-          in: path
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: OK
@@ -110,12 +110,6 @@ paths:
       tags: [ "Issuance Scenario" ]
       summary: Update an issuance scenario (overwrite)
       operationId: updateIssuanceScenario
-      parameters:
-        - name: issuanceScenarioId
-          in: path
-          required: true
-          schema:
-            type: string
       requestBody:
         required: true
         content:
@@ -143,12 +137,6 @@ paths:
       tags: [ "Issuance Scenario" ]
       summary: Delete an issuance scenario
       operationId: deleteIssuanceScenario
-      parameters:
-        - name: issuanceScenarioId
-          in: path
-          required: true
-          schema:
-            type: string
       responses:
         '204':
           description: Deleted
@@ -163,18 +151,18 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /scenarios/issuances/{issuanceScenarioId}/steps:
+  /scenarios/issuances/{slug}/steps:
+    parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
     get:
       tags:
         - "Issuance Scenario"
       summary: List steps in an issuance scenario
       operationId: listIssuanceScenarioSteps
-      parameters:
-        - name: issuanceScenarioId
-          in: path
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: OK
@@ -196,12 +184,6 @@ paths:
       tags: [ "Issuance Scenario" ]
       summary: Add a step to an issuance scenario
       operationId: createIssuanceScenarioStep
-      parameters:
-        - name: issuanceScenarioId
-          in: path
-          required: true
-          schema:
-            type: string
       requestBody:
         required: true
         content:
@@ -225,22 +207,22 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /scenarios/issuances/{issuanceScenarioId}/steps/{stepId}:
+  /scenarios/issuances/{slug}/steps/{stepId}:
+    parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: stepId
+        in: path
+        required: true
+        schema:
+          type: string
     get:
       tags: [ "Issuance Scenario" ]
       summary: Retrieve a specific step in an issuance scenario
       operationId: getIssuanceScenarioStep
-      parameters:
-        - name: issuanceScenarioId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: stepId
-          in: path
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: OK
@@ -262,17 +244,6 @@ paths:
       tags: [ "Issuance Scenario" ]
       summary: Overwrite a step in an issuance scenario
       operationId: updateIssuanceScenarioStep
-      parameters:
-        - name: issuanceScenarioId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: stepId
-          in: path
-          required: true
-          schema:
-            type: string
       requestBody:
         required: true
         content:
@@ -300,17 +271,6 @@ paths:
       tags: [ "Issuance Scenario" ]
       summary: Delete a step in an issuance scenario
       operationId: deleteIssuanceScenarioStep
-      parameters:
-        - name: issuanceScenarioId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: stepId
-          in: path
-          required: true
-          schema:
-            type: string
       responses:
         '204':
           description: Deleted
@@ -325,22 +285,22 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /scenarios/issuances/{issuanceScenarioId}/steps/{stepId}/actions:
+  /scenarios/issuances/{slug}/steps/{stepId}/actions:
+    parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: stepId
+        in: path
+        required: true
+        schema:
+          type: string
     get:
       tags: [ "Issuance Scenario" ]
       summary: List actions in a step
       operationId: listStepActions
-      parameters:
-        - name: issuanceScenarioId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: stepId
-          in: path
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: OK
@@ -362,17 +322,6 @@ paths:
       tags: [ "Issuance Scenario" ]
       summary: Create an action in a step
       operationId: createStepAction
-      parameters:
-        - name: issuanceScenarioId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: stepId
-          in: path
-          required: true
-          schema:
-            type: string
       requestBody:
         required: true
         content:
@@ -396,27 +345,27 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /scenarios/issuances/{issuanceScenarioId}/steps/{stepId}/actions/{actionId}:
+  /scenarios/issuances/{slug}/steps/{stepId}/actions/{actionId}:
+    parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: stepId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: actionId
+        in: path
+        required: true
+        schema:
+          type: string
     get:
       tags: [ "Issuance Scenario" ]
       summary: Retrieve a single action
       operationId: getStepAction
-      parameters:
-        - name: issuanceScenarioId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: stepId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: actionId
-          in: path
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: OK
@@ -438,22 +387,6 @@ paths:
       tags: [ "Issuance Scenario" ]
       summary: Overwrite an action
       operationId: updateStepAction
-      parameters:
-        - name: issuanceScenarioId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: stepId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: actionId
-          in: path
-          required: true
-          schema:
-            type: string
       requestBody:
         required: true
         content:
@@ -481,22 +414,6 @@ paths:
       tags: [ "Issuance Scenario" ]
       summary: Delete an action
       operationId: deleteStepAction
-      parameters:
-        - name: issuanceScenarioId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: stepId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: actionId
-          in: path
-          required: true
-          schema:
-            type: string
       responses:
         '204':
           description: Deleted
@@ -558,17 +475,17 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /scenarios/presentations/{presentationScenarioId}:
+  /scenarios/presentations/{slug}:
+    parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
     get:
       tags: [ "Presentation Scenario" ]
       summary: Retrieve a single presentation scenario
       operationId: getPresentationScenario
-      parameters:
-        - name: presentationScenarioId
-          in: path
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: OK
@@ -590,12 +507,6 @@ paths:
       tags: [ "Presentation Scenario" ]
       summary: Update a presentation scenario (overwrite)
       operationId: updatePresentationScenario
-      parameters:
-        - name: presentationScenarioId
-          in: path
-          required: true
-          schema:
-            type: string
       requestBody:
         required: true
         content:
@@ -623,12 +534,6 @@ paths:
       tags: [ "Presentation Scenario" ]
       summary: Delete a presentation scenario
       operationId: deletePresentationScenario
-      parameters:
-        - name: presentationScenarioId
-          in: path
-          required: true
-          schema:
-            type: string
       responses:
         '204':
           description: Deleted
@@ -643,18 +548,18 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /scenarios/presentations/{presentationScenarioId}/steps:
+  /scenarios/presentations/{slug}/steps:
+    parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
     get:
       tags:
         - "Presentation Scenario"
       summary: List steps in a presentation scenario
       operationId: listPresentationScenarioSteps
-      parameters:
-        - name: presentationScenarioId
-          in: path
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: OK
@@ -676,12 +581,6 @@ paths:
       tags: [ "Presentation Scenario" ]
       summary: Add a step to a presentation scenario
       operationId: createPresentationScenarioStep
-      parameters:
-        - name: presentationScenarioId
-          in: path
-          required: true
-          schema:
-            type: string
       requestBody:
         required: true
         content:
@@ -705,22 +604,22 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /scenarios/presentations/{presentationScenarioId}/steps/{stepId}:
+  /scenarios/presentations/{slug}/steps/{stepId}:
+    parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: stepId
+        in: path
+        required: true
+        schema:
+          type: string
     get:
       tags: [ "Presentation Scenario" ]
       summary: Retrieve a specific step in a presentation scenario
       operationId: getPresentationScenarioStep
-      parameters:
-        - name: presentationScenarioId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: stepId
-          in: path
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: OK
@@ -742,17 +641,6 @@ paths:
       tags: [ "Presentation Scenario" ]
       summary: Overwrite a step in a presentation scenario
       operationId: updatePresentationScenarioStep
-      parameters:
-        - name: presentationScenarioId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: stepId
-          in: path
-          required: true
-          schema:
-            type: string
       requestBody:
         required: true
         content:
@@ -780,17 +668,6 @@ paths:
       tags: [ "Presentation Scenario" ]
       summary: Delete a step in a presentation scenario
       operationId: deletePresentationScenarioStep
-      parameters:
-        - name: presentationScenarioId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: stepId
-          in: path
-          required: true
-          schema:
-            type: string
       responses:
         '204':
           description: Deleted
@@ -805,22 +682,22 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /scenarios/presentations/{presentationScenarioId}/steps/{stepId}/actions:
+  /scenarios/presentations/{slug}/steps/{stepId}/actions:
+    parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: stepId
+        in: path
+        required: true
+        schema:
+          type: string
     get:
       tags: [ "Presentation Scenario" ]
       summary: List actions in a step
       operationId: listPresentationScenarioStepActions
-      parameters:
-        - name: presentationScenarioId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: stepId
-          in: path
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: OK
@@ -842,17 +719,6 @@ paths:
       tags: [ "Presentation Scenario" ]
       summary: Create an action in a step
       operationId: createPresentationScenarioStepAction
-      parameters:
-        - name: presentationScenarioId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: stepId
-          in: path
-          required: true
-          schema:
-            type: string
       requestBody:
         required: true
         content:
@@ -876,27 +742,27 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /scenarios/presentations/{presentationScenarioId}/steps/{stepId}/actions/{actionId}:
+  /scenarios/presentations/{slug}/steps/{stepId}/actions/{actionId}:
+    parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: stepId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: actionId
+        in: path
+        required: true
+        schema:
+          type: string
     get:
       tags: [ "Presentation Scenario" ]
       summary: Retrieve a single action
       operationId: getPresentationScenarioStepAction
-      parameters:
-        - name: presentationScenarioId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: stepId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: actionId
-          in: path
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: OK
@@ -918,22 +784,6 @@ paths:
       tags: [ "Presentation Scenario" ]
       summary: Overwrite an action
       operationId: updatePresentationScenarioStepAction
-      parameters:
-        - name: presentationScenarioId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: stepId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: actionId
-          in: path
-          required: true
-          schema:
-            type: string
       requestBody:
         required: true
         content:
@@ -961,22 +811,6 @@ paths:
       tags: [ "Presentation Scenario" ]
       summary: Delete an action
       operationId: deletePresentationScenarioStepAction
-      parameters:
-        - name: presentationScenarioId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: stepId
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: actionId
-          in: path
-          required: true
-          schema:
-            type: string
       responses:
         '204':
           description: Deleted
@@ -1099,37 +933,6 @@ paths:
       responses:
         '204':
           description: Deleted
-  /credentials/definitions/{definitionId}/representations:
-    parameters:
-      - name: definitionId
-        in: path
-        required: true
-        schema:
-          type: string
-    get:
-      tags:
-        - Credential Definitions
-      summary: List credential representations
-      operationId: listCredentialRepresentations
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  oneOf:
-                    - $ref: '#/components/schemas/CredentialRepresentation'
-                    - $ref: '#/components/schemas/OCARepresentation'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
 
   /credentials/schemas:
     get:
@@ -1178,9 +981,9 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /credentials/schemas/{schemaId}:
+  /credentials/schemas/{credentialSchema}:
     parameters:
-      - name: schemaId
+      - name: credentialSchema
         in: path
         required: true
         schema:
@@ -1247,6 +1050,7 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+
   /personas:
     get:
       tags:
@@ -1294,9 +1098,9 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /personas/{personaId}:
+  /personas/{slug}:
     parameters:
-      - name: personaId
+      - name: slug
         in: path
         required: true
         schema:
@@ -1764,14 +1568,13 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /showcases/{showcaseId}:
+  /showcases/{slug}:
     parameters:
-      - name: showcaseId
+      - name: slug
         in: path
         required: true
         schema:
           type: string
-        description: Unique identifier of the showcase
     get:
       tags:
         - Showcases
@@ -1989,7 +1792,6 @@ components:
           description: Date and time the step was last updated
           format: date-time
           example: 2025-03-06T11:30:16.573Z
-
     StepRequest:
       type: object
       required:
@@ -2022,7 +1824,8 @@ components:
           type: array
           description: List of actions associated with this step
           items:
-            $ref: '#/components/schemas/StepActionRequest'
+            oneOf:
+              - $ref: '#/components/schemas/AriesOOBActionRequest'
         asset:
           type: string
           description: Asset referenced by this step
@@ -2087,7 +1890,6 @@ components:
         propertyName: actionType
         mapping:
           ARIES_OOB: '#/components/schemas/AriesOOBAction'
-
     StepActionRequest:
       type: object
       required:
@@ -2109,7 +1911,7 @@ components:
       discriminator:
         propertyName: actionType
         mapping:
-          ARIES_OOB: '#/components/schemas/AriesOOBAction'
+          ARIES_OOB: '#/components/schemas/AriesOOBActionRequest'
     StepActionsResponse:
       properties:
         actions:
@@ -2130,6 +1932,15 @@ components:
           properties:
             proofRequest:
               $ref: '#/components/schemas/AriesProofRequest'
+    AriesOOBActionRequest:
+      allOf:
+        - $ref: '#/components/schemas/StepActionRequest'
+        - type: object
+          required:
+            - proofRequest
+          properties:
+            proofRequest:
+              $ref: '#/components/schemas/AriesProofRequestRequest'
     AriesProofRequest:
       type: object
       required:
@@ -2165,6 +1976,29 @@ components:
           description: Date and time the Aries proof request was last updated
           format: date-time
           example: 2025-03-06T11:30:16.573Z
+    AriesProofRequestRequest:
+      type: object
+      required:
+        - id
+        - attributes
+        - predicates
+      properties:
+        attributes:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/AriesRequestCredentialAttributes'
+          description: Map of attribute groups requested in the proof
+          example:
+            name:
+              value: John Doe
+        predicates:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/AriesRequestCredentialPredicates'
+          description: Map of predicate groups requested in the proof
+          example:
+            age:
+              value: 30
     AriesRequestCredentialAttributes:
       type: object
       properties:
@@ -2213,6 +2047,7 @@ components:
       required:
         - id
         - name
+        - slug
         - role
         - description
         - createdAt
@@ -2226,6 +2061,10 @@ components:
           type: string
           description: Name of the persona
           example: John Doe
+        slug:
+          type: string
+          description: URL-friendly identifier for the persona
+          example: john-doe
         role:
           type: string
           description: Role of the persona in the system
@@ -2297,6 +2136,7 @@ components:
       required:
         - id
         - name
+        - slug
         - type
         - description
         - steps
@@ -2312,6 +2152,10 @@ components:
           type: string
           description: Name of the scenario
           example: Credential Issuance
+        slug:
+          type: string
+          description: URL-friendly identifier for the scenario
+          example: credential-issuance
         description:
           type: string
           description: Detailed description of the scenario
@@ -2451,11 +2295,13 @@ components:
         - DID
       description: Types of supported identifiers
       example: DID
+
     IssuerType:
       type: string
       enum:
         - ARIES
       description: Types of supported issuers
+
     RelyingPartyType:
       type: string
       enum:
@@ -2470,6 +2316,7 @@ components:
         - description
         - type
         - credentialDefinitions
+        - credentialSchemas
         - createdAt
         - updatedAt
       properties:
@@ -2524,6 +2371,7 @@ components:
         - description
         - type
         - credentialDefinitions
+        - credentialSchemas
       properties:
         name:
           type: string
@@ -2549,6 +2397,11 @@ components:
           type: string
           example: 123e4567-e89b-12d3-a456-426614174469
         credentialDefinitions:
+          type: array
+          items:
+            type: string
+            example: 123e4567-e89b-12d3-a456-426614174469
+        credentialSchemas:
           type: array
           items:
             type: string
@@ -2641,7 +2494,6 @@ components:
           items:
             type: string
             example: 123e4567-e89b-12d3-a456-426614174469
-
     RelyingPartiesResponse:
       type: object
       properties:
@@ -2660,6 +2512,7 @@ components:
       enum:
         - ANONCRED
       description: Types of supported credentials
+
     CredentialAttributeType:
       type: string
       enum:
@@ -2678,7 +2531,7 @@ components:
         - name
         - version
         - type
-        - schemaId
+        - credentialSchema
         - icon
         # TODO enable back in SHOWCASE-81
         # - representations
@@ -2693,10 +2546,8 @@ components:
           type: string
           description: Name of the credential definition
           example: Credential Definition Name
-        schemaId:
-          type: string
-          description:  Identifier of the associated credential schema
-          example:  123e4567-e89b-12d3-a456-426614174123
+        credentialSchema:
+          $ref: '#/components/schemas/CredentialSchema'
         identifierType:
           $ref: '#/components/schemas/IdentifierType'
         identifier:
@@ -2738,20 +2589,27 @@ components:
         - version
         - type
         - icon
-        - schemaId
-        - representations
+        - credentialSchema
+        # TODO enable back in SHOWCASE-81
+        # - representations
       properties:
         name:
           type: string
           description: Name of the credential definition
           example: Credential Definition Name
+        identifierType:
+          $ref: '#/components/schemas/IdentifierType'
+        identifier:
+          type: string
+          description: External identifier of this schema
+          example: did:sov:XUeUZauFLeBNofY3NhaZCB
         version:
           type: string
           description: Version of the credential definition
           example: '1.0'
         type:
           $ref: '#/components/schemas/CredentialType'
-        schemaId:
+        credentialSchema:
           type: string
           description: Reference to the associated credential schema
           example: 456e4567-e89b-12d3-a456-426614174789
@@ -2839,6 +2697,7 @@ components:
           example: John Doe
         type:
           $ref: '#/components/schemas/CredentialAttributeType'
+
     CredentialRepresentation:
       type: object
       required:
@@ -2881,6 +2740,7 @@ components:
               description: URL to the OCA bundle for this representation
               example: https://example.com/ocaBundle.json
       description: Overlay Capture Architecture representation of a credential
+
     RevocationInfo:
       type: object
       required:
@@ -2932,6 +2792,8 @@ components:
         - name
         - version
         - attrNames
+        - createdAt
+        - updatedAt
       properties:
         id:
           type: string
@@ -2955,6 +2817,16 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CredentialAttribute'
+        createdAt:
+          type: string
+          description: Date and time the credential attribute was created
+          format: date-time
+          example: 2025-03-06T11:30:16.573Z
+        updatedAt:
+          type: string
+          description: Date and time the credential attribute was last updated
+          format: date-time
+          example: 2025-03-06T11:30:16.573Z
     CredentialSchemaRequest:
       type: object
       required:
@@ -2979,7 +2851,7 @@ components:
         attributes:
           type: array
           items:
-            $ref: '#/components/schemas/CredentialAttribute'
+            $ref: '#/components/schemas/CredentialAttributeRequest'
     CredentialSchemasResponse:
       type: object
       properties:
@@ -2999,6 +2871,7 @@ components:
       required:
         - id
         - name
+        - slug
         - description
         - status
         - scenarios
@@ -3016,6 +2889,10 @@ components:
           type: string
           description: Name of the showcase
           example: Credential Showcase BCGov
+        slug:
+          type: string
+          description: URL-friendly identifier for the showcase
+          example: credential-showcase-bcgov
         description:
           type: string
           description: Description of the showcase
