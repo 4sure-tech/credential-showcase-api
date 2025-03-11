@@ -3,7 +3,6 @@ import { Connection, Sender } from 'rhea-promise'
 import { environment } from './environment'
 import { CredentialDefinition, Issuer } from 'credential-showcase-openapi'
 
-
 @Service()
 export class AdapterClientApi {
   private readonly isReady: Promise<void>

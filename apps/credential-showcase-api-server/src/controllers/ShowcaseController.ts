@@ -42,7 +42,7 @@ class ShowcaseController {
   public async post(@Body() showcaseRequest: ShowcaseRequest): Promise<ShowcaseResponse> {
     const result = await this.showcaseService.createShowcase(ShowcaseRequestToJSONTyped(showcaseRequest))
     if (showcaseRequest.status === ShowcaseStatus.Active) {
-      void await this.publishFromShowcase(showcaseDTOFrom(result))
+      void (await this.publishFromShowcase(showcaseDTOFrom(result)))
     }
     return ShowcaseResponseFromJSONTyped({ showcase: showcaseDTOFrom(result) }, false)
   }

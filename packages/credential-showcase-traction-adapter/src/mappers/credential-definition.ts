@@ -41,7 +41,11 @@ export function credentialSchemaToSchemaPostRequest(credentialSchema: Credential
  * @param issuerId
  * @returns A CredDefPostRequest object
  */
-export function credentialDefinitionToCredDefPostRequest(credentialDef: CredentialDefinition, schemaId: string, issuerId: string): CredDefPostRequest {
+export function credentialDefinitionToCredDefPostRequest(
+  credentialDef: CredentialDefinition,
+  schemaId: string,
+  issuerId: string,
+): CredDefPostRequest {
   const innerCredDef: InnerCredDef = {
     issuerId: issuerId,
     schemaId: schemaId,
