@@ -134,7 +134,7 @@ class ShowcaseController {
       newIssuer.credentialDefinitions = matchingCredDefs
 
       // Get schema IDs from matching credential definitions
-      const schemaIds = matchingCredDefs.map((credDef) => credDef.schemaId)
+      const schemaIds = matchingCredDefs.map((credDef) => credDef.credentialSchema.id)
 
       // Look up schemas from ALL issuers (not just the current one)
       newIssuer.credentialSchemas = issuers
@@ -144,7 +144,7 @@ class ShowcaseController {
         .filter((schema, index, self) => index === self.findIndex((s) => s.id === schema.id))
 
       // Publish the issuer
-      void (await this.adapterClientApi.publishIssuer(newIssuer))
+      void (await this.adapterClientApi.publishIssuer(newIssuer)) // TODO create reduced type
     }
   }
 

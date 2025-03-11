@@ -1,7 +1,7 @@
 import { Service } from 'typedi'
 import { Connection, Sender } from 'rhea-promise'
 import { environment } from './environment'
-import { CredentialDefinition, Issuer } from 'credential-showcase-openapi'
+import { Issuer } from 'credential-showcase-openapi'
 
 @Service()
 export class AdapterClientApi {

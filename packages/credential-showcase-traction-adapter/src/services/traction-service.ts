@@ -167,7 +167,7 @@ export class TractionService {
         const existingCredDef = await this.findExistingCredentialDefinition(credentialDef.id, credentialDef.version, issuerId)
         if (!existingCredDef) {
           // Create new credential definition
-          const cdSchemaId = credentialDef.schemaId ?? schemaIdMap.get(credentialDef.id)
+          const cdSchemaId = credentialDef.credentialSchema.id ?? schemaIdMap.get(credentialDef.id) // FIXME confirm if we still need schemaIdMap
           if (!cdSchemaId) {
             console.error(
               `Could not determine the schema id for credential definition ${credentialDef.id} / ${credentialDef.name} version ${credentialDef.version}`,

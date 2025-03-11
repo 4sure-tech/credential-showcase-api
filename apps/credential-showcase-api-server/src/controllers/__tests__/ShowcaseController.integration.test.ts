@@ -20,6 +20,7 @@ import * as schema from '../../database/schema'
 import { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { migrate } from 'drizzle-orm/node-postgres/migrator'
 import DatabaseService from '../../services/DatabaseService'
+import { AdapterClientApi } from 'credential-showcase-adapter-client-api'
 
 describe('ShowcaseController Integration Tests', () => {
   let client: PGlite
@@ -34,6 +35,13 @@ describe('ShowcaseController Integration Tests', () => {
       getConnection: jest.fn().mockResolvedValue(database),
     }
     Container.set(DatabaseService, mockDatabaseService)
+
+    const mockAdapterClientApi = {
+      publishIssuer: jest.fn().mockResolvedValue(undefined),
+      close: jest.fn().mockResolvedValue(undefined),
+    }
+    Container.set(AdapterClientApi, mockAdapterClientApi)
+
     useContainer(Container)
     Container.get(AssetRepository)
     Container.get(CredentialSchemaRepository)
@@ -89,7 +97,7 @@ describe('ShowcaseController Integration Tests', () => {
       name: 'Test Definition',
       version: '1.0',
       identifierType: IdentifierType.DID,
-      identifier: 'did:test:123',
+      identifier: 'did:sov:YUeUZauFLeBNofY3NhaZCA',
       icon: asset.id,
       type: CredentialType.ANONCRED,
       credentialSchema: credentialSchema.id,

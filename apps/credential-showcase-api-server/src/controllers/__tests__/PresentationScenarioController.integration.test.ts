@@ -77,7 +77,7 @@ describe('PresentationScenarioController Integration Tests', () => {
       name: 'Test Definition',
       version: '1.0',
       identifierType: IdentifierType.DID,
-      identifier: 'did:test:123',
+      identifier: 'did:sov:YUeUZauFLeBNofY3NhaZCA',
       icon: asset.id,
       type: CredentialType.ANONCRED,
       credentialSchema: credentialSchema.id,
