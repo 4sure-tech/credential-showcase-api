@@ -1,10 +1,6 @@
 name: CI Template
 
 on:
-  push:
-    branches:
-      - main
-      - SHOWCASE-90-pipeline-to-build-and-push
   workflow_call:
     inputs:
       package_name:
