@@ -20,7 +20,7 @@ export class CredentialSchemaController {
   public async getAll(): Promise<CredentialSchemasResponse> {
     try {
       const result = await this.credentialSchemaService.getCredentialSchemas()
-      return CredentialSchemasResponseFromJSONTyped({ result }, false)
+      return CredentialSchemasResponseFromJSONTyped({ credentialSchemas: result }, false)
     } catch (e) {
       if (e.httpCode !== 404) {
         console.error('getAll schemas failed:', e)
