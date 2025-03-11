@@ -1,4 +1,4 @@
-import { CredentialDefinition } from 'credential-showcase-openapi'
+import { CredentialSchema, Issuer } from 'credential-showcase-openapi'
 import {
   AnoncredsCredentialDefinitionsApi,
   AnoncredsSchemasApi,
@@ -12,11 +12,11 @@ import {
   MultitenancyApi,
   ResponseError,
   SchemaResult,
+  WalletApi,
 } from 'credential-showcase-traction-openapi'
 import {
   credentialDefinitionToCredDefPostRequest,
-  credentialDefinitionToSchemaPostRequest,
-  extractSchemaIdFromCredentialDef,
+  credentialSchemaToSchemaPostRequest,
   getCredDefResultToCredDefResult,
 } from '../mappers/credential-definition'
 import { environment } from '../environment'
@@ -27,6 +27,7 @@ export class TractionService {
   private anoncredsApi: AnoncredsCredentialDefinitionsApi
   private multitenancyApi: MultitenancyApi
   private schemasApi: AnoncredsSchemasApi
+  private walletApi: WalletApi
 
   constructor(
     private tenantId: string,
@@ -45,6 +46,7 @@ export class TractionService {
     this.anoncredsApi = new AnoncredsCredentialDefinitionsApi(this.config)
     this.multitenancyApi = new MultitenancyApi(this.config)
     this.schemasApi = new AnoncredsSchemasApi(this.config)
+    this.walletApi = new WalletApi(this.config)
   }
 
   public updateBearerToken(token: string): void {
@@ -64,13 +66,15 @@ export class TractionService {
    * Checks if a schema with the given name and version exists
    * @param name The schema name
    * @param version The schema version
+   * @param issuerId
    * @returns The schema ID if found, otherwise null
    */
-  public async findExistingSchema(name: string, version: string): Promise<string | null> {
+  public async findExistingSchema(name: string, version: string, issuerId: string): Promise<string | null> {
     try {
       const response = await this.schemasApi.anoncredsSchemasGet({
         schemaName: name,
         schemaVersion: version,
+        schemaIssuerId: issuerId,
       })
 
       if (response.schemaIds && response.schemaIds.length > 0) {
@@ -85,11 +89,12 @@ export class TractionService {
 
   /**
    * Creates a schema from a credential definition
-   * @param credentialDef The credential definition to create a schema from
+   * @param credentialSchema The credential definition to create a schema from
+   * @param issuerId
    * @returns The created schema ID
    */
-  public async createSchema(credentialDef: CredentialDefinition): Promise<string> {
-    const schemaRequest = credentialDefinitionToSchemaPostRequest(credentialDef)
+  public async createSchema(credentialSchema: CredentialSchema, issuerId: string): Promise<string> {
+    const schemaRequest = credentialSchemaToSchemaPostRequest(credentialSchema, issuerId)
 
     const apiResponse = await this.schemasApi.anoncredsSchemaPostRaw({
       body: schemaRequest,
@@ -105,18 +110,21 @@ export class TractionService {
 
   /**
    * Checks if a credential definition with the given schema ID and tag exists
-   * @param schemaId The schema ID
-   * @param tag The credential definition tag (version)
+   * @param schemaId
+   * @param version The credential definition version
+   * @param issuerId
    * @returns The credential definition ID if found, otherwise null
    */
-  public async findExistingCredentialDefinition(schemaId: string, tag: string): Promise<CredDefResult | undefined> {
+  public async findExistingCredentialDefinition(schemaId: string, version: string, issuerId:string): Promise<CredDefResult | undefined> {
     try {
       const response = await this.anoncredsApi.anoncredsCredentialDefinitionsGet({
         schemaId,
+        schemaVersion: version,
+        issuerId
       })
 
       if (response.credentialDefinitionIds && response.credentialDefinitionIds.length > 0) {
-        // For each credential definition ID, check if tag matches
+        // For each credential definition ID (which should be 1), double-check if tag matches
         for (const credDefId of response.credentialDefinitionIds) {
           try {
             const credDefResponse = await this.anoncredsApi.anoncredsCredentialDefinitionCredDefIdGet({
@@ -124,7 +132,7 @@ export class TractionService {
             })
 
             // Check if this credential definition has the requested tag
-            if (credDefResponse.credentialDefinition?.tag === tag) {
+            if (credDefResponse.credentialDefinition?.tag === version) {
               return getCredDefResultToCredDefResult(credDefResponse)
             }
           } catch (error) {
@@ -140,31 +148,68 @@ export class TractionService {
     }
   }
 
-  public async storeAnonCredentialDefinition(credentialDef: CredentialDefinition): Promise<CredDefResult> {
-    // First, try to extract schema ID from the credential definition
-    let schemaId = extractSchemaIdFromCredentialDef(credentialDef)
+  public async publishIssuer(issuer: Issuer): Promise<void> {
+    const issuerId = await this.getOrCreateIssuerId(issuer)
 
-    // If no schema ID was found in the representations, check if a schema exists by name/version
-    if (!schemaId) {
-      schemaId = await this.findExistingSchema(credentialDef.name, credentialDef.version)
-
-      // If schema doesn't exist, create it
-      if (!schemaId) {
-        schemaId = await this.createSchema(credentialDef)
+    if (issuer.credentialSchemas) {
+      for (const credentialSchema of issuer.credentialSchemas) {
+        const schemaId = await this.findExistingSchema(credentialSchema.name, credentialSchema.version, issuerId)
+        if (schemaId) {
+          return Promise.reject(Error(`Credential schema ${credentialSchema.name} version ${credentialSchema.version} for issuer ${issuer.identifier} for issuer ${issuer.id} / ${issuer.name} already exists on the ledger`))
+        }
+        await this.createSchema(credentialSchema, issuerId)
       }
     }
 
-    // Check if credential definition exists for this schema and tag
-    const existingCredDef = await this.findExistingCredentialDefinition(schemaId, credentialDef.version)
-    if (existingCredDef) {
-      return existingCredDef
+    if(issuer.credentialDefinitions) {
+      for (const credentialDef of issuer.credentialDefinitions) {
+        const existingCredDef = await this.findExistingCredentialDefinition(credentialDef.id, credentialDef.version, )
+        if (existingCredDef) {
+          return existingCredDef
+        }
+
+        // Create new credential definition
+        const apiResponse = await this.anoncredsApi.anoncredsCredentialDefinitionPostRaw({
+          body: credentialDefinitionToCredDefPostRequest(issuer, schemaId),
+        })
+        return this.handleApiResponse(apiResponse)
+      }
     }
 
-    // Create new credential definition
-    const apiResponse = await this.anoncredsApi.anoncredsCredentialDefinitionPostRaw({
-      body: credentialDefinitionToCredDefPostRequest(credentialDef, schemaId),
-    })
-    return this.handleApiResponse(apiResponse)
+  }
+
+  private async getOrCreateIssuerId(issuer: Issuer) {
+    if (issuer.identifier) {
+      const result = await this.walletApi.walletDidGet({ did: issuer.identifier })
+      if (result.results?.length === 0) {
+        return Promise.reject(Error(`Identifier ${issuer.identifier} for issuer ${issuer.id} / ${issuer.name} could not be found on the ledger`))
+      }
+      return issuer.identifier
+    } else {
+      const result = await this.walletApi.walletDidCreatePost({
+        body: {
+          // TODO make configurable
+          method: 'sov',
+          options: {
+            keyType: 'ed25519',
+          },
+        },
+      })
+      if (!result.result) {
+        return Promise.reject(Error(`Could not register a did for for issuer ${issuer.id} / ${issuer.name}`))
+      }
+
+      const issuerDid = result.result.did
+      // TODO make optional
+      const pubResult = await this.walletApi.walletDidPublicPost({
+        did: issuerDid,
+        createTransactionForEndorser: false,
+      })
+      if (pubResult.result?.did != issuerDid) {
+        return Promise.reject(Error(`Could not publish did ${issuerDid} as public for for issuer ${issuer.id} / ${issuer.name}`))
+      }
+      return issuerDid
+    }
   }
 
   public async getTenantToken(apiKey: string, walletKey?: string): Promise<string> {

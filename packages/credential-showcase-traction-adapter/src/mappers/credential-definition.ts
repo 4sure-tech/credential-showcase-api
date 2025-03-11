@@ -1,29 +1,32 @@
-import { CredentialAttribute, CredentialDefinition } from 'credential-showcase-openapi'
+import { CredentialAttribute, CredentialDefinition, CredentialSchema } from 'credential-showcase-openapi'
 import {
+  AnonCredsSchema,
   CredDefPostOptions,
   CredDefPostRequest,
-  InnerCredDef,
-  AnonCredsSchema,
-  SchemaPostRequest,
-  GetCredDefResult,
   CredDefResult,
   CredDefState,
+  GetCredDefResult,
+  InnerCredDef,
+  SchemaPostRequest,
 } from 'credential-showcase-traction-openapi'
 
 /**
- * Converts a CredentialDefinition to a SchemaPostRequest
- * @param credentialDef The credential definition to convert
+ * Converts a CredentialSchema to a SchemaPostRequest
+ * @param credentialSchema The credential definition to convert
+ * @param issuerId
  * @returns A SchemaPostRequest object
  */
-export function credentialDefinitionToSchemaPostRequest(credentialDef: CredentialDefinition): SchemaPostRequest {
-  // Extract attribute names from the CredentialDefinition
-  const attributeNames = credentialDef.attributes.map((attr) => attr.name)
+export function credentialSchemaToSchemaPostRequest(credentialSchema: CredentialSchema, issuerId: string): SchemaPostRequest {
+  if (!credentialSchema.attributes) {
+    throw new Error(`The credential schema ${credentialSchema.id} / ${credentialSchema.name} must at least contain one atttribute`)
+  }
 
+  const attributeNames = credentialSchema.attributes.map((attr) => attr.name)
   const schema: AnonCredsSchema = {
     attrNames: attributeNames,
-    issuerId: 'did:(method):WgWxqztrNooG92RXvxSTWv', // TODO will be available in CredentialDefinition
-    name: credentialDef.name,
-    version: credentialDef.version,
+    issuerId,
+    name: credentialSchema.name,
+    version: credentialSchema.version,
   }
 
   return {
@@ -67,21 +70,6 @@ export function getOptions(credDef: CredentialDefinition): CredDefPostOptions {
     supportRevocation: true,
     revocationRegistrySize: 1000, // Default size
   }
-}
-
-/**
- * Attempts to extract a schema ID from the credential definition representations
- * @param credentialDef The credential definition to extract from
- * @returns The schema ID if found, otherwise null
- */
-export function extractSchemaIdFromCredentialDef(credentialDef: CredentialDefinition): string | null {
-  // Try to find an OCA representation which contains a schema ID
-  for (const representation of credentialDef.representations) {
-    if ('schemaId' in representation) {
-      return representation.schemaId
-    }
-  }
-  return null
 }
 
 /**

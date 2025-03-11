@@ -1,1 +1,1 @@
-export * from './adapter-client-api'
+export * from './adapter-client'

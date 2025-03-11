@@ -1,6 +1,6 @@
 import { Connection, Receiver, ReceiverEvents, ReceiverOptions } from 'rhea-promise'
 import { environment } from './environment'
-import { CredentialDefinitionFromJSON } from 'credential-showcase-openapi'
+import { CredentialDefinitionFromJSON, Issuer, IssuerFromJSONTyped, Showcase, ShowcaseFromJSONTyped } from 'credential-showcase-openapi'
 import { TractionService } from './services/traction-service'
 import { getTractionService } from './services/service-manager'
 import { Action, Topic } from './types'
@@ -109,8 +109,8 @@ export class MessageProcessor {
 
   private async processMessage(action: Action, jsonData: any, service: TractionService, context: any, headers: MessageHeaders): Promise<void> {
     switch (action) {
-      case 'store-credentialdef': {
-        await this.handleStoreCredentialDef(jsonData, service, context, headers)
+      case 'publish-issuer': {
+        await this.handlePublishIssuer(jsonData, service, context, headers)
         break
       }
       default: {
@@ -120,23 +120,23 @@ export class MessageProcessor {
     }
   }
 
-  private async handleStoreCredentialDef(jsonData: any, service: TractionService, context: any, headers: MessageHeaders): Promise<void> {
-    const credentialDef = CredentialDefinitionFromJSON(jsonData)
+  private async handlePublishIssuer(jsonData: any, service: TractionService, context: any, headers: MessageHeaders): Promise<void> {
+    const issuer: Issuer = IssuerFromJSONTyped(jsonData, false)
     try {
-      console.debug('Received credential definition', credentialDef)
-      await service.storeAnonCredentialDefinition(credentialDef)
+      console.debug('Received issuer', issuer)
+      await service.publishIssuer(issuer)
       if (context.delivery) {
         context.delivery.accept()
       }
     } catch (e) {
-      const errorMsg = `An error occurred while sending credential definition ${credentialDef.id}/${credentialDef.name} of type ${credentialDef.type} to Traction`
+      const errorMsg = `An error occurred while publishing issuer ${issuer.id} / ${issuer.name} of type ${issuer.type} to Traction`
       console.error(errorMsg)
       if (context.delivery) {
         context.delivery.reject({
           info: `apiBasePath: ${headers.apiUrlBase ?? environment.traction.DEFAULT_API_BASE_PATH}, tenantId: ${headers.tenantId}, walletId: ${headers.walletId}`,
           condition: 'fatal error',
           description: errorMsg,
-          value: [credentialDef],
+          value: [issuer],
         }) // FIXME context.delivery.release() to redeliver ??
       }
     }
