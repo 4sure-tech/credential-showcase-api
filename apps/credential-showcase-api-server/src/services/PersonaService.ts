@@ -25,6 +25,10 @@ class PersonaService {
   public delete = async (id: string): Promise<void> => {
     return this.personaRepository.delete(id)
   }
+
+  public getIdBySlug = async (slug: string): Promise<string> => {
+    return this.personaRepository.findIdBySlug(slug)
+  }
 }
 
 export default PersonaService

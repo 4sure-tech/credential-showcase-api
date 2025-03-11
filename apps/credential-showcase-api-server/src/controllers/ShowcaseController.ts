@@ -1,15 +1,4 @@
-import {
-  BadRequestError,
-  Body,
-  Delete,
-  Get,
-  HttpCode,
-  JsonController,
-  OnUndefined,
-  Param,
-  Post,
-  Put
-} from 'routing-controllers'
+import { BadRequestError, Body, Delete, Get, HttpCode, JsonController, OnUndefined, Param, Post, Put } from 'routing-controllers'
 import { Service } from 'typedi'
 import {
   ShowcaseResponse,
@@ -42,8 +31,9 @@ class ShowcaseController {
     }
   }
 
-  @Get('/:id')
-  public async getOne(@Param('id') id: string): Promise<ShowcaseResponse> {
+  @Get('/:slug')
+  public async getOne(@Param('slug') slug: string): Promise<ShowcaseResponse> {
+    const id = await this.showcaseService.getIdBySlug(slug)
     try {
       const result = await this.showcaseService.getShowcase(id)
       return ShowcaseResponseFromJSONTyped({ showcase: showcaseDTOFrom(result) }, false)
@@ -72,8 +62,9 @@ class ShowcaseController {
     }
   }
 
-  @Put('/:id')
-  public async put(@Param('id') id: string, @Body() showcaseRequest: ShowcaseRequest): Promise<ShowcaseResponse> {
+  @Put('/:slug')
+  public async put(@Param('slug') slug: string, @Body() showcaseRequest: ShowcaseRequest): Promise<ShowcaseResponse> {
+    const id = await this.showcaseService.getIdBySlug(slug)
     try {
       if (!instanceOfShowcaseRequest(showcaseRequest)) {
         return Promise.reject(new BadRequestError())
@@ -89,8 +80,9 @@ class ShowcaseController {
   }
 
   @OnUndefined(204)
-  @Delete('/:id')
-  public async delete(@Param('id') id: string): Promise<void> {
+  @Delete('/:slug')
+  public async delete(@Param('slug') slug: string): Promise<void> {
+    const id = await this.showcaseService.getIdBySlug(slug)
     try {
       return this.showcaseService.deleteShowcase(id)
     } catch (e) {

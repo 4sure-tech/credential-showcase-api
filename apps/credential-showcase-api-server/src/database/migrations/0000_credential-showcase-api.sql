@@ -137,6 +137,7 @@ CREATE TABLE "stepAction" (
 CREATE TABLE "scenario" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
+	"slug" text NOT NULL,
 	"description" text NOT NULL,
 	"scenario_type" "ScenarioType" NOT NULL,
 	"issuer" uuid,
@@ -145,6 +146,7 @@ CREATE TABLE "scenario" (
 	"banner_image" uuid,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "scenario_slug_unique" UNIQUE("slug"),
 	CONSTRAINT "scenario_type_check" CHECK (
             (scenario_type = 'PRESENTATION' AND relying_party IS NOT NULL) OR
             (scenario_type = 'ISSUANCE' AND issuer IS NOT NULL)
@@ -164,13 +166,15 @@ CREATE TABLE "revocationInfo" (
 CREATE TABLE "persona" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
+	"slug" text NOT NULL,
 	"role" text NOT NULL,
 	"description" text NOT NULL,
 	"headshot_image" uuid,
 	"body_image" uuid,
 	"hidden" boolean DEFAULT false NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "persona_slug_unique" UNIQUE("slug")
 );
 --> statement-breakpoint
 CREATE TABLE "scenariosToPersonas" (
@@ -184,13 +188,15 @@ CREATE TABLE "scenariosToPersonas" (
 CREATE TABLE "showcase" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
+	"slug" text NOT NULL,
 	"description" text NOT NULL,
 	"completionMessage" text,
 	"status" "ShowcaseStatus" NOT NULL,
 	"hidden" boolean DEFAULT false NOT NULL,
 	"banner_image" uuid,
 	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "showcase_slug_unique" UNIQUE("slug")
 );
 --> statement-breakpoint
 CREATE TABLE "showcasesToCredentialDefinitions" (

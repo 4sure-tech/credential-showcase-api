@@ -13,6 +13,7 @@ export const scenarios = pgTable(
   {
     id: uuid('id').notNull().primaryKey().defaultRandom(),
     name: text().notNull(),
+    slug: text().notNull().unique(),
     description: text().notNull(),
     scenarioType: ScenarioTypePg('scenario_type').notNull().$type<ScenarioType>(),
     issuer: uuid().references(() => issuers.id),

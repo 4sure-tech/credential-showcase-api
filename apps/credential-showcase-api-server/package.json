@@ -20,6 +20,8 @@
     "reflect-metadata": "^0.2.2",
     "routing-controllers": "^0.11.1",
     "supertest": "^7.0.0",
+    "nanoid": "3.3.6",
+    "slugify": "1.6.6",
     "typedi": "^0.10.0"
   },
   "devDependencies": {

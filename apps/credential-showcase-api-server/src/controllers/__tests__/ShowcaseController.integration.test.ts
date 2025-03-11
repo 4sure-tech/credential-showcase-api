@@ -14,12 +14,12 @@ import ShowcaseRepository from '../../database/repositories/ShowcaseRepository'
 import ShowcaseService from '../../services/ShowcaseService'
 import { ShowcaseRequest } from 'credential-showcase-openapi'
 import supertest = require('supertest')
-import {PGlite} from "@electric-sql/pglite";
-import {drizzle} from "drizzle-orm/pglite";
-import * as schema from "../../database/schema";
-import {NodePgDatabase} from "drizzle-orm/node-postgres";
-import {migrate} from "drizzle-orm/node-postgres/migrator";
-import DatabaseService from "../../services/DatabaseService";
+import { PGlite } from '@electric-sql/pglite'
+import { drizzle } from 'drizzle-orm/pglite'
+import * as schema from '../../database/schema'
+import { NodePgDatabase } from 'drizzle-orm/node-postgres'
+import { migrate } from 'drizzle-orm/node-postgres/migrator'
+import DatabaseService from '../../services/DatabaseService'
 
 describe('ShowcaseController Integration Tests', () => {
   let client: PGlite
@@ -183,7 +183,7 @@ describe('ShowcaseController Integration Tests', () => {
     expect(getAllResponse.body.showcases.length).toBe(1)
 
     // 3. Retrieve the created showcase
-    const getResponse = await request.get(`/showcases/${createdShowcase.id}`).expect(200)
+    const getResponse = await request.get(`/showcases/${createdShowcase.slug}`).expect(200)
     expect(getResponse.body.showcase.name).toEqual('Test Showcase')
 
     // 4. Update the showcase
@@ -194,24 +194,25 @@ describe('ShowcaseController Integration Tests', () => {
       status: ShowcaseStatus.PENDING,
     }
 
-    const updateResponse = await request.put(`/showcases/${createdShowcase.id}`).send(updatedRequest).expect(200)
+    const updateResponse = await request.put(`/showcases/${createdShowcase.slug}`).send(updatedRequest).expect(200)
+    const updatedShowcase = updateResponse.body.showcase
 
     expect(updateResponse.body.showcase.name).toEqual('Updated Showcase Name')
     expect(updateResponse.body.showcase.description).toEqual('Updated showcase description')
     expect(updateResponse.body.showcase.status).toEqual(ShowcaseStatus.PENDING)
 
     // 5. Delete the showcase
-    await request.delete(`/showcases/${createdShowcase.id}`).expect(204)
+    await request.delete(`/showcases/${updatedShowcase.slug}`).expect(204)
 
     // 6. Verify showcase deletion
-    await request.get(`/showcases/${createdShowcase.id}`).expect(404)
+    await request.get(`/showcases/${updatedShowcase.slug}`).expect(404)
   })
 
   it('should handle errors when accessing non-existent resources', async () => {
-    const nonExistentId = '00000000-0000-0000-0000-000000000000'
+    const nonExistentSlug = '00000000-0000-0000-0000-000000000000'
 
     // Try to get a non-existent showcase
-    await request.get(`/showcases/${nonExistentId}`).expect(404)
+    await request.get(`/showcases/${nonExistentSlug}`).expect(404)
   })
 
   it('should validate request data when creating a showcase', async () => {

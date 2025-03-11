@@ -8,26 +8,26 @@ import AssetRepository from '../../database/repositories/AssetRepository'
 import { Application } from 'express'
 import { PersonaRequest } from 'credential-showcase-openapi'
 import supertest = require('supertest')
-import {PGlite} from "@electric-sql/pglite";
-import {drizzle} from "drizzle-orm/pglite";
-import * as schema from "../../database/schema";
-import {NodePgDatabase} from "drizzle-orm/node-postgres";
-import {migrate} from "drizzle-orm/node-postgres/migrator";
-import DatabaseService from "../../services/DatabaseService";
+import { PGlite } from '@electric-sql/pglite'
+import { drizzle } from 'drizzle-orm/pglite'
+import * as schema from '../../database/schema'
+import { NodePgDatabase } from 'drizzle-orm/node-postgres'
+import { migrate } from 'drizzle-orm/node-postgres/migrator'
+import DatabaseService from '../../services/DatabaseService'
 
 describe('PersonaController Integration Tests', () => {
-    let client: PGlite
-    let app: Application
-    let request: any
+  let client: PGlite
+  let app: Application
+  let request: any
 
   beforeAll(async () => {
-      client = new PGlite()
-      const database = drizzle(client, { schema }) as unknown as NodePgDatabase
-      await migrate(database, { migrationsFolder: './apps/credential-showcase-api-server/src/database/migrations' })
-      const mockDatabaseService = {
-          getConnection: jest.fn().mockResolvedValue(database),
-      }
-      Container.set(DatabaseService, mockDatabaseService)
+    client = new PGlite()
+    const database = drizzle(client, { schema }) as unknown as NodePgDatabase
+    await migrate(database, { migrationsFolder: './apps/credential-showcase-api-server/src/database/migrations' })
+    const mockDatabaseService = {
+      getConnection: jest.fn().mockResolvedValue(database),
+    }
+    Container.set(DatabaseService, mockDatabaseService)
     useContainer(Container)
     Container.get(AssetRepository)
     Container.get(PersonaRepository)
@@ -39,7 +39,7 @@ describe('PersonaController Integration Tests', () => {
   })
 
   afterAll(async () => {
-      await client.close()
+    await client.close()
     Container.reset()
   })
 
@@ -79,13 +79,13 @@ describe('PersonaController Integration Tests', () => {
     expect(getAllResponse.body.personas.length).toBeGreaterThan(0)
 
     // Retrieve the created persona by id
-    const getResponse = await request.get(`/personas/${created.id}`).expect(200)
+    const getResponse = await request.get(`/personas/${created.slug}`).expect(200)
     expect(getResponse.body.persona.name).toEqual('Test Persona')
     expect(getResponse.body.persona.role).toEqual('Test Role')
 
     // Update the persona
     const updateResponse = await request
-      .put(`/personas/${created.id}`)
+      .put(`/personas/${created.slug}`)
       .send({
         name: 'Updated Persona',
         role: 'Updated Role',
@@ -95,6 +95,7 @@ describe('PersonaController Integration Tests', () => {
         hidden: true,
       } satisfies PersonaRequest)
       .expect(200)
+    const updatedPersona = updateResponse.body.persona
 
     expect(updateResponse.body.persona.name).toEqual('Updated Persona')
     expect(updateResponse.body.persona.role).toEqual('Updated Role')
@@ -102,9 +103,9 @@ describe('PersonaController Integration Tests', () => {
     expect(updateResponse.body.persona.hidden).toEqual(true)
 
     // Delete the persona
-    await request.delete(`/personas/${created.id}`).expect(204)
+    await request.delete(`/personas/${updatedPersona.slug}`).expect(204)
 
     // Verify deletion (should return 404)
-    await request.get(`/personas/${created.id}`).expect(404)
+    await request.get(`/personas/${updatedPersona.slug}`).expect(404)
   })
 })

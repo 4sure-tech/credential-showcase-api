@@ -3,12 +3,7 @@ import { createExpressServer, useContainer } from 'routing-controllers'
 import { Container } from 'typedi'
 import IssuanceScenarioController from '../IssuanceScenarioController'
 import { Application } from 'express'
-import {
-  AriesOOBActionRequest,
-  IssuanceScenarioRequest,
-  StepRequest,
-  StepType
-} from 'credential-showcase-openapi'
+import { AriesOOBActionRequest, IssuanceScenarioRequest, StepRequest, StepType } from 'credential-showcase-openapi'
 import AssetRepository from '../../database/repositories/AssetRepository'
 import CredentialSchemaRepository from '../../database/repositories/CredentialSchemaRepository'
 import CredentialDefinitionRepository from '../../database/repositories/CredentialDefinitionRepository'
@@ -17,21 +12,13 @@ import PersonaRepository from '../../database/repositories/PersonaRepository'
 import ScenarioRepository from '../../database/repositories/ScenarioRepository'
 import ScenarioService from '../../services/ScenarioService'
 import supertest = require('supertest')
-import {PGlite} from "@electric-sql/pglite"
-import {drizzle} from "drizzle-orm/pglite"
-import * as schema from "../../database/schema"
-import {NodePgDatabase} from "drizzle-orm/node-postgres"
-import {migrate} from "drizzle-orm/node-postgres/migrator"
-import DatabaseService from "../../services/DatabaseService"
-import {
-  CredentialAttributeType,
-  CredentialType,
-  IdentifierType,
-  IssuerType,
-  NewPersona,
-  ScenarioType,
-  StepActionType
-} from '../../types'
+import { PGlite } from '@electric-sql/pglite'
+import { drizzle } from 'drizzle-orm/pglite'
+import * as schema from '../../database/schema'
+import { NodePgDatabase } from 'drizzle-orm/node-postgres'
+import { migrate } from 'drizzle-orm/node-postgres/migrator'
+import DatabaseService from '../../services/DatabaseService'
+import { CredentialAttributeType, CredentialType, IdentifierType, IssuerType, NewPersona, ScenarioType, StepActionType } from '../../types'
 
 describe('IssuanceScenarioController Integration Tests', () => {
   let client: PGlite
@@ -194,12 +181,12 @@ describe('IssuanceScenarioController Integration Tests', () => {
     expect(getAllResponse.body.issuanceScenarios.length).toBe(1)
 
     // 4. Retrieve the created scenario
-    const getResponse = await request.get(`/scenarios/issuances/${createdScenario.id}`).expect(200)
+    const getResponse = await request.get(`/scenarios/issuances/${createdScenario.slug}`).expect(200)
     expect(getResponse.body.issuanceScenario.name).toEqual('Test Issuance Scenario')
 
     // 5. Update the scenario
     const updateResponse = await request
-      .put(`/scenarios/issuances/${createdScenario.id}`)
+      .put(`/scenarios/issuances/${createdScenario.slug}`)
       .send({
         ...scenarioRequest,
         name: 'Updated Scenario Name',
@@ -207,6 +194,7 @@ describe('IssuanceScenarioController Integration Tests', () => {
       .expect(200)
 
     expect(updateResponse.body.issuanceScenario.name).toEqual('Updated Scenario Name')
+    const updatedScenario = updateResponse.body.issuanceScenario
 
     // 6. Create an additional step for the scenario
     const stepRequest: StepRequest = {
@@ -250,24 +238,24 @@ describe('IssuanceScenarioController Integration Tests', () => {
       ],
     }
 
-    const createStepResponse = await request.post(`/scenarios/issuances/${createdScenario.id}/steps`).send(stepRequest).expect(201)
+    const createStepResponse = await request.post(`/scenarios/issuances/${updatedScenario.slug}/steps`).send(stepRequest).expect(201)
 
     const createdStep = createStepResponse.body.step
     expect(createdStep).toHaveProperty('id')
     expect(createdStep.title).toEqual('Additional Step')
 
     // 7. Retrieve all steps for the scenario
-    const getAllStepsResponse = await request.get(`/scenarios/issuances/${createdScenario.id}/steps`).expect(200)
+    const getAllStepsResponse = await request.get(`/scenarios/issuances/${updatedScenario.slug}/steps`).expect(200)
     expect(getAllStepsResponse.body.steps).toBeInstanceOf(Array)
     expect(getAllStepsResponse.body.steps.length).toBe(2) // Now should have 2 steps
 
     // 8. Retrieve the created step
-    const getStepResponse = await request.get(`/scenarios/issuances/${createdScenario.id}/steps/${createdStep.id}`).expect(200)
+    const getStepResponse = await request.get(`/scenarios/issuances/${updatedScenario.slug}/steps/${createdStep.id}`).expect(200)
     expect(getStepResponse.body.step.title).toEqual('Additional Step')
 
     // 9. Update the step
     const updateStepResponse = await request
-      .put(`/scenarios/issuances/${createdScenario.id}/steps/${createdStep.id}`)
+      .put(`/scenarios/issuances/${updatedScenario.slug}/steps/${createdStep.id}`)
       .send({
         ...stepRequest,
         title: 'Updated Step Title',
@@ -310,7 +298,7 @@ describe('IssuanceScenarioController Integration Tests', () => {
     }
 
     const createActionResponse = await request
-      .post(`/scenarios/issuances/${createdScenario.id}/steps/${createdStep.id}/actions`)
+      .post(`/scenarios/issuances/${updatedScenario.slug}/steps/${createdStep.id}/actions`)
       .send(actionRequest)
       .expect(201)
 
@@ -320,21 +308,21 @@ describe('IssuanceScenarioController Integration Tests', () => {
     expect(createdAction.actionType).toEqual(StepActionType.ARIES_OOB)
 
     // 11. Retrieve all actions for the step
-    const getAllActionsResponse = await request.get(`/scenarios/issuances/${createdScenario.id}/steps/${createdStep.id}/actions`).expect(200)
+    const getAllActionsResponse = await request.get(`/scenarios/issuances/${updatedScenario.slug}/steps/${createdStep.id}/actions`).expect(200)
 
     expect(getAllActionsResponse.body.actions).toBeInstanceOf(Array)
     expect(getAllActionsResponse.body.actions.length).toBe(2) // Original action from step creation plus the new one
 
     // 12. Retrieve the created action
     const getActionResponse = await request
-      .get(`/scenarios/issuances/${createdScenario.id}/steps/${createdStep.id}/actions/${createdAction.id}`)
+      .get(`/scenarios/issuances/${updatedScenario.slug}/steps/${createdStep.id}/actions/${createdAction.id}`)
       .expect(200)
 
     expect(getActionResponse.body.action.title).toEqual('Additional Action')
 
     // 13. Update the action
     const updateActionResponse = await request
-      .put(`/scenarios/issuances/${createdScenario.id}/steps/${createdStep.id}/actions/${createdAction.id}`)
+      .put(`/scenarios/issuances/${updatedScenario.slug}/steps/${createdStep.id}/actions/${createdAction.id}`)
       .send({
         ...actionRequest,
         title: 'Updated Action Title',
@@ -344,26 +332,26 @@ describe('IssuanceScenarioController Integration Tests', () => {
     expect(updateActionResponse.body.action.title).toEqual('Updated Action Title')
 
     // 14. Delete the action
-    await request.delete(`/scenarios/issuances/${createdScenario.id}/steps/${createdStep.id}/actions/${createdAction.id}`).expect(204)
+    await request.delete(`/scenarios/issuances/${updatedScenario.slug}/steps/${createdStep.id}/actions/${createdAction.id}`).expect(204)
 
     // 15. Delete the step
-    await request.delete(`/scenarios/issuances/${createdScenario.id}/steps/${createdStep.id}`).expect(204)
+    await request.delete(`/scenarios/issuances/${updatedScenario.slug}/steps/${createdStep.id}`).expect(204)
 
     // 16. Delete the scenario
-    await request.delete(`/scenarios/issuances/${createdScenario.id}`).expect(204)
+    await request.delete(`/scenarios/issuances/${updatedScenario.slug}`).expect(204)
 
     // 17. Verify scenario deletion
-    await request.get(`/scenarios/issuances/${createdScenario.id}`).expect(404)
+    await request.get(`/scenarios/issuances/${updatedScenario.slug}`).expect(404)
   })
 
   it('should handle errors when accessing non-existent resources', async () => {
-    const nonExistentId = '00000000-0000-0000-0000-000000000000'
+    const nonExistentSlug = '00000000-0000-0000-0000-000000000000'
 
     // Try to get a non-existent scenario
-    await request.get(`/scenarios/issuances/${nonExistentId}`).expect(404)
+    await request.get(`/scenarios/issuances/${nonExistentSlug}`).expect(404)
 
     // Try to get steps for a non-existent scenario
-    await request.get(`/scenarios/issuances/${nonExistentId}/steps`).expect(404)
+    await request.get(`/scenarios/issuances/${nonExistentSlug}/steps`).expect(404)
 
     // Try to create a step for a non-existent scenario
     const assetRepository = Container.get(AssetRepository)
@@ -415,7 +403,7 @@ describe('IssuanceScenarioController Integration Tests', () => {
       ],
     }
 
-    await request.post(`/scenarios/issuances/${nonExistentId}/steps`).send(stepRequest).expect(404)
+    await request.post(`/scenarios/issuances/${nonExistentSlug}/steps`).send(stepRequest).expect(404)
   })
 
   it('should validate request data when creating an issuance scenario', async () => {

@@ -1,15 +1,4 @@
-import {
-  BadRequestError,
-  Body,
-  Delete,
-  Get,
-  HttpCode,
-  JsonController,
-  OnUndefined,
-  Param,
-  Post,
-  Put
-} from 'routing-controllers'
+import { BadRequestError, Body, Delete, Get, HttpCode, JsonController, OnUndefined, Param, Post, Put } from 'routing-controllers'
 import { Service } from 'typedi'
 import {
   instanceOfPersonaRequest,
@@ -40,8 +29,9 @@ class PersonaController {
     }
   }
 
-  @Get('/:id')
-  public async get(@Param('id') id: string): Promise<PersonaResponse> {
+  @Get('/:slug')
+  public async get(@Param('slug') slug: string): Promise<PersonaResponse> {
+    const id = await this.personaService.getIdBySlug(slug)
     try {
       const result = await this.personaService.get(id)
       return PersonaResponseFromJSONTyped({ persona: personaDTOFrom(result) }, false)
@@ -68,8 +58,9 @@ class PersonaController {
     }
   }
 
-  @Put('/:id')
-  public async put(@Param('id') id: string, @Body() personaRequest: PersonaRequest): Promise<PersonaResponse> {
+  @Put('/:slug')
+  public async put(@Param('slug') slug: string, @Body() personaRequest: PersonaRequest): Promise<PersonaResponse> {
+    const id = await this.personaService.getIdBySlug(slug)
     try {
       if (!instanceOfPersonaRequest(personaRequest)) {
         return Promise.reject(new BadRequestError())
@@ -85,8 +76,9 @@ class PersonaController {
   }
 
   @OnUndefined(204)
-  @Delete('/:id')
-  public async delete(@Param('id') id: string): Promise<void> {
+  @Delete('/:slug')
+  public async delete(@Param('slug') slug: string): Promise<void> {
+    const id = await this.personaService.getIdBySlug(slug)
     try {
       return await this.personaService.delete(id)
     } catch (e) {

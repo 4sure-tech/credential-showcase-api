@@ -1,15 +1,4 @@
-import {
-  BadRequestError,
-  Body,
-  Delete,
-  Get,
-  HttpCode,
-  JsonController,
-  OnUndefined,
-  Param,
-  Post,
-  Put
-} from 'routing-controllers'
+import { BadRequestError, Body, Delete, Get, HttpCode, JsonController, OnUndefined, Param, Post, Put } from 'routing-controllers'
 import { Service } from 'typedi'
 import {
   CredentialDefinitionRequest,

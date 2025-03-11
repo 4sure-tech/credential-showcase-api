@@ -20,12 +20,7 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
     const credentialSchemaResult = await this.credentialSchemaRepository.findById(credentialDefinition.credentialSchema)
 
     return (await this.databaseService.getConnection()).transaction(async (tx): Promise<CredentialDefinition> => {
-      const [credentialDefinitionResult] = await tx
-        .insert(credentialDefinitions)
-        .values({
-          ...credentialDefinition,
-        })
-        .returning()
+      const [credentialDefinitionResult] = await tx.insert(credentialDefinitions).values(credentialDefinition).returning()
 
       // TODO SHOWCASE-81 enable
       // const credentialRepresentationsResult = await tx.insert(credentialRepresentations)
@@ -69,9 +64,7 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
     return (await this.databaseService.getConnection()).transaction(async (tx): Promise<CredentialDefinition> => {
       const [credentialDefinitionResult] = await tx
         .update(credentialDefinitions)
-        .set({
-          ...credentialDefinition,
-        })
+        .set(credentialDefinition)
         .where(eq(credentialDefinitions.id, id))
         .returning()
 
@@ -127,6 +120,7 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
     if (!result) {
       return Promise.reject(new NotFoundError(`No credential definition found for id: ${id}`))
     }
+
     return {
       ...result,
       credentialSchema: result.cs,
@@ -148,6 +142,7 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
         revocation: true,
       },
     })
+
     return result.map((item: any) => ({
       ...item,
       credentialSchema: item.cs,

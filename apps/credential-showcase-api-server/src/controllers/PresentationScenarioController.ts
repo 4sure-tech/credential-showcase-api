@@ -1,15 +1,4 @@
-import {
-  BadRequestError,
-  Body,
-  Delete,
-  Get,
-  HttpCode,
-  JsonController,
-  OnUndefined,
-  Param,
-  Post,
-  Put
-} from 'routing-controllers'
+import { BadRequestError, Body, Delete, Get, HttpCode, JsonController, OnUndefined, Param, Post, Put } from 'routing-controllers'
 import { Service } from 'typedi'
 import ScenarioService from '../services/ScenarioService'
 import {
@@ -57,8 +46,9 @@ class PresentationScenarioController {
     }
   }
 
-  @Get('/:presentationScenarioId')
-  public async getOnePresentationScenario(@Param('presentationScenarioId') presentationScenarioId: string): Promise<PresentationScenarioResponse> {
+  @Get('/:slug')
+  public async getOnePresentationScenario(@Param('slug') slug: string): Promise<PresentationScenarioResponse> {
+    const presentationScenarioId = await this.scenarioService.getIdBySlug(slug)
     try {
       const result = await this.scenarioService.getScenario(presentationScenarioId)
       return PresentationScenarioResponseFromJSONTyped({ presentationScenario: presentationScenarioDTOFrom(result) }, false)
@@ -87,11 +77,12 @@ class PresentationScenarioController {
     }
   }
 
-  @Put('/:presentationScenarioId')
+  @Put('/:slug')
   public async putPresentationScenario(
-    @Param('presentationScenarioId') presentationScenarioId: string,
+    @Param('slug') slug: string,
     @Body() presentationScenarioRequest: PresentationScenarioRequest,
   ): Promise<PresentationScenarioResponse> {
+    const presentationScenarioId = await this.scenarioService.getIdBySlug(slug)
     try {
       if (!instanceOfPresentationScenarioRequest(presentationScenarioRequest)) {
         return Promise.reject(new BadRequestError())
@@ -110,8 +101,9 @@ class PresentationScenarioController {
   }
 
   @OnUndefined(204)
-  @Delete('/:presentationScenarioId')
-  public async deletePresentationScenario(@Param('presentationScenarioId') presentationScenarioId: string): Promise<void> {
+  @Delete('/:slug')
+  public async deletePresentationScenario(@Param('slug') slug: string): Promise<void> {
+    const presentationScenarioId = await this.scenarioService.getIdBySlug(slug)
     try {
       return await this.scenarioService.deleteScenario(presentationScenarioId)
     } catch (e) {
@@ -122,8 +114,9 @@ class PresentationScenarioController {
     }
   }
 
-  @Get('/:presentationScenarioId/steps')
-  public async getAllSteps(@Param('presentationScenarioId') presentationScenarioId: string): Promise<StepsResponse> {
+  @Get('/:slug/steps')
+  public async getAllSteps(@Param('slug') slug: string): Promise<StepsResponse> {
+    const presentationScenarioId = await this.scenarioService.getIdBySlug(slug)
     try {
       const result = await this.scenarioService.getScenarioSteps(presentationScenarioId)
       const steps = result.map((step) => stepDTOFrom(step))
@@ -136,11 +129,9 @@ class PresentationScenarioController {
     }
   }
 
-  @Get('/:presentationScenarioId/steps/:stepId')
-  public async getOnePresentationScenarioStep(
-    @Param('presentationScenarioId') presentationScenarioId: string,
-    @Param('stepId') stepId: string,
-  ): Promise<StepResponse> {
+  @Get('/:slug/steps/:stepId')
+  public async getOnePresentationScenarioStep(@Param('slug') slug: string, @Param('stepId') stepId: string): Promise<StepResponse> {
+    const presentationScenarioId = await this.scenarioService.getIdBySlug(slug)
     try {
       const result = await this.scenarioService.getScenarioStep(presentationScenarioId, stepId)
       return StepResponseFromJSONTyped({ step: stepDTOFrom(result) }, false)
@@ -153,11 +144,9 @@ class PresentationScenarioController {
   }
 
   @HttpCode(201)
-  @Post('/:presentationScenarioId/steps')
-  public async postPresentationScenarioStep(
-    @Param('presentationScenarioId') presentationScenarioId: string,
-    @Body() stepRequest: StepRequest,
-  ): Promise<StepResponse> {
+  @Post('/:slug/steps')
+  public async postPresentationScenarioStep(@Param('slug') slug: string, @Body() stepRequest: StepRequest): Promise<StepResponse> {
+    const presentationScenarioId = await this.scenarioService.getIdBySlug(slug)
     try {
       if (!instanceOfStepRequest(stepRequest)) {
         return Promise.reject(new BadRequestError())
@@ -172,12 +161,13 @@ class PresentationScenarioController {
     }
   }
 
-  @Put('/:presentationScenarioId/steps/:stepId')
+  @Put('/:slug/steps/:stepId')
   public async putPresentationScenarioStep(
-    @Param('presentationScenarioId') presentationScenarioId: string,
+    @Param('slug') slug: string,
     @Param('stepId') stepId: string,
     @Body() stepRequest: StepRequest,
   ): Promise<StepResponse> {
+    const presentationScenarioId = await this.scenarioService.getIdBySlug(slug)
     try {
       if (!instanceOfStepRequest(stepRequest)) {
         return Promise.reject(new BadRequestError())
@@ -193,11 +183,9 @@ class PresentationScenarioController {
   }
 
   @OnUndefined(204)
-  @Delete('/:presentationScenarioId/steps/:stepId')
-  public async deletePresentationScenarioStep(
-    @Param('presentationScenarioId') presentationScenarioId: string,
-    @Param('stepId') stepId: string,
-  ): Promise<void> {
+  @Delete('/:slug/steps/:stepId')
+  public async deletePresentationScenarioStep(@Param('slug') slug: string, @Param('stepId') stepId: string): Promise<void> {
+    const presentationScenarioId = await this.scenarioService.getIdBySlug(slug)
     try {
       return this.scenarioService.deleteScenarioStep(presentationScenarioId, stepId)
     } catch (e) {
@@ -208,11 +196,9 @@ class PresentationScenarioController {
     }
   }
 
-  @Get('/:presentationScenarioId/steps/:stepId/actions')
-  public async getAllPresentationScenarioStepActions(
-    @Param('presentationScenarioId') presentationScenarioId: string,
-    @Param('stepId') stepId: string,
-  ): Promise<StepActionsResponse> {
+  @Get('/:slug/steps/:stepId/actions')
+  public async getAllPresentationScenarioStepActions(@Param('slug') slug: string, @Param('stepId') stepId: string): Promise<StepActionsResponse> {
+    const presentationScenarioId = await this.scenarioService.getIdBySlug(slug)
     try {
       const result = await this.scenarioService.getScenarioStepActions(presentationScenarioId, stepId)
       const actions = result.map((action) => action)
@@ -225,12 +211,13 @@ class PresentationScenarioController {
     }
   }
 
-  @Get('/:presentationScenarioId/steps/:stepId/actions/:actionId')
+  @Get('/:slug/steps/:stepId/actions/:actionId')
   public async getOnePresentationScenarioStepAction(
-    @Param('presentationScenarioId') presentationScenarioId: string,
+    @Param('slug') slug: string,
     @Param('stepId') stepId: string,
     @Param('actionId') actionId: string,
   ): Promise<StepActionResponse> {
+    const presentationScenarioId = await this.scenarioService.getIdBySlug(slug)
     try {
       const result = await this.scenarioService.getScenarioStepAction(presentationScenarioId, stepId, actionId)
       return StepActionResponseFromJSONTyped({ action: result }, false)
@@ -243,12 +230,13 @@ class PresentationScenarioController {
   }
 
   @HttpCode(201)
-  @Post('/:presentationScenarioId/steps/:stepId/actions')
+  @Post('/:slug/steps/:stepId/actions')
   public async postPresentationScenarioStepAction(
-    @Param('presentationScenarioId') presentationScenarioId: string,
+    @Param('slug') slug: string,
     @Param('stepId') stepId: string,
     @Body() actionRequest: StepActionRequest,
   ): Promise<StepActionResponse> {
+    const presentationScenarioId = await this.scenarioService.getIdBySlug(slug)
     try {
       if (!instanceOfStepActionRequest(actionRequest)) {
         return Promise.reject(new BadRequestError())
@@ -263,13 +251,14 @@ class PresentationScenarioController {
     }
   }
 
-  @Put('/:presentationScenarioId/steps/:stepId/actions/:actionId')
+  @Put('/:slug/steps/:stepId/actions/:actionId')
   public async putPresentationScenarioStepAction(
-    @Param('presentationScenarioId') presentationScenarioId: string,
+    @Param('slug') slug: string,
     @Param('stepId') stepId: string,
     @Param('actionId') actionId: string,
     @Body() actionRequest: StepActionRequest,
   ): Promise<StepActionResponse> {
+    const presentationScenarioId = await this.scenarioService.getIdBySlug(slug)
     try {
       if (!instanceOfStepActionRequest(actionRequest)) {
         return Promise.reject(new BadRequestError())
@@ -290,12 +279,13 @@ class PresentationScenarioController {
   }
 
   @OnUndefined(204)
-  @Delete('/:presentationScenarioId/steps/:stepId/actions/:actionId')
+  @Delete('/:slug/steps/:stepId/actions/:actionId')
   public async deletePresentationScenarioStepAction(
-    @Param('presentationScenarioId') presentationScenarioId: string,
+    @Param('slug') slug: string,
     @Param('stepId') stepId: string,
     @Param('actionId') actionId: string,
   ): Promise<void> {
+    const presentationScenarioId = await this.scenarioService.getIdBySlug(slug)
     try {
       return this.scenarioService.deleteScenarioStepAction(presentationScenarioId, stepId, actionId)
     } catch (e) {

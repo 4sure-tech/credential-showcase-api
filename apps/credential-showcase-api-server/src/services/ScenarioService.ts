@@ -70,6 +70,10 @@ class ScenarioService {
   public deleteScenarioStepAction = async (scenarioId: string, stepId: string, actionId: string): Promise<void> => {
     return this.scenarioRepository.deleteStepAction(scenarioId, stepId, actionId)
   }
+
+  public getIdBySlug = async (slug: string): Promise<string> => {
+    return this.scenarioRepository.findIdBySlug(slug)
+  }
 }
 
 export default ScenarioService

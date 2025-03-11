@@ -9,10 +9,10 @@ import DatabaseService from '../../../services/DatabaseService'
 import ShowcaseRepository from '../ShowcaseRepository'
 import IssuerRepository from '../IssuerRepository'
 import CredentialDefinitionRepository from '../CredentialDefinitionRepository'
+import CredentialSchemaRepository from '../CredentialSchemaRepository'
 import AssetRepository from '../AssetRepository'
 import PersonaRepository from '../PersonaRepository'
 import ScenarioRepository from '../ScenarioRepository'
-import CredentialSchemaRepository from '../CredentialSchemaRepository'
 import {
   Asset,
   CredentialAttributeType,
@@ -247,6 +247,7 @@ describe('Database showcase repository tests', (): void => {
 
     expect(savedShowcase).toBeDefined()
     expect(savedShowcase.name).toEqual(showcase.name)
+    expect(savedShowcase.slug).toEqual('example-name')
     expect(savedShowcase.description).toEqual(showcase.description)
     expect(savedShowcase.status).toEqual(showcase.status)
     expect(savedShowcase.hidden).toEqual(showcase.hidden)
@@ -458,6 +459,7 @@ describe('Database showcase repository tests', (): void => {
 
     expect(updatedShowcase).toBeDefined()
     expect(updatedShowcase.name).toEqual(newName)
+    expect(updatedShowcase.slug).toEqual('new-name')
     expect(updatedShowcase.completionMessage).toEqual(completionMessage)
     expect(updatedShowcase.description).toEqual(showcase.description)
     expect(updatedShowcase.status).toEqual(showcase.status)

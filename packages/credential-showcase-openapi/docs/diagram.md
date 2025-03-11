@@ -7,6 +7,7 @@ config:
 classDiagram
     class Showcase {
         +name : String
+        +slug : String
         +description : String
         +status : String
         +scenarios: List~String~
@@ -21,6 +22,7 @@ classDiagram
     class Scenario {
         <!-- Scenarios is a collection of workflows -->
         +name : String
+        +slug : String
         +description : String
         +steps: List~Steps~
         +personas: List~Persona~
@@ -88,6 +90,7 @@ classDiagram
     }
     class Persona {
         +name : String
+        +slug : String
         +role: String
         +description: String
         +createdAt : DateTime
