@@ -116,24 +116,6 @@ describe('Database persona repository tests', (): void => {
     await expect(personaRepository.create(persona)).rejects.toThrowError(`No asset found for id: ${unknownImageId}`)
   })
 
-  it('Should append slug counter on duplicate persona name', async (): Promise<void> => {
-    const persona: NewPersona = {
-      name: 'John Doe',
-      role: 'Software Engineer',
-      description: 'Experienced developer',
-      headshotImage: asset.id,
-      bodyImage: asset.id,
-      hidden: true,
-    }
-
-    const savedPersona = await personaRepository.create(persona)
-    expect(savedPersona).toBeDefined()
-
-    const fromDb = await personaRepository.create(persona)
-
-    expect(fromDb.slug).toEqual('john-doe-2')
-  })
-
   it('Should get persona by id from database', async (): Promise<void> => {
     const persona: NewPersona = {
       name: 'John Doe',

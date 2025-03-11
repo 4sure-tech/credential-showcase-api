@@ -82,8 +82,8 @@ class PresentationScenarioController {
     @Param('slug') slug: string,
     @Body() presentationScenarioRequest: PresentationScenarioRequest,
   ): Promise<PresentationScenarioResponse> {
+    const presentationScenarioId = await this.scenarioService.getIdBySlug(slug)
     try {
-      const presentationScenarioId = await this.scenarioService.getIdBySlug(slug)
       if (!instanceOfPresentationScenarioRequest(presentationScenarioRequest)) {
         return Promise.reject(new BadRequestError())
       }
@@ -167,8 +167,8 @@ class PresentationScenarioController {
     @Param('stepId') stepId: string,
     @Body() stepRequest: StepRequest,
   ): Promise<StepResponse> {
+    const presentationScenarioId = await this.scenarioService.getIdBySlug(slug)
     try {
-      const presentationScenarioId = await this.scenarioService.getIdBySlug(slug)
       if (!instanceOfStepRequest(stepRequest)) {
         return Promise.reject(new BadRequestError())
       }
@@ -217,8 +217,8 @@ class PresentationScenarioController {
     @Param('stepId') stepId: string,
     @Param('actionId') actionId: string,
   ): Promise<StepActionResponse> {
+    const presentationScenarioId = await this.scenarioService.getIdBySlug(slug)
     try {
-      const presentationScenarioId = await this.scenarioService.getIdBySlug(slug)
       const result = await this.scenarioService.getScenarioStepAction(presentationScenarioId, stepId, actionId)
       return StepActionResponseFromJSONTyped({ action: result }, false)
     } catch (e) {
@@ -236,8 +236,8 @@ class PresentationScenarioController {
     @Param('stepId') stepId: string,
     @Body() actionRequest: StepActionRequest,
   ): Promise<StepActionResponse> {
+    const presentationScenarioId = await this.scenarioService.getIdBySlug(slug)
     try {
-      const presentationScenarioId = await this.scenarioService.getIdBySlug(slug)
       if (!instanceOfStepActionRequest(actionRequest)) {
         return Promise.reject(new BadRequestError())
       }
@@ -258,8 +258,8 @@ class PresentationScenarioController {
     @Param('actionId') actionId: string,
     @Body() actionRequest: StepActionRequest,
   ): Promise<StepActionResponse> {
+    const presentationScenarioId = await this.scenarioService.getIdBySlug(slug)
     try {
-      const presentationScenarioId = await this.scenarioService.getIdBySlug(slug)
       if (!instanceOfStepActionRequest(actionRequest)) {
         return Promise.reject(new BadRequestError())
       }
@@ -285,8 +285,8 @@ class PresentationScenarioController {
     @Param('stepId') stepId: string,
     @Param('actionId') actionId: string,
   ): Promise<void> {
+    const presentationScenarioId = await this.scenarioService.getIdBySlug(slug)
     try {
-      const presentationScenarioId = await this.scenarioService.getIdBySlug(slug)
       return this.scenarioService.deleteScenarioStepAction(presentationScenarioId, stepId, actionId)
     } catch (e) {
       if (e.httpCode !== 404) {

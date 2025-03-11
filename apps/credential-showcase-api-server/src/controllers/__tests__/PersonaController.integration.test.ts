@@ -79,13 +79,13 @@ describe('PersonaController Integration Tests', () => {
     expect(getAllResponse.body.personas.length).toBeGreaterThan(0)
 
     // Retrieve the created persona by id
-    const getResponse = await request.get(`/personas/${created.id}`).expect(200)
+    const getResponse = await request.get(`/personas/${created.slug}`).expect(200)
     expect(getResponse.body.persona.name).toEqual('Test Persona')
     expect(getResponse.body.persona.role).toEqual('Test Role')
 
     // Update the persona
     const updateResponse = await request
-      .put(`/personas/${created.id}`)
+      .put(`/personas/${created.slug}`)
       .send({
         name: 'Updated Persona',
         role: 'Updated Role',
@@ -95,6 +95,7 @@ describe('PersonaController Integration Tests', () => {
         hidden: true,
       } satisfies PersonaRequest)
       .expect(200)
+    const updatedPersona = updateResponse.body.persona
 
     expect(updateResponse.body.persona.name).toEqual('Updated Persona')
     expect(updateResponse.body.persona.role).toEqual('Updated Role')
@@ -102,9 +103,9 @@ describe('PersonaController Integration Tests', () => {
     expect(updateResponse.body.persona.hidden).toEqual(true)
 
     // Delete the persona
-    await request.delete(`/personas/${created.id}`).expect(204)
+    await request.delete(`/personas/${updatedPersona.slug}`).expect(204)
 
     // Verify deletion (should return 404)
-    await request.get(`/personas/${created.id}`).expect(404)
+    await request.get(`/personas/${updatedPersona.slug}`).expect(404)
   })
 })

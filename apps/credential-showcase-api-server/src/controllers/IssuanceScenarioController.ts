@@ -82,8 +82,8 @@ class IssuanceScenarioController {
     @Param('slug') slug: string,
     @Body() issuanceScenarioRequest: IssuanceScenarioRequest,
   ): Promise<IssuanceScenarioResponse> {
+    const issuanceScenarioId = await this.scenarioService.getIdBySlug(slug)
     try {
-      const issuanceScenarioId = await this.scenarioService.getIdBySlug(slug)
       if (!instanceOfIssuanceScenarioRequest(issuanceScenarioRequest)) {
         return Promise.reject(new BadRequestError())
       }
@@ -164,8 +164,8 @@ class IssuanceScenarioController {
     @Param('stepId') stepId: string,
     @Body() stepRequest: StepRequest,
   ): Promise<StepResponse> {
+    const issuanceScenarioId = await this.scenarioService.getIdBySlug(slug)
     try {
-      const issuanceScenarioId = await this.scenarioService.getIdBySlug(slug)
       if (!instanceOfStepRequest(stepRequest)) {
         return Promise.reject(new BadRequestError())
       }
@@ -214,8 +214,8 @@ class IssuanceScenarioController {
     @Param('stepId') stepId: string,
     @Param('actionId') actionId: string,
   ): Promise<StepActionResponse> {
+    const issuanceScenarioId = await this.scenarioService.getIdBySlug(slug)
     try {
-      const issuanceScenarioId = await this.scenarioService.getIdBySlug(slug)
       const result = await this.scenarioService.getScenarioStepAction(issuanceScenarioId, stepId, actionId)
       return StepActionResponseFromJSONTyped({ action: result }, false)
     } catch (e) {
@@ -233,8 +233,8 @@ class IssuanceScenarioController {
     @Param('stepId') stepId: string,
     @Body() actionRequest: StepActionRequest,
   ): Promise<StepActionResponse> {
+    const issuanceScenarioId = await this.scenarioService.getIdBySlug(slug)
     try {
-      const issuanceScenarioId = await this.scenarioService.getIdBySlug(slug)
       if (!instanceOfStepActionRequest(actionRequest)) {
         return Promise.reject(new BadRequestError())
       }
@@ -255,8 +255,8 @@ class IssuanceScenarioController {
     @Param('actionId') actionId: string,
     @Body() actionRequest: StepActionRequest,
   ): Promise<StepActionResponse> {
+    const issuanceScenarioId = await this.scenarioService.getIdBySlug(slug)
     try {
-      const issuanceScenarioId = await this.scenarioService.getIdBySlug(slug)
       if (!instanceOfStepActionRequest(actionRequest)) {
         return Promise.reject(new BadRequestError())
       }
@@ -282,8 +282,8 @@ class IssuanceScenarioController {
     @Param('stepId') stepId: string,
     @Param('actionId') actionId: string,
   ): Promise<void> {
+    const issuanceScenarioId = await this.scenarioService.getIdBySlug(slug)
     try {
-      const issuanceScenarioId = await this.scenarioService.getIdBySlug(slug)
       return this.scenarioService.deleteScenarioStepAction(issuanceScenarioId, stepId, actionId)
     } catch (e) {
       if (e.httpCode !== 404) {

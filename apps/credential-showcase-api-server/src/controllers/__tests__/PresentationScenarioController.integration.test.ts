@@ -170,18 +170,19 @@ describe('PresentationScenarioController Integration Tests', () => {
     expect(getAllResponse.body.presentationScenarios.length).toBe(1)
 
     // 4. Retrieve the created scenario
-    const getResponse = await request.get(`/scenarios/presentations/${createdScenario.id}`).expect(200)
+    const getResponse = await request.get(`/scenarios/presentations/${createdScenario.slug}`).expect(200)
     expect(getResponse.body.presentationScenario.name).toEqual('Test Presentation Scenario')
 
     // 5. Update the scenario
     const updateResponse = await request
-      .put(`/scenarios/presentations/${createdScenario.id}`)
+      .put(`/scenarios/presentations/${createdScenario.slug}`)
       .send({
         ...scenarioRequest,
         name: 'Updated Presentation Scenario Name',
       })
       .expect(200)
     expect(updateResponse.body.presentationScenario.name).toEqual('Updated Presentation Scenario Name')
+    const updatedScenario = updateResponse.body.presentationScenario
 
     // 6. Create a step for the scenario
     const stepRequest: StepRequest = {
@@ -225,24 +226,24 @@ describe('PresentationScenarioController Integration Tests', () => {
       ],
     }
 
-    const createStepResponse = await request.post(`/scenarios/presentations/${createdScenario.id}/steps`).send(stepRequest).expect(201)
+    const createStepResponse = await request.post(`/scenarios/presentations/${updatedScenario.slug}/steps`).send(stepRequest).expect(201)
 
     const createdStep = createStepResponse.body.step
     expect(createdStep).toHaveProperty('id')
     expect(createdStep.title).toEqual('Test Step')
 
     // 7. Retrieve all steps for the scenario
-    const getAllStepsResponse = await request.get(`/scenarios/presentations/${createdScenario.id}/steps`).expect(200)
+    const getAllStepsResponse = await request.get(`/scenarios/presentations/${updatedScenario.slug}/steps`).expect(200)
     expect(getAllStepsResponse.body.steps).toBeInstanceOf(Array)
     expect(getAllStepsResponse.body.steps.length).toBe(2)
 
     // 8. Retrieve the created step
-    const getStepResponse = await request.get(`/scenarios/presentations/${createdScenario.id}/steps/${createdStep.id}`).expect(200)
+    const getStepResponse = await request.get(`/scenarios/presentations/${updatedScenario.slug}/steps/${createdStep.id}`).expect(200)
     expect(getStepResponse.body.step.title).toEqual('Test Step')
 
     // 9. Update the step
     const updateStepResponse = await request
-      .put(`/scenarios/presentations/${createdScenario.id}/steps/${createdStep.id}`)
+      .put(`/scenarios/presentations/${updatedScenario.slug}/steps/${createdStep.id}`)
       .send({
         ...stepRequest,
         title: 'Updated Test Step',
@@ -284,7 +285,7 @@ describe('PresentationScenarioController Integration Tests', () => {
     }
 
     const createActionResponse = await request
-      .post(`/scenarios/presentations/${createdScenario.id}/steps/${createdStep.id}/actions`)
+      .post(`/scenarios/presentations/${updatedScenario.slug}/steps/${createdStep.id}/actions`)
       .send(actionRequest)
       .expect(201)
 
@@ -294,21 +295,21 @@ describe('PresentationScenarioController Integration Tests', () => {
     expect(createdAction.actionType).toEqual(StepActionType.ARIES_OOB)
 
     // 11. Retrieve all actions for the step
-    const getAllActionsResponse = await request.get(`/scenarios/presentations/${createdScenario.id}/steps/${createdStep.id}/actions`).expect(200)
+    const getAllActionsResponse = await request.get(`/scenarios/presentations/${updatedScenario.slug}/steps/${createdStep.id}/actions`).expect(200)
 
     expect(getAllActionsResponse.body.actions).toBeInstanceOf(Array)
     expect(getAllActionsResponse.body.actions.length).toBe(2) // Original action from step creation plus the new one
 
     // 12. Retrieve the created action
     const getActionResponse = await request
-      .get(`/scenarios/presentations/${createdScenario.id}/steps/${createdStep.id}/actions/${createdAction.id}`)
+      .get(`/scenarios/presentations/${updatedScenario.slug}/steps/${createdStep.id}/actions/${createdAction.id}`)
       .expect(200)
 
     expect(getActionResponse.body.action.title).toEqual('Additional Action')
 
     // 13. Update the action
     const updateActionResponse = await request
-      .put(`/scenarios/presentations/${createdScenario.id}/steps/${createdStep.id}/actions/${createdAction.id}`)
+      .put(`/scenarios/presentations/${updatedScenario.slug}/steps/${createdStep.id}/actions/${createdAction.id}`)
       .send({
         ...actionRequest,
         title: 'Updated Action Title',
@@ -318,26 +319,26 @@ describe('PresentationScenarioController Integration Tests', () => {
     expect(updateActionResponse.body.action.title).toEqual('Updated Action Title')
 
     // 14. Delete the action
-    await request.delete(`/scenarios/presentations/${createdScenario.id}/steps/${createdStep.id}/actions/${createdAction.id}`).expect(204)
+    await request.delete(`/scenarios/presentations/${updatedScenario.slug}/steps/${createdStep.id}/actions/${createdAction.id}`).expect(204)
 
     // 15. Delete the step
-    await request.delete(`/scenarios/presentations/${createdScenario.id}/steps/${createdStep.id}`).expect(204)
+    await request.delete(`/scenarios/presentations/${updatedScenario.slug}/steps/${createdStep.id}`).expect(204)
 
     // 16. Delete the scenario
-    await request.delete(`/scenarios/presentations/${createdScenario.id}`).expect(204)
+    await request.delete(`/scenarios/presentations/${updatedScenario.slug}`).expect(204)
 
     // 17. Verify scenario deletion
-    await request.get(`/scenarios/presentations/${createdScenario.id}`).expect(404)
+    await request.get(`/scenarios/presentations/${updatedScenario.slug}`).expect(404)
   })
 
   it('should handle errors when accessing non-existent resources', async () => {
-    const nonExistentId = '00000000-0000-0000-0000-000000000000'
+    const nonExistentSlug = '00000000-0000-0000-0000-000000000000'
 
     // Try to get a non-existent scenario
-    await request.get(`/scenarios/presentations/${nonExistentId}`).expect(404)
+    await request.get(`/scenarios/presentations/${nonExistentSlug}`).expect(404)
 
     // Try to get steps for a non-existent scenario
-    await request.get(`/scenarios/presentations/${nonExistentId}/steps`).expect(404)
+    await request.get(`/scenarios/presentations/${nonExistentSlug}/steps`).expect(404)
 
     // Try to create a step for a non-existent scenario
     const assetRepository = Container.get(AssetRepository)
@@ -389,7 +390,7 @@ describe('PresentationScenarioController Integration Tests', () => {
       ],
     }
 
-    await request.post(`/scenarios/presentations/${nonExistentId}/steps`).send(stepRequest).expect(404)
+    await request.post(`/scenarios/presentations/${nonExistentSlug}/steps`).send(stepRequest).expect(404)
   })
 
   it('should validate request data when creating an issuance scenario', async () => {
