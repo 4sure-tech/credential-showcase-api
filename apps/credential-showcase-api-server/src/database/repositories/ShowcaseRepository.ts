@@ -17,6 +17,7 @@ import {
 } from '../schema'
 import { Showcase, NewShowcase, RepositoryDefinition } from '../../types'
 import AssetRepository from './AssetRepository'
+import { BadRequestError } from 'routing-controllers'
 
 @Service()
 class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> {
@@ -30,13 +31,13 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
 
   async create(showcase: NewShowcase): Promise<Showcase> {
     if (showcase.personas.length === 0) {
-      return Promise.reject(Error('At least one persona is required'))
+      return Promise.reject(new BadRequestError('At least one persona is required'))
     }
     if (showcase.credentialDefinitions.length === 0) {
-      return Promise.reject(Error('At least one credential definition is required'))
+      return Promise.reject(new BadRequestError('At least one credential definition is required'))
     }
     if (showcase.scenarios.length === 0) {
-      return Promise.reject(Error('At least one scenario is required'))
+      return Promise.reject(new BadRequestError('At least one scenario is required'))
     }
     const bannerImageResult = showcase.bannerImage ? await this.assetRepository.findById(showcase.bannerImage) : null
     const personaPromises = showcase.personas.map(async (persona) => await this.personaRepository.findById(persona))
@@ -220,13 +221,13 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
   async update(id: string, showcase: NewShowcase): Promise<Showcase> {
     await this.findById(id)
     if (showcase.personas.length === 0) {
-      return Promise.reject(Error('At least one persona is required'))
+      return Promise.reject(new BadRequestError('At least one persona is required'))
     }
     if (showcase.credentialDefinitions.length === 0) {
-      return Promise.reject(Error('At least one credential definition is required'))
+      return Promise.reject(new BadRequestError('At least one credential definition is required'))
     }
     if (showcase.scenarios.length === 0) {
-      return Promise.reject(Error('At least one scenario is required'))
+      return Promise.reject(new BadRequestError('At least one scenario is required'))
     }
 
     const bannerImageResult = showcase.bannerImage ? await this.assetRepository.findById(showcase.bannerImage) : null

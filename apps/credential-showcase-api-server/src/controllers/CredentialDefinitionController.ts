@@ -2,13 +2,14 @@ import { Body, Delete, Get, HttpCode, JsonController, OnUndefined, Param, Post, 
 import { Service } from 'typedi'
 import {
   CredentialDefinitionRequest,
+  CredentialDefinitionRequestToJSONTyped,
   CredentialDefinitionResponse,
   CredentialDefinitionResponseFromJSONTyped,
   CredentialDefinitionsResponse,
   CredentialDefinitionsResponseFromJSONTyped,
 } from 'credential-showcase-openapi'
 import CredentialDefinitionService from '../services/CredentialDefinitionService'
-import { credentialDefinitionDTOFrom, credentialDefinitionFromDTO } from '../utils/mappers'
+import { credentialDefinitionDTOFrom } from '../utils/mappers'
 import { NotFoundError } from '../errors'
 
 @JsonController('/credentials/definitions')
@@ -47,7 +48,9 @@ export class CredentialDefinitionController {
   @Post('/')
   public async post(@Body() credentialDefinitionRequest: CredentialDefinitionRequest): Promise<CredentialDefinitionResponse> {
     try {
-      const result = await this.credentialDefinitionService.createCredentialDefinition(credentialDefinitionFromDTO(credentialDefinitionRequest))
+      const result = await this.credentialDefinitionService.createCredentialDefinition(
+        CredentialDefinitionRequestToJSONTyped(credentialDefinitionRequest),
+      )
       return CredentialDefinitionResponseFromJSONTyped({ credentialDefinition: credentialDefinitionDTOFrom(result) }, false)
     } catch (e) {
       console.error('credentialDefinitionRequest post failed:', e)
@@ -59,7 +62,10 @@ export class CredentialDefinitionController {
   public async put(@Param('id') id: string, @Body() credentialDefinitionRequest: CredentialDefinitionRequest): Promise<CredentialDefinitionResponse> {
     try {
       // Convert DTO to domain model
-      const result = await this.credentialDefinitionService.updateCredentialDefinition(id, credentialDefinitionFromDTO(credentialDefinitionRequest))
+      const result = await this.credentialDefinitionService.updateCredentialDefinition(
+        id,
+        CredentialDefinitionRequestToJSONTyped(credentialDefinitionRequest),
+      )
       return CredentialDefinitionResponseFromJSONTyped({ credentialDefinition: credentialDefinitionDTOFrom(result) }, false)
     } catch (e) {
       if (!(e instanceof NotFoundError)) {

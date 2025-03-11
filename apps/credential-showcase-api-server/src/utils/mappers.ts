@@ -2,7 +2,6 @@ import {
   Asset as AssetDTO,
   AssetRequest,
   CredentialDefinition as CredentialDefinitionDTO,
-  CredentialDefinitionRequest,
   CredentialSchema as CredentialSchemaDTO,
   IssuanceScenario as IssuanceScenarioDTO,
   Issuer as IssuerDTO,
@@ -16,12 +15,9 @@ import {
   Asset,
   CredentialDefinition,
   CredentialSchema,
-  CredentialType,
-  IdentifierType,
   IssuanceScenario,
   Issuer,
   NewAsset,
-  NewCredentialDefinition,
   NewScenario,
   Persona,
   PresentationScenario,
@@ -42,37 +38,29 @@ export const newAssetFrom = (asset: AssetRequest): NewAsset => {
 export const assetDTOFrom = (asset: Asset): AssetDTO => {
   return {
     ...asset,
-    fileName: asset.fileName ? asset.fileName : undefined,
-    description: asset.description ? asset.description : undefined,
+    fileName: asset.fileName || undefined,
+    description: asset.description || undefined,
     content: asset.content.toString(),
   }
 }
 
-export const credentialSchemaDTOFrom = (credentialDefinition: CredentialSchema): CredentialSchemaDTO => {
+export const credentialSchemaDTOFrom = (credentialSchema: CredentialSchema): CredentialSchemaDTO => {
   return {
-    ...credentialDefinition,
-    identifierType: credentialDefinition.identifierType as IdentifierType,
-    identifier: credentialDefinition.identifier as string | undefined,
-  }
-}
-
-export const credentialDefinitionFromDTO = (dto: CredentialDefinitionRequest): NewCredentialDefinition => {
-  return {
-    ...dto,
-    type: dto.type as unknown as CredentialType,
-    identifierType: dto.identifierType as IdentifierType | null | undefined,
+    ...credentialSchema,
+    identifierType: credentialSchema.identifierType || undefined,
+    identifier: credentialSchema.identifier || undefined,
   }
 }
 
 export const credentialDefinitionDTOFrom = (credentialDefinition: CredentialDefinition): CredentialDefinitionDTO => {
   return {
     ...credentialDefinition,
-    identifierType: credentialDefinition.identifierType as IdentifierType,
+    identifierType: credentialDefinition.identifierType || undefined,
     identifier: credentialDefinition.identifier || undefined,
     credentialSchema: credentialSchemaDTOFrom(credentialDefinition.credentialSchema),
     representations: credentialDefinition.representations,
     revocation: credentialDefinition.revocation || undefined,
-    icon: assetDTOFrom(credentialDefinition.icon),
+    icon: credentialDefinition.icon && assetDTOFrom(credentialDefinition.icon),
   }
 }
 

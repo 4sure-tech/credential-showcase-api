@@ -24,6 +24,7 @@ import {
   Step,
   ScenarioType,
 } from '../../types'
+import { BadRequestError } from 'routing-controllers'
 
 @Service()
 class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> {
@@ -37,10 +38,10 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
 
   async create(scenario: NewScenario): Promise<Scenario> {
     if (scenario.steps.length === 0) {
-      return Promise.reject(Error('At least one step is required'))
+      return Promise.reject(new BadRequestError('At least one step is required'))
     }
     if (scenario.personas.length === 0) {
-      return Promise.reject(Error('At least one persona is required'))
+      return Promise.reject(new BadRequestError('At least one persona is required'))
     }
 
     const bannerImageResult = scenario.bannerImage ? await this.assetRepository.findById(scenario.bannerImage) : null
@@ -173,10 +174,10 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
 
   async update(scenarioId: string, scenario: NewScenario): Promise<Scenario> {
     if (scenario.steps.length === 0) {
-      return Promise.reject(Error('At least one step is required'))
+      return Promise.reject(new BadRequestError('At least one step is required'))
     }
     if (scenario.personas.length === 0) {
-      return Promise.reject(Error('At least one persona is required'))
+      return Promise.reject(new BadRequestError('At least one persona is required'))
     }
 
     const bannerImageResult = scenario.bannerImage ? await this.assetRepository.findById(scenario.bannerImage) : null
@@ -498,7 +499,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
     await this.findById(scenarioId)
 
     if (step.actions.length === 0) {
-      return Promise.reject(Error('At least one action is required'))
+      return Promise.reject(new BadRequestError('At least one action is required'))
     }
 
     const assetResult = step.asset ? await this.assetRepository.findById(step.asset) : null
@@ -554,7 +555,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
     await this.findById(scenarioId)
 
     if (step.actions.length === 0) {
-      return Promise.reject(Error('At least one action is required'))
+      return Promise.reject(new BadRequestError('At least one action is required'))
     }
 
     const assetResult = step.asset ? await this.assetRepository.findById(step.asset) : null

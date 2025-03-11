@@ -1,18 +1,18 @@
 import {
+  ariesProofRequests,
   assets,
-  personas,
   credentialAttributes,
   credentialDefinitions,
-  credentialSchemas,
   credentialRepresentations,
+  credentialSchemas,
   issuers,
+  personas,
   relyingParties,
   revocationInfo,
   scenarios,
-  steps,
-  stepActions,
-  ariesProofRequests,
   showcases,
+  stepActions,
+  steps,
 } from '../../database/schema'
 
 // $inferSelect does not respect nullability of fields and the type has every field as required
@@ -43,6 +43,8 @@ export type NewCredentialDefinition = Omit<typeof credentialDefinitions.$inferIn
   type: CredentialType
   representations?: NewCredentialRepresentation[] // TODO SHOWCASE-81 make required
   revocation?: NewRevocationInfo | null
+  identifierType?: IdentifierType | null
+  identifier?: string | null
 }
 
 export type CredentialAttribute = Omit<typeof credentialAttributes.$inferSelect, 'credentialSchema'> & {
@@ -58,6 +60,8 @@ export type CredentialSchema = typeof credentialSchemas.$inferSelect & {
 
 export type NewCredentialSchema = typeof credentialSchemas.$inferInsert & {
   attributes: NewCredentialAttribute[]
+  identifierType?: IdentifierType | null
+  identifier?: string | null
 }
 
 export type CredentialRepresentation = Omit<typeof credentialRepresentations.$inferSelect, 'credentialDefinition'>
