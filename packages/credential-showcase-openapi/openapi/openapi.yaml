@@ -6,13 +6,15 @@ info:
 servers:
   - url: https://virtserver.swaggerhub.com/SphereonInt/showcase/0.1.0/v1
     description: SwaggerHub API Auto Mocking
-  - url: https://api.example.com/v1
+  - url: https://bcshowcase-api-dev.nborbit.ca/
 
 tags:
-  - name: Issuance Flow
-    description: Endpoints related to credential issuance flows
-  - name: Presentation Flow
-    description: Endpoints related to credential presentation flows
+  - name: Showcases
+    description: Endpoints for managing showcases
+  - name: Issuance Scenario
+    description: Endpoints related to credential issuance scenarios
+  - name: Presentation Scenario
+    description: Endpoints related to credential presentation scenarios
   - name: Issuer Role
     description: Endpoints for managing the Issuer role
   - name: Relying Party Role
@@ -23,27 +25,25 @@ tags:
     description: Endpoints for creating and managing credential definitions
   - name: Assets
     description: Endpoints related to media or static assets
-  - name: Showcases
-    description: Endpoints for managing showcases
 
 security:
   - OAuth2: []
   - OIDC: []
 
 paths:
-  /workflows/issuances:
+  /scenarios/issuances:
     get:
       tags:
-        - Issuance Flow
-      summary: List all issuance flows
-      operationId: listIssuanceFlows
+        - Issuance Scenario
+      summary: List all issuance scenarios
+      operationId: listIssuanceScenarios
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/IssuanceFlowsResponse'
+                $ref: '#/components/schemas/IssuanceScenariosResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -54,14 +54,14 @@ paths:
           $ref: '#/components/responses/InternalServerError'
     post:
       tags:
-        - Issuance Flow
-      summary: Create a new issuance flow
-      operationId: createIssuanceFlow
+        - Issuance Scenario
+      summary: Create a new issuance scenario
+      operationId: createIssuanceScenario
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/IssuanceFlowRequest'
+              $ref: '#/components/schemas/IssuanceScenarioRequest'
         required: true
       responses:
         '201':
@@ -69,7 +69,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/IssuanceFlowResponse'
+                $ref: '#/components/schemas/IssuanceScenarioResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -78,13 +78,13 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /workflows/issuances/{issuanceFlowId}:
+  /scenarios/issuances/{issuanceScenarioId}:
     get:
-      tags: [ "Issuance Flow" ]
-      summary: Retrieve a single issuance flow
-      operationId: getIssuanceFlow
+      tags: [ "Issuance Scenario" ]
+      summary: Retrieve a single issuance scenario
+      operationId: getIssuanceScenario
       parameters:
-        - name: issuanceFlowId
+        - name: issuanceScenarioId
           in: path
           required: true
           schema:
@@ -95,7 +95,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/IssuanceFlowResponse'
+                $ref: '#/components/schemas/IssuanceScenarioResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -107,11 +107,11 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     put:
-      tags: [ "Issuance Flow" ]
-      summary: Update an issuance flow (overwrite)
-      operationId: updateIssuanceFlow
+      tags: [ "Issuance Scenario" ]
+      summary: Update an issuance scenario (overwrite)
+      operationId: updateIssuanceScenario
       parameters:
-        - name: issuanceFlowId
+        - name: issuanceScenarioId
           in: path
           required: true
           schema:
@@ -121,14 +121,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/IssuanceFlowRequest'
+              $ref: '#/components/schemas/IssuanceScenarioRequest'
       responses:
         '200':
           description: Updated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/IssuanceFlowResponse'
+                $ref: '#/components/schemas/IssuanceScenarioResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -140,11 +140,11 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     delete:
-      tags: [ "Issuance Flow" ]
-      summary: Delete an issuance flow
-      operationId: deleteIssuanceFlow
+      tags: [ "Issuance Scenario" ]
+      summary: Delete an issuance scenario
+      operationId: deleteIssuanceScenario
       parameters:
-        - name: issuanceFlowId
+        - name: issuanceScenarioId
           in: path
           required: true
           schema:
@@ -163,14 +163,14 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /workflows/issuances/{issuanceFlowId}/steps:
+  /scenarios/issuances/{issuanceScenarioId}/steps:
     get:
       tags:
-        - "Issuance Flow"
-      summary: List steps in an issuance flow
-      operationId: listIssuanceFlowSteps
+        - "Issuance Scenario"
+      summary: List steps in an issuance scenario
+      operationId: listIssuanceScenarioSteps
       parameters:
-        - name: issuanceFlowId
+        - name: issuanceScenarioId
           in: path
           required: true
           schema:
@@ -193,11 +193,11 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     post:
-      tags: [ "Issuance Flow" ]
-      summary: Add a step to an issuance flow
-      operationId: createIssuanceFlowStep
+      tags: [ "Issuance Scenario" ]
+      summary: Add a step to an issuance scenario
+      operationId: createIssuanceScenarioStep
       parameters:
-        - name: issuanceFlowId
+        - name: issuanceScenarioId
           in: path
           required: true
           schema:
@@ -225,13 +225,13 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /workflows/issuances/{issuanceFlowId}/steps/{stepId}:
+  /scenarios/issuances/{issuanceScenarioId}/steps/{stepId}:
     get:
-      tags: [ "Issuance Flow" ]
-      summary: Retrieve a specific step in an issuance flow
-      operationId: getIssuanceFlowStep
+      tags: [ "Issuance Scenario" ]
+      summary: Retrieve a specific step in an issuance scenario
+      operationId: getIssuanceScenarioStep
       parameters:
-        - name: issuanceFlowId
+        - name: issuanceScenarioId
           in: path
           required: true
           schema:
@@ -259,11 +259,11 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     put:
-      tags: [ "Issuance Flow" ]
-      summary: Overwrite a step in an issuance flow
-      operationId: updateIssuanceFlowStep
+      tags: [ "Issuance Scenario" ]
+      summary: Overwrite a step in an issuance scenario
+      operationId: updateIssuanceScenarioStep
       parameters:
-        - name: issuanceFlowId
+        - name: issuanceScenarioId
           in: path
           required: true
           schema:
@@ -297,11 +297,11 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     delete:
-      tags: [ "Issuance Flow" ]
-      summary: Delete a step in an issuance flow
-      operationId: deleteIssuanceFlowStep
+      tags: [ "Issuance Scenario" ]
+      summary: Delete a step in an issuance scenario
+      operationId: deleteIssuanceScenarioStep
       parameters:
-        - name: issuanceFlowId
+        - name: issuanceScenarioId
           in: path
           required: true
           schema:
@@ -325,13 +325,13 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /workflows/issuances/{issuanceFlowId}/steps/{stepId}/actions:
+  /scenarios/issuances/{issuanceScenarioId}/steps/{stepId}/actions:
     get:
-      tags: [ "Issuance Flow" ]
+      tags: [ "Issuance Scenario" ]
       summary: List actions in a step
       operationId: listStepActions
       parameters:
-        - name: issuanceFlowId
+        - name: issuanceScenarioId
           in: path
           required: true
           schema:
@@ -359,11 +359,11 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     post:
-      tags: [ "Issuance Flow" ]
+      tags: [ "Issuance Scenario" ]
       summary: Create an action in a step
       operationId: createStepAction
       parameters:
-        - name: issuanceFlowId
+        - name: issuanceScenarioId
           in: path
           required: true
           schema:
@@ -396,13 +396,13 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /workflows/issuances/{issuanceFlowId}/steps/{stepId}/actions/{actionId}:
+  /scenarios/issuances/{issuanceScenarioId}/steps/{stepId}/actions/{actionId}:
     get:
-      tags: [ "Issuance Flow" ]
+      tags: [ "Issuance Scenario" ]
       summary: Retrieve a single action
       operationId: getStepAction
       parameters:
-        - name: issuanceFlowId
+        - name: issuanceScenarioId
           in: path
           required: true
           schema:
@@ -435,11 +435,11 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     put:
-      tags: [ "Issuance Flow" ]
+      tags: [ "Issuance Scenario" ]
       summary: Overwrite an action
       operationId: updateStepAction
       parameters:
-        - name: issuanceFlowId
+        - name: issuanceScenarioId
           in: path
           required: true
           schema:
@@ -478,11 +478,11 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     delete:
-      tags: [ "Issuance Flow" ]
+      tags: [ "Issuance Scenario" ]
       summary: Delete an action
       operationId: deleteStepAction
       parameters:
-        - name: issuanceFlowId
+        - name: issuanceScenarioId
           in: path
           required: true
           schema:
@@ -511,19 +511,19 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /workflows/presentations:
+  /scenarios/presentations:
     get:
       tags:
-        - Presentation Flow
-      summary: List all presentation flows
-      operationId: listPresentationFlows
+        - Presentation Scenario
+      summary: List all presentation scenarios
+      operationId: listPresentationScenarios
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PresentationFlowsResponse'
+                $ref: '#/components/schemas/PresentationScenariosResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -534,14 +534,14 @@ paths:
           $ref: '#/components/responses/InternalServerError'
     post:
       tags:
-        - Presentation Flow
-      summary: Create a new presentation flow
-      operationId: createPresentationFlow
+        - Presentation Scenario
+      summary: Create a new presentation scenario
+      operationId: createPresentationScenario
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PresentationFlowRequest'
+              $ref: '#/components/schemas/PresentationScenarioRequest'
         required: true
       responses:
         '201':
@@ -549,7 +549,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PresentationFlow'
+                $ref: '#/components/schemas/PresentationScenario'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -558,13 +558,13 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /workflows/presentations/{presentationFlowId}:
+  /scenarios/presentations/{presentationScenarioId}:
     get:
-      tags: [ "Presentation Flow" ]
-      summary: Retrieve a single presentation flow
-      operationId: getPresentationFlow
+      tags: [ "Presentation Scenario" ]
+      summary: Retrieve a single presentation scenario
+      operationId: getPresentationScenario
       parameters:
-        - name: presentationFlowId
+        - name: presentationScenarioId
           in: path
           required: true
           schema:
@@ -575,7 +575,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PresentationFlow'
+                $ref: '#/components/schemas/PresentationScenario'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -587,11 +587,11 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     put:
-      tags: [ "Presentation Flow" ]
-      summary: Update a presentation flow (overwrite)
-      operationId: updatePresentationFlow
+      tags: [ "Presentation Scenario" ]
+      summary: Update a presentation scenario (overwrite)
+      operationId: updatePresentationScenario
       parameters:
-        - name: presentationFlowId
+        - name: presentationScenarioId
           in: path
           required: true
           schema:
@@ -601,14 +601,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PresentationFlowRequest'
+              $ref: '#/components/schemas/PresentationScenarioRequest'
       responses:
         '200':
           description: Updated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PresentationFlow'
+                $ref: '#/components/schemas/PresentationScenario'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -620,11 +620,11 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     delete:
-      tags: [ "Presentation Flow" ]
-      summary: Delete a presentation flow
-      operationId: deletePresentationFlow
+      tags: [ "Presentation Scenario" ]
+      summary: Delete a presentation scenario
+      operationId: deletePresentationScenario
       parameters:
-        - name: presentationFlowId
+        - name: presentationScenarioId
           in: path
           required: true
           schema:
@@ -643,14 +643,14 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /workflows/presentations/{presentationFlowId}/steps:
+  /scenarios/presentations/{presentationScenarioId}/steps:
     get:
       tags:
-        - "Presentation Flow"
-      summary: List steps in a presentation flow
-      operationId: listPresentationFlowSteps
+        - "Presentation Scenario"
+      summary: List steps in a presentation scenario
+      operationId: listPresentationScenarioSteps
       parameters:
-        - name: presentationFlowId
+        - name: presentationScenarioId
           in: path
           required: true
           schema:
@@ -673,11 +673,11 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     post:
-      tags: [ "Presentation Flow" ]
-      summary: Add a step to a presentation flow
-      operationId: createPresentationFlowStep
+      tags: [ "Presentation Scenario" ]
+      summary: Add a step to a presentation scenario
+      operationId: createPresentationScenarioStep
       parameters:
-        - name: presentationFlowId
+        - name: presentationScenarioId
           in: path
           required: true
           schema:
@@ -705,13 +705,13 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /workflows/presentations/{presentationFlowId}/steps/{stepId}:
+  /scenarios/presentations/{presentationScenarioId}/steps/{stepId}:
     get:
-      tags: [ "Presentation Flow" ]
-      summary: Retrieve a specific step in a presentation flow
-      operationId: getPresentationFlowStep
+      tags: [ "Presentation Scenario" ]
+      summary: Retrieve a specific step in a presentation scenario
+      operationId: getPresentationScenarioStep
       parameters:
-        - name: presentationFlowId
+        - name: presentationScenarioId
           in: path
           required: true
           schema:
@@ -739,11 +739,11 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     put:
-      tags: [ "Presentation Flow" ]
-      summary: Overwrite a step in a presentation flow
-      operationId: updatePresentationFlowStep
+      tags: [ "Presentation Scenario" ]
+      summary: Overwrite a step in a presentation scenario
+      operationId: updatePresentationScenarioStep
       parameters:
-        - name: presentationFlowId
+        - name: presentationScenarioId
           in: path
           required: true
           schema:
@@ -777,11 +777,11 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     delete:
-      tags: [ "Presentation Flow" ]
-      summary: Delete a step in a presentation flow
-      operationId: deletePresentationFlowStep
+      tags: [ "Presentation Scenario" ]
+      summary: Delete a step in a presentation scenario
+      operationId: deletePresentationScenarioStep
       parameters:
-        - name: presentationFlowId
+        - name: presentationScenarioId
           in: path
           required: true
           schema:
@@ -805,13 +805,13 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /workflows/presentations/{presentationFlowId}/steps/{stepId}/actions:
+  /scenarios/presentations/{presentationScenarioId}/steps/{stepId}/actions:
     get:
-      tags: [ "Presentation Flow" ]
+      tags: [ "Presentation Scenario" ]
       summary: List actions in a step
-      operationId: listPresentationFlowStepActions
+      operationId: listPresentationScenarioStepActions
       parameters:
-        - name: presentationFlowId
+        - name: presentationScenarioId
           in: path
           required: true
           schema:
@@ -839,11 +839,11 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     post:
-      tags: [ "Presentation Flow" ]
+      tags: [ "Presentation Scenario" ]
       summary: Create an action in a step
-      operationId: createPresentationFlowStepAction
+      operationId: createPresentationScenarioStepAction
       parameters:
-        - name: presentationFlowId
+        - name: presentationScenarioId
           in: path
           required: true
           schema:
@@ -876,13 +876,13 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /workflows/presentations/{presentationFlowId}/steps/{stepId}/actions/{actionId}:
+  /scenarios/presentations/{presentationScenarioId}/steps/{stepId}/actions/{actionId}:
     get:
-      tags: [ "Presentation Flow" ]
+      tags: [ "Presentation Scenario" ]
       summary: Retrieve a single action
-      operationId: getPresentationFlowStepAction
+      operationId: getPresentationScenarioStepAction
       parameters:
-        - name: presentationFlowId
+        - name: presentationScenarioId
           in: path
           required: true
           schema:
@@ -915,11 +915,11 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     put:
-      tags: [ "Presentation Flow" ]
+      tags: [ "Presentation Scenario" ]
       summary: Overwrite an action
-      operationId: updatePresentationFlowStepAction
+      operationId: updatePresentationScenarioStepAction
       parameters:
-        - name: presentationFlowId
+        - name: presentationScenarioId
           in: path
           required: true
           schema:
@@ -958,11 +958,11 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     delete:
-      tags: [ "Presentation Flow" ]
+      tags: [ "Presentation Scenario" ]
       summary: Delete an action
-      operationId: deletePresentationFlowStepAction
+      operationId: deletePresentationScenarioStepAction
       parameters:
-        - name: presentationFlowId
+        - name: presentationScenarioId
           in: path
           required: true
           schema:
@@ -991,7 +991,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
-  /credential-definitions:
+  /credentials/definitions:
     get:
       tags:
         - Credential Definitions
@@ -1038,7 +1038,7 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /credential-definitions/{definitionId}:
+  /credentials/definitions/{definitionId}:
     parameters:
       - name: definitionId
         in: path
@@ -1099,7 +1099,7 @@ paths:
       responses:
         '204':
           description: Deleted
-  /credential-definitions/{definitionId}/representations:
+  /credentials/definitions/{definitionId}/representations:
     parameters:
       - name: definitionId
         in: path
@@ -1131,6 +1131,122 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
+  /credentials/schemas:
+    get:
+      tags:
+        - Credential Definitions
+      summary: List credential schemas
+      operationId: listCredentialSchemas
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CredentialSchemasResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - Credential Definitions
+      summary: Create a credential schema
+      operationId: createCredentialSchema
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CredentialSchemaRequest'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CredentialSchemaResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /credentials/schemas/{schemaId}:
+    parameters:
+      - name: schemaId
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Credential Definitions
+      summary: Get a specific credential schema
+      operationId: getCredentialSchema
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CredentialSchemaResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      tags:
+        - Credential Definitions
+      summary: Update a credential schema
+      operationId: updateCredentialSchema
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CredentialSchemaRequest'
+        required: true
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CredentialSchemaResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags:
+        - Credential Definitions
+      summary: Delete a credential schema
+      operationId: deleteCredentialSchema
+      responses:
+        '204':
+          description: Deleted
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /personas:
     get:
       tags:
@@ -1750,6 +1866,8 @@ components:
         - id
         - mediaType
         - content
+        - createdAt
+        - updatedAt
       properties:
         id:
           type: string
@@ -1771,6 +1889,16 @@ components:
           type: string
           description: Description of the asset
           example: A beautiful image of a cat
+        createdAt:
+          type: string
+          description: Date and time the asset was created
+          format: date-time
+          example: 2025-03-06T11:30:16.573Z
+        updatedAt:
+          type: string
+          description: Date and time the asset was last updated
+          format: date-time
+          example: 2025-03-06T11:30:16.573Z
     AssetRequest:
       type: object
       required:
@@ -1819,6 +1947,8 @@ components:
         - order
         - type
         - actions
+        - createdAt
+        - updatedAt
       properties:
         id:
           type: string
@@ -1834,14 +1964,14 @@ components:
           example: Verify the user's identity
         order:
           type: integer
-          description: Order of the step in the workflow
+          description: Order of the step in the scenario
           minimum: 0
           example: 1
         type:
           $ref: '#/components/schemas/StepType'
-        subFlow:
+        subScenario:
           type: string
-          description: Optional sub-workflow for this step
+          description: Optional sub-scenario for this step
           example: 123e4567-e89b-12d3-a456-434314174000
         actions:
           type: array
@@ -1849,6 +1979,16 @@ components:
             $ref: '#/components/schemas/StepAction'
         asset:
           $ref: '#/components/schemas/Asset'
+        createdAt:
+          type: string
+          description: Date and time the step was created
+          format: date-time
+          example: 2025-03-06T11:30:16.573Z
+        updatedAt:
+          type: string
+          description: Date and time the step was last updated
+          format: date-time
+          example: 2025-03-06T11:30:16.573Z
 
     StepRequest:
       type: object
@@ -1869,14 +2009,14 @@ components:
           example: Verify the user's identity
         order:
           type: integer
-          description: Order of the step in the workflow
+          description: Order of the step in the scenario
           minimum: 0
           example: 1
         type:
           $ref: '#/components/schemas/StepType'
-        subFlow:
+        subScenario:
           type: string
-          description: Optional sub-workflow for this step
+          description: Optional sub-scenario for this step
           example: 123e4567-e89b-12d3-a456-434314174000
         actions:
           type: array
@@ -1903,8 +2043,8 @@ components:
       enum:
         - HUMAN_TASK
         - SERVICE
-        - WORKFLOW
-      description: Type of step in the workflow
+        - SCENARIO
+      description: Type of step in the scenario
       example: HUMAN_TASK
 
     StepAction:
@@ -1914,6 +2054,8 @@ components:
         - actionType
         - title
         - text
+        - createdAt
+        - updatedAt
       properties:
         id:
           type: string
@@ -1931,6 +2073,16 @@ components:
           type: string
           description: Descriptive text for the action
           example: Connect your wallet to continue
+        createdAt:
+          type: string
+          description: Date and time the step action was created
+          format: date-time
+          example: 2025-03-06T11:30:16.573Z
+        updatedAt:
+          type: string
+          description: Date and time the step action was last updated
+          format: date-time
+          example: 2025-03-06T11:30:16.573Z
       discriminator:
         propertyName: actionType
         mapping:
@@ -1980,6 +2132,12 @@ components:
               $ref: '#/components/schemas/AriesProofRequest'
     AriesProofRequest:
       type: object
+      required:
+        - id
+        - attributes
+        - predicates
+        - createdAt
+        - updatedAt
       properties:
         attributes:
           type: object
@@ -1997,6 +2155,16 @@ components:
           example:
             age:
               value: 30
+        createdAt:
+          type: string
+          description: Date and time the Aries proof request was created
+          format: date-time
+          example: 2025-03-06T11:30:16.573Z
+        updatedAt:
+          type: string
+          description: Date and time the Aries proof request was last updated
+          format: date-time
+          example: 2025-03-06T11:30:16.573Z
     AriesRequestCredentialAttributes:
       type: object
       properties:
@@ -2043,8 +2211,12 @@ components:
     Persona:
       type: object
       required:
+        - id
         - name
         - role
+        - description
+        - createdAt
+        - updatedAt
       properties:
         id:
           type: string
@@ -2066,6 +2238,20 @@ components:
           $ref: '#/components/schemas/Asset'
         bodyImage:
           $ref: '#/components/schemas/Asset'
+        hidden:
+          type: boolean
+          description: Whether the persona is hidden from the user
+          example: false
+        createdAt:
+          type: string
+          description: Date and time the persona was created
+          format: date-time
+          example: 2025-03-06T11:30:16.573Z
+        updatedAt:
+          type: string
+          description: Date and time the persona was last updated
+          format: date-time
+          example: 2025-03-06T11:30:16.573Z
     PersonaRequest:
       type: object
       required:
@@ -2090,6 +2276,10 @@ components:
         bodyImage:
           type: string
           example: 123e4567-e89b-12d3-a456-426614174877
+        hidden:
+          type: boolean
+          description: Whether the persona is hidden from the user
+          example: false
     PersonasResponse:
       properties:
         personas:
@@ -2102,92 +2292,116 @@ components:
         persona:
           $ref: '#/components/schemas/Persona'
 
-    Workflow:
+    Scenario:
       type: object
       required:
+        - id
         - name
         - type
+        - description
+        - steps
+        - personas
+        - createdAt
+        - updatedAt
       properties:
         id:
           type: string
-          description: Unique identifier for the workflow
+          description: Unique identifier for the scenario
           example: 789e4567-e89b-12d3-a456-434314174123
         name:
           type: string
-          description: Name of the workflow
+          description: Name of the scenario
           example: Credential Issuance
         description:
           type: string
-          description: Detailed description of the workflow
-          example: This workflow issues credentials to users
+          description: Detailed description of the scenario
+          example: This scenario issues credentials to users
         type:
-          type: string
-          enum: [ISSUANCE, PRESENTATION]
-          description: Type of workflow
-          example: ISSUANCE
+          $ref: '#/components/schemas/ScenarioType'
         steps:
           type: array
-          description: Ordered list of steps in the workflow
+          description: Ordered list of steps in the scenario
           items:
             $ref: '#/components/schemas/Step'
         personas:
           type: array
-          description: References to personas used in this workflow
+          description: References to personas used in this scenario
           items:
             $ref: '#/components/schemas/Persona'
-    WorkflowRequest:
+        hidden:
+          type: boolean
+          description: Whether the workflow is hidden from the user
+          example: false
+        createdAt:
+          type: string
+          description: Date and time the scenario was created
+          format: date-time
+          example: 2025-03-06T11:30:16.573Z
+        updatedAt:
+          type: string
+          description: Date and time the scenario was last updated
+          format: date-time
+          example: 2025-03-06T11:30:16.573Z
+    ScenarioRequest:
       type: object
       required:
         - name
+        - type
         - description
+        - steps
+        - personas
       properties:
         name:
           type: string
-          description: Name of the workflow
+          description: Name of the scenario
           example: Credential Issuance
         description:
           type: string
-          description: Detailed description of the workflow
-          example: This workflow issues credentials to users
+          description: Detailed description of the scenario
+          example: This scenario issues credentials to users
         steps:
           type: array
-          description: Ordered list of steps in the workflow
+          description: Ordered list of steps in the scenario
           items:
             $ref: '#/components/schemas/StepRequest'
         personas:
           type: array
-          description: References to personas used in this workflow
+          description: References to personas used in this scenario
           items:
             type: string
             example: 123e4567-e89b-12d3-a456-426614174456
+        hidden:
+          type: boolean
+          description: Whether the workflow is hidden from the user
+          example: false
 
-    IssuanceFlowsResponse:
+    IssuanceScenariosResponse:
       type: object
       properties:
-        issuanceFlows:
+        issuanceScenarios:
           type: array
           items:
-            $ref: '#/components/schemas/IssuanceFlow'
-    IssuanceFlowResponse:
+            $ref: '#/components/schemas/IssuanceScenario'
+    IssuanceScenarioResponse:
       type: object
       properties:
-        issuanceFlow:
-          $ref: '#/components/schemas/IssuanceFlow'
-    IssuanceFlow:
+        issuanceScenario:
+            $ref: '#/components/schemas/IssuanceScenario'
+    IssuanceScenario:
       type: object
       allOf:
-        - $ref: '#/components/schemas/Workflow'
+        - $ref: '#/components/schemas/Scenario'
         - type: object
           required:
             - issuer
           properties:
             issuer:
               $ref: '#/components/schemas/Issuer'
-      description: Workflow specialization for credential issuance
-    IssuanceFlowRequest:
+      description: Scenario specialization for credential issuance
+    IssuanceScenarioRequest:
       type: object
       allOf:
-        - $ref: '#/components/schemas/WorkflowRequest'
+        - $ref: '#/components/schemas/ScenarioRequest'
         - type: object
           required:
             - issuer
@@ -2195,34 +2409,34 @@ components:
             issuer:
               type: string
               example: "313e4567-e89b-12d3-a456-426614174469"
-      description: Workflow specialization for credential issuance
+      description: Scenario specialization for credential issuance
 
-    PresentationFlowsResponse:
+    PresentationScenariosResponse:
       type: object
       properties:
-        presentationFlows:
+        presentationScenarios:
           type: array
           items:
-            $ref: '#/components/schemas/PresentationFlow'
-    PresentationFlowResponse:
+            $ref: '#/components/schemas/PresentationScenario'
+    PresentationScenarioResponse:
       type: object
       properties:
-        presentationFlow:
-          $ref: '#/components/schemas/PresentationFlow'
-    PresentationFlow:
+        presentationScenario:
+          $ref: '#/components/schemas/PresentationScenario'
+    PresentationScenario:
       type: object
       allOf:
-        - $ref: '#/components/schemas/Workflow'
+        - $ref: '#/components/schemas/Scenario'
         - type: object
           required:
             - relyingParty
           properties:
             relyingParty:
               $ref: '#/components/schemas/RelyingParty'
-      description: Workflow specialization for credential presentation
-    PresentationFlowRequest:
+      description: Scenario specialization for credential presentation
+    PresentationScenarioRequest:
       allOf:
-        - $ref: '#/components/schemas/WorkflowRequest'
+        - $ref: '#/components/schemas/ScenarioRequest'
         - type: object
           required:
             - relyingParty
@@ -2231,6 +2445,12 @@ components:
               type: string
               example: "313e4567-e89b-12d3-a456-426614174469"
 
+    IdentifierType:
+      type: string
+      enum:
+        - DID
+      description: Types of supported identifiers
+      example: DID
     IssuerType:
       type: string
       enum:
@@ -2250,6 +2470,8 @@ components:
         - description
         - type
         - credentialDefinitions
+        - createdAt
+        - updatedAt
       properties:
         id:
           type: string
@@ -2275,6 +2497,20 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CredentialDefinition'
+        credentialSchemas:
+          type: array
+          items:
+            $ref: '#/components/schemas/CredentialSchema'
+        createdAt:
+          type: string
+          description: Date and time the issuer was created
+          format: date-time
+          example: "2025-03-06T11:30:16.573Z"
+        updatedAt:
+          type: string
+          description: Date and time the issuer was last updated
+          format: date-time
+          example: "2025-03-06T11:30:16.573Z"
     IssuerRequest:
       type: object
       required:
@@ -2293,6 +2529,12 @@ components:
           example: This issuer issues credentials to users
         type:
           $ref: '#/components/schemas/IssuerType'
+        identifierType:
+          $ref: '#/components/schemas/IdentifierType'
+        identifier:
+          type: string
+          description: External identifier of this issuer
+          example: did:sov:XUeUZauFLeBNofY3NhaZCB
         organization:
           type: string
           description: Organization the issuer belongs to
@@ -2326,6 +2568,8 @@ components:
         - description
         - type
         - credentialDefinitions
+        - createdAt
+        - updatedAt
       properties:
         id:
           type: string
@@ -2351,6 +2595,16 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CredentialDefinition'
+        createdAt:
+          type: string
+          description: Date and time the relying party was created
+          format: date-time
+          example: "2025-03-06T11:30:16.573Z"
+        updatedAt:
+          type: string
+          description: Date and time the relying party was last updated
+          format: date-time
+          example: "2025-03-06T11:30:16.573Z"
     RelyingPartyRequest:
       type: object
       required:
@@ -2418,9 +2672,12 @@ components:
         - name
         - version
         - type
+        - schemaId
         - icon
-        - attributes
-        - representations
+        # TODO enable back in SHOWCASE-81
+        # - representations
+        - createdAt
+        - updatedAt
       properties:
         id:
           type: string
@@ -2430,16 +2687,22 @@ components:
           type: string
           description: Name of the credential definition
           example: Credential Definition Name
+        schemaId:
+          type: string
+          description:  Identifier of the associated credential schema
+          example:  123e4567-e89b-12d3-a456-426614174123
+        identifierType:
+          $ref: '#/components/schemas/IdentifierType'
+        identifier:
+          type: string
+          description: External identifier of this issuer
+          example: did:sov:XUeUZauFLeBNofY3NhaZCB
         version:
           type: string
           description: Version of the credential definition
           example: '1.0'
         type:
           $ref: '#/components/schemas/CredentialType'
-        attributes:
-          type: array
-          items:
-            $ref: '#/components/schemas/CredentialAttribute'
         representations:
           type: array
           items:
@@ -2452,6 +2715,16 @@ components:
             - $ref: '#/components/schemas/AnonCredRevocation'
         icon:
           $ref: '#/components/schemas/Asset'
+        createdAt:
+          type: string
+          description: Date and time the credential definition was created
+          format: date-time
+          example: 2025-03-06T11:30:16.573Z
+        updatedAt:
+          type: string
+          description: Date and time the credential definition was last updated
+          format: date-time
+          example: 2025-03-06T11:30:16.573Z
     CredentialDefinitionRequest:
       type: object
       required:
@@ -2459,7 +2732,7 @@ components:
         - version
         - type
         - icon
-        - attributes
+        - schemaId
         - representations
       properties:
         name:
@@ -2472,10 +2745,10 @@ components:
           example: '1.0'
         type:
           $ref: '#/components/schemas/CredentialType'
-        attributes:
-          type: array
-          items:
-            $ref: '#/components/schemas/CredentialAttributeRequest'
+        schemaId:
+          type: string
+          description: Reference to the associated credential schema
+          example: 456e4567-e89b-12d3-a456-426614174789
         representations:
           type: array
           description: List of representations for this credential definition
@@ -2516,6 +2789,8 @@ components:
         - id
         - name
         - type
+        - createdAt
+        - updatedAt
       properties:
         id:
           type: string
@@ -2531,6 +2806,16 @@ components:
           example: John Doe
         type:
           $ref: '#/components/schemas/CredentialAttributeType'
+        createdAt:
+          type: string
+          description: Date and time the credential attribute was created
+          format: date-time
+          example: 2025-03-06T11:30:16.573Z
+        updatedAt:
+          type: string
+          description: Date and time the credential attribute was last updated
+          format: date-time
+          example: 2025-03-06T11:30:16.573Z
     CredentialAttributeRequest:
       type: object
       required:
@@ -2552,11 +2837,23 @@ components:
       type: object
       required:
         - id
+        - createdAt
+        - updatedAt
       properties:
         id:
           type: string
           description: Unique identifier for the credential representation
           example: 123e4567-e89b-12d3-abcd-426614174456
+        createdAt:
+          type: string
+          description: Date and time the credential representation was created
+          format: date-time
+          example: 2025-03-06T11:30:16.573Z
+        updatedAt:
+          type: string
+          description: Date and time the credential representation was last updated
+          format: date-time
+          example: 2025-03-06T11:30:16.573Z
     OCARepresentation:
       allOf:
         - $ref: '#/components/schemas/CredentialRepresentation'
@@ -2581,7 +2878,11 @@ components:
     RevocationInfo:
       type: object
       required:
+        - id
         - title
+        - description
+        - createdAt
+        - updatedAt
       properties:
         id:
           type: string
@@ -2595,6 +2896,16 @@ components:
           type: string
           description: Detailed description of the revocation process or requirements
           example: This credential is revocable
+        createdAt:
+          type: string
+          description: Date and time the Revocation info was created
+          format: date-time
+          example: 2025-03-06T11:30:16.573Z
+        updatedAt:
+          type: string
+          description: Date and time the Revocation info was last updated
+          format: date-time
+          example: 2025-03-06T11:30:16.573Z
     AnonCredRevocation:
       allOf:
         - $ref: '#/components/schemas/RevocationInfo'
@@ -2608,6 +2919,75 @@ components:
               example: 123e4567-e89b-12d3-a456-426614174123
       description: Anonymous Credentials specific revocation information
 
+    CredentialSchema:
+      type: object
+      required:
+        - id
+        - name
+        - version
+        - attrNames
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the credential schema
+          example:  123e4567-e89b-12d3-a456-426614174123
+        name:
+          type: string
+          description: Name of the credential schema
+          example: Diploma Schema
+        version:
+          type: string
+          description: Version of the credential schema
+          example: '1.0'
+        identifierType:
+          $ref: '#/components/schemas/IdentifierType'
+        identifier:
+          type: string
+          description: External identifier of this schema
+          example: did:sov:XUeUZauFLeBNofY3NhaZCB
+        attributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/CredentialAttribute'
+    CredentialSchemaRequest:
+      type: object
+      required:
+        - name
+        - version
+        - attrNames
+      properties:
+        name:
+          type: string
+          description: Name of the credential schema
+          example: Diploma Schema
+        version:
+          type: string
+          description: Version of the credential schema
+          example: '1.0'
+        identifierType:
+          $ref: '#/components/schemas/IdentifierType'
+        identifier:
+          type: string
+          description: External identifier of this schema
+          example: did:sov:XUeUZauFLeBNofY3NhaZCB
+        attributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/CredentialAttribute'
+    CredentialSchemasResponse:
+      type: object
+      properties:
+        credentialSchemas:
+          type: array
+          description: "List of credential schemas"
+          items:
+            $ref: '#/components/schemas/CredentialSchema'
+    CredentialSchemaResponse:
+      type: object
+      properties:
+        credentialSchema:
+          $ref: '#/components/schemas/CredentialSchema'
+
     Showcase:
       type: object
       required:
@@ -2617,8 +2997,10 @@ components:
         - status
         - scenarios
         - personas
-        - credentials
+        - credentialDefinitions
         - hidden
+        - createdAt
+        - updatedAt
       properties:
         id:
           type: string
@@ -2633,10 +3015,7 @@ components:
           description: Description of the showcase
           example: Collection of credential usage scenarios
         status:
-          type: string
-          enum: [pending, active, archived]
-          description: Current status of the showcase
-          example: pending
+          $ref: '#/components/schemas/ShowcaseStatus'
         hidden:
           type: boolean
           description: Whether the showcase is hidden from public view
@@ -2645,8 +3024,8 @@ components:
           type: array
           description: List of scenarios in this showcase
           items:
-            $ref: '#/components/schemas/Workflow'
-        credentials:
+            $ref: '#/components/schemas/Scenario'
+        credentialDefinitions:
           type: array
           description: List of credential definitions used in this showcase
           items:
@@ -2656,6 +3035,22 @@ components:
           description: List of personas involved in this showcase
           items:
             $ref: '#/components/schemas/Persona'
+        bannerImage:
+          $ref: '#/components/schemas/Asset'
+        completionMessage:
+          type: string
+          description: Message to display when the showcase is completed
+          example: "You have successfully completed the showcase"
+        createdAt:
+          type: string
+          description: Date and time the showcase was created
+          format: date-time
+          example: 2025-03-06T11:30:16.573Z
+        updatedAt:
+          type: string
+          description: Date and time the showcase was last updated
+          format: date-time
+          example: 2025-03-06T11:30:16.573Z
     ShowcasesResponse:
       type: object
       properties:
@@ -2676,7 +3071,7 @@ components:
         - status
         - scenarios
         - personas
-        - credentials
+        - credentialDefinitions
         - hidden
       properties:
         name:
@@ -2688,10 +3083,7 @@ components:
           description: Description of the showcase
           example: Collection of credential usage scenarios
         status:
-          type: string
-          enum: [pending, active, archived]
-          description: Current status of the showcase
-          example: pending
+          $ref: '#/components/schemas/ShowcaseStatus'
         hidden:
           type: boolean
           description: Whether the showcase is hidden from public view
@@ -2702,7 +3094,7 @@ components:
           items:
             type: string
             example: 123e4567-e89b-12d3-a456-426614174469
-        credentials:
+        credentialDefinitions:
           type: array
           description: List of credential definitions used in this showcase
           items:
@@ -2714,69 +3106,29 @@ components:
           items:
             type: string
             example: 123e4567-e89b-12d3-a456-426614174469
+        bannerImage:
+          type: string
+          example: 123e4567-e89b-12d3-a456-426614174469
+        completionMessage:
+          type: string
+          example: "You have successfully completed the showcase"
 
-    # Scenario:
-    #   type: object
-    #   required:
-    #     - name
-    #     - description
-    #   properties:
-    #     id:
-    #       type: string
-    #       description: Unique identifier for the scenario
-    #       example: 123e4567-e89b-12d3-a456-426614174456
-    #     name:
-    #       type: string
-    #       description: Name of the scenario
-    #       example: University Parking Journey
-    #     description:
-    #       type: string
-    #       description: Description of the scenario
-    #       example: Student obtaining and using parking credentials
-    #     workflows:
-    #       type: array
-    #       description: References to workflows used in this scenario
-    #       items:
-    #         type: string
-    #       example: ['123e4567-e89b-12d3-a456-426614174456', '123e4567-e89b-12d3-a456-426614174456']
-    #     personas:
-    #       type: array
-    #       description: References to personas involved in this scenario
-    #       items:
-    #         type: string
-    #       example: ['123e4567-e89b-12d3-a456-426614174456', '123e4567-e89b-12d3-a456-426614174456']
-    # ScenarioRequest:
-    #   type: object
-    #   required:
-    #     - name
-    #     - description
-    #   properties:
-    #     name:
-    #       type: string
-    #       description: Name of the scenario
-    #       example: University Parking Journey
-    #     description:
-    #       type: string
-    #       description: Description of the scenario
-    #       example: Student obtaining and using parking credentials
-    #     workflows:
-    #       type: array
-    #       description: References to workflows used in this scenario
-    #       items:
-    #         type: string
-    #       example: ['123e4567-e89b-12d3-a456-426614174456', '123e4567-e89b-12d3-a456-426614174456']
-    #     personas:
-    #       type: array
-    #       description: References to personas involved in this scenario
-    #       items:
-    #         type: string
-    #       example: ['123e4567-e89b-12d3-a456-426614174456', '123e4567-e89b-12d3-a456-426614174456']
-    # ScenarioResponse:
-    #   properties:
-    #     assets:
-    #       type: array
-    #       items:
-    #         $ref: '#/components/schemas/Scenario'
+    ShowcaseStatus:
+      type: string
+      enum:
+          - PENDING
+          - ACTIVE
+          - ARCHIVED
+      description: Types of supported credentials
+      example: PENDING
+
+    ScenarioType:
+      type: string
+      enum:
+        - ISSUANCE
+        - PRESENTATION
+      description: Types of supported scenarios
+      example: ISSUANCE
 
   responses:
     'BadRequest':

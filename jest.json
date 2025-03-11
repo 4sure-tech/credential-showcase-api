@@ -1,5 +1,6 @@
 {
   "preset": "ts-jest",
+  "testTimeout": 30000,
   "moduleFileExtensions": [
     "ts",
     "js",

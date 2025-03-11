@@ -5,7 +5,6 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "postinstall": "pnpm generate-models",
     "generate-models": "rimraf ./src && mvn clean generate-sources",
     "dev": "tsc --watch",
     "build": "tsc",

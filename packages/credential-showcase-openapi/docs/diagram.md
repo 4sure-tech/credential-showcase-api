@@ -11,10 +11,12 @@ classDiagram
         +status : String
         +scenarios: List~String~
         +personas: List~String~
-        +credentials: List~String~
-        +status : String
+        +credentialDefinitions: List~String~
         +hidden : Boolean
-        +status : String
+        +createdAt : DateTime
+        +updatedAt : DateTime
+        bannerImage: Asset
+        completionMessage : String
     }
     class Scenario {
         <!-- Scenarios is a collection of workflows -->
@@ -22,11 +24,15 @@ classDiagram
         +description : String
         +steps: List~Steps~
         +personas: List~Persona~
+        +hidden : Boolean
+        +createdAt : DateTime
+        +updatedAt : DateTime
+        bannerImage: Asset
     }
-    class IssuanceFlow {
+    class IssuanceScenario {
         issuer: Issuer
     }
-    class PresentationFlow {
+    class PresentationScenario {
         relyingParty: RelyingParty
     }
     class Step {
@@ -34,6 +40,8 @@ classDiagram
         +description : String
         +order : int
         +type : StepType
+        +createdAt : DateTime
+        +updatedAt : DateTime
         subFlow: Scenario
         actions: List~StepAction~
         asset: Asset
@@ -42,11 +50,15 @@ classDiagram
         +type: String
         +title: String
         +text: String
+        +createdAt : DateTime
+        +updatedAt : DateTime
     }
     class AriesOOBAction {
         proofRequest: AriesProofRequest
     }
     class AriesProofRequest {
+        +createdAt : DateTime
+        +updatedAt : DateTime
         attributes: Dictionary~String, AriesRequestCredentialAttributes~
         predicates: Dictionary~String, AriesRequestCredentialPredicates~
     }
@@ -69,6 +81,8 @@ classDiagram
     class Asset {
         +mediaType : String
         +content : String
+        +createdAt : DateTime
+        +updatedAt : DateTime
         fileName : String
         description : String
     }
@@ -76,6 +90,9 @@ classDiagram
         +name : String
         +role: String
         +description: String
+        +createdAt : DateTime
+        +updatedAt : DateTime
+        +hidden : Boolean
         headshotImage: Asset
         bodyImage: Asset
     }
@@ -83,7 +100,10 @@ classDiagram
         +name : String
         +type: IssuerType
         +credentialDefinitions: List~CredentialDefinition~
+        +credentialSchemas: List~CredentialSchema~
         +description: String
+        +createdAt : DateTime
+        +updatedAt : DateTime
         organization: String
         logo: Asset
     }
@@ -96,6 +116,8 @@ classDiagram
         +type: RelyingPartyType
         +credentialDefinitions: List~CredentialDefinition~
         +description: String
+        +createdAt : DateTime
+        +updatedAt : DateTime
         organization: String
         logo: Asset
     }
@@ -103,23 +125,41 @@ classDiagram
         <<enumeration>>
         ARIES
     }
+    class CredentialSchema {
+        +name: String
+        +version: String
+        +identifierType: IdentifierType
+        +identifier: String
+        +attributes: List~CredentialAttribute~
+    }
+    class IdentifierType {
+        <<enumeration>>
+    }
     class CredentialDefinition {
         +name : String
         +version : String
+        +identifierType: IdentifierType
+        +identifier: String
         +icon: Asset
         +type: CredentialType
-        +attributes: List~CredentialAttribute~
+         credentialSchema: CredentialSchema
         +representations: List~CredentialRepresentation~
+        +createdAt : DateTime
+        +updatedAt : DateTime
         revocation: RevocationInfo
    }
    class RevocationInfo {
         +title: String
         +description: String
+        +createdAt : DateTime
+        +updatedAt : DateTime
    }
    class AnonCredRevocation {
    }
    class CredentialRepresentation {
         +id: String
+        +createdAt : DateTime
+        +updatedAt : DateTime
    }
    class OCARepresentation {
        +credDefId: String
@@ -130,6 +170,8 @@ classDiagram
         +name : String
         +value : String
         +type: CredentialAttributeType
+        +createdAt : DateTime
+        +updatedAt : DateTime
     }
     class CredentialType {
         <<enumeration>>
@@ -143,20 +185,26 @@ classDiagram
     BOOLEAN
     DATE
    }
-    Showcase <|-- Scenario
-    Showcase "1" *-- "1..*" Persona
-    Showcase "1" *-- "1..*" CredentialDefinition : contains
-    Scenario <|-- IssuanceFlow : specialization (onboarding)
-    Scenario <|-- PresentationFlow : specialization (scenario)
+    Showcase "1" <|-- "1..*" Scenario: has
+    Showcase "1..*" o-- "1..*" Persona
+    Showcase "1..*" o-- "1..*" CredentialDefinition : contains
+    Showcase "1" -- "0..*" Asset : references
+    Scenario <|-- IssuanceScenario : specialization (onboarding)
+    Scenario <|-- PresentationScenario : specialization (scenario)
     Scenario "1" *-- "1..*" Step : contains
+    Scenario "1" -- "0..*" Asset : references
     CredentialAttribute  o-- "1" CredentialAttributeType : of
-    CredentialDefinition "1" *-- "1..*" CredentialAttribute : has
+    CredentialSchema "1" *-- "1..*" CredentialAttribute : has
+    CredentialSchema o-- "1" IdentifierType : of
     CredentialDefinition "icon" --> Asset
     CredentialDefinition "1" *-- "1..*" CredentialRepresentation : has
     CredentialDefinition "1" *-- "0..*" RevocationInfo : has
     CredentialDefinition  o-- "1" CredentialType : of
+    CredentialDefinition o-- "1" IdentifierType : of
+    CredentialDefinition "1" o-- "1" CredentialSchema : references
     CredentialRepresentation <|-- OCARepresentation: specialization (OCA)
     Issuer "0..*" o-- "1..*" CredentialDefinition : issues with
+    Issuer "0..*" o-- "1..*" CredentialSchema : issues with
     RelyingParty "0..*" o-- "1..*" CredentialDefinition : accepts
     RelyingParty o-- "1" RelyingPartyType: of
     RevocationInfo <|-- AnonCredRevocation : specialization
@@ -172,7 +220,7 @@ classDiagram
     AriesProofRequest "1" *-- "1..*" AriesRequestCredentialAttributes: attributes
     AriesProofRequest "1" *-- "1..*" AriesRequestCredentialPredicates: predicates
     Scenario "0..*" o-- "1..*" Persona : involves
-    IssuanceFlow "0..*" o-- "1" Issuer : includes
-    PresentationFlow "0..*" o-- "1" RelyingParty : includes
+    IssuanceScenario "0..*" o-- "1" Issuer : includes
+    PresentationScenario "0..*" o-- "1" RelyingParty : includes
 
 ```
