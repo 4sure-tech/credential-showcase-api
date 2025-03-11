@@ -10,12 +10,12 @@ import { Application } from 'express'
 import { CredentialAttributeType, IdentifierType, NewCredentialSchema } from '../../types'
 import { CredentialDefinitionRequest } from 'credential-showcase-openapi'
 import supertest = require('supertest')
-import {PGlite} from "@electric-sql/pglite";
-import {drizzle} from "drizzle-orm/pglite";
-import * as schema from "../../database/schema";
-import {NodePgDatabase} from "drizzle-orm/node-postgres";
-import {migrate} from "drizzle-orm/node-postgres/migrator";
-import DatabaseService from "../../services/DatabaseService";
+import { PGlite } from '@electric-sql/pglite'
+import { drizzle } from 'drizzle-orm/pglite'
+import * as schema from '../../database/schema'
+import { NodePgDatabase } from 'drizzle-orm/node-postgres'
+import { migrate } from 'drizzle-orm/node-postgres/migrator'
+import DatabaseService from '../../services/DatabaseService'
 
 describe('CredentialDefinitionController Integration Tests', () => {
   let client: PGlite

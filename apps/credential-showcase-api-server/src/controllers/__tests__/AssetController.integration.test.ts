@@ -6,12 +6,12 @@ import AssetService from '../../services/AssetService'
 import AssetRepository from '../../database/repositories/AssetRepository'
 import { Application } from 'express'
 import supertest = require('supertest')
-import {PGlite} from "@electric-sql/pglite";
-import {drizzle} from "drizzle-orm/pglite";
-import * as schema from "../../database/schema";
-import {NodePgDatabase} from "drizzle-orm/node-postgres";
-import {migrate} from "drizzle-orm/node-postgres/migrator";
-import DatabaseService from "../../services/DatabaseService";
+import { PGlite } from '@electric-sql/pglite'
+import { drizzle } from 'drizzle-orm/pglite'
+import * as schema from '../../database/schema'
+import { NodePgDatabase } from 'drizzle-orm/node-postgres'
+import { migrate } from 'drizzle-orm/node-postgres/migrator'
+import DatabaseService from '../../services/DatabaseService'
 
 describe('AssetController Integration Tests', () => {
   let app: Application

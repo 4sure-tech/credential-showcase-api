@@ -506,7 +506,6 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                             revocation: true,
                           },
                         },
-
                       },
                     },
                     css: {
@@ -736,7 +735,8 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
         }),
         personas: scenario.scenario.personas.map((item: any) => item.persona), // TODO check this typing issue at a later point in time
       })),
-      credentialDefinitions: showcase.credentialDefinitions.map((item: any) => ({ // TODO check this typing issue at a later point in time
+      credentialDefinitions: showcase.credentialDefinitions.map((item: any) => ({
+        // TODO check this typing issue at a later point in time
         ...item.credentialDefinition,
         credentialSchema: item.credentialDefinition.cs,
       })),

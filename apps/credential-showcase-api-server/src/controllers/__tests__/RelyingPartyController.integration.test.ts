@@ -11,12 +11,12 @@ import CredentialDefinitionRepository from '../../database/repositories/Credenti
 import RelyingPartyRepository from '../../database/repositories/RelyingPartyRepository'
 import RelyingPartyService from '../../services/RelyingPartyService'
 import supertest = require('supertest')
-import {PGlite} from "@electric-sql/pglite";
-import {drizzle} from "drizzle-orm/pglite";
-import * as schema from "../../database/schema";
-import {NodePgDatabase} from "drizzle-orm/node-postgres";
-import {migrate} from "drizzle-orm/node-postgres/migrator";
-import DatabaseService from "../../services/DatabaseService";
+import { PGlite } from '@electric-sql/pglite'
+import { drizzle } from 'drizzle-orm/pglite'
+import * as schema from '../../database/schema'
+import { NodePgDatabase } from 'drizzle-orm/node-postgres'
+import { migrate } from 'drizzle-orm/node-postgres/migrator'
+import DatabaseService from '../../services/DatabaseService'
 
 describe('RelyingPartyController Integration Tests', () => {
   let client: PGlite

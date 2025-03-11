@@ -1,15 +1,4 @@
-import {
-  BadRequestError,
-  Body,
-  Delete,
-  Get,
-  HttpCode,
-  JsonController,
-  OnUndefined,
-  Param,
-  Post,
-  Put
-} from 'routing-controllers'
+import { BadRequestError, Body, Delete, Get, HttpCode, JsonController, OnUndefined, Param, Post, Put } from 'routing-controllers'
 import { Service } from 'typedi'
 import {
   AssetResponse,
@@ -17,7 +6,7 @@ import {
   AssetRequest,
   AssetsResponse,
   AssetsResponseFromJSONTyped,
-  instanceOfAssetRequest
+  instanceOfAssetRequest,
 } from 'credential-showcase-openapi'
 import AssetService from '../services/AssetService'
 import { assetDTOFrom, newAssetFrom } from '../utils/mappers'

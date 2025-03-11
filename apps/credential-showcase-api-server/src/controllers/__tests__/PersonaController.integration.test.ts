@@ -8,26 +8,26 @@ import AssetRepository from '../../database/repositories/AssetRepository'
 import { Application } from 'express'
 import { PersonaRequest } from 'credential-showcase-openapi'
 import supertest = require('supertest')
-import {PGlite} from "@electric-sql/pglite";
-import {drizzle} from "drizzle-orm/pglite";
-import * as schema from "../../database/schema";
-import {NodePgDatabase} from "drizzle-orm/node-postgres";
-import {migrate} from "drizzle-orm/node-postgres/migrator";
-import DatabaseService from "../../services/DatabaseService";
+import { PGlite } from '@electric-sql/pglite'
+import { drizzle } from 'drizzle-orm/pglite'
+import * as schema from '../../database/schema'
+import { NodePgDatabase } from 'drizzle-orm/node-postgres'
+import { migrate } from 'drizzle-orm/node-postgres/migrator'
+import DatabaseService from '../../services/DatabaseService'
 
 describe('PersonaController Integration Tests', () => {
-    let client: PGlite
-    let app: Application
-    let request: any
+  let client: PGlite
+  let app: Application
+  let request: any
 
   beforeAll(async () => {
-      client = new PGlite()
-      const database = drizzle(client, { schema }) as unknown as NodePgDatabase
-      await migrate(database, { migrationsFolder: './apps/credential-showcase-api-server/src/database/migrations' })
-      const mockDatabaseService = {
-          getConnection: jest.fn().mockResolvedValue(database),
-      }
-      Container.set(DatabaseService, mockDatabaseService)
+    client = new PGlite()
+    const database = drizzle(client, { schema }) as unknown as NodePgDatabase
+    await migrate(database, { migrationsFolder: './apps/credential-showcase-api-server/src/database/migrations' })
+    const mockDatabaseService = {
+      getConnection: jest.fn().mockResolvedValue(database),
+    }
+    Container.set(DatabaseService, mockDatabaseService)
     useContainer(Container)
     Container.get(AssetRepository)
     Container.get(PersonaRepository)
@@ -39,7 +39,7 @@ describe('PersonaController Integration Tests', () => {
   })
 
   afterAll(async () => {
-      await client.close()
+    await client.close()
     Container.reset()
   })
 

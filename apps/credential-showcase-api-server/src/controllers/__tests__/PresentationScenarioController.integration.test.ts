@@ -3,14 +3,8 @@ import { createExpressServer, useContainer } from 'routing-controllers'
 import { Container } from 'typedi'
 import PresentationScenarioController from '../PresentationScenarioController'
 import { Application } from 'express'
-import {
-  AriesOOBActionRequest,
-  IssuanceScenarioRequest,
-  PresentationScenarioRequest,
-  StepRequest,
-  StepType
-} from 'credential-showcase-openapi'
-import {PGlite} from "@electric-sql/pglite";
+import { AriesOOBActionRequest, IssuanceScenarioRequest, PresentationScenarioRequest, StepRequest, StepType } from 'credential-showcase-openapi'
+import { PGlite } from '@electric-sql/pglite'
 import AssetRepository from '../../database/repositories/AssetRepository'
 import CredentialSchemaRepository from '../../database/repositories/CredentialSchemaRepository'
 import CredentialDefinitionRepository from '../../database/repositories/CredentialDefinitionRepository'
@@ -19,20 +13,12 @@ import PersonaRepository from '../../database/repositories/PersonaRepository'
 import ScenarioRepository from '../../database/repositories/ScenarioRepository'
 import ScenarioService from '../../services/ScenarioService'
 import supertest = require('supertest')
-import {
-  CredentialAttributeType,
-  CredentialType,
-  IdentifierType,
-  NewPersona,
-  RelyingPartyType,
-  ScenarioType,
-  StepActionType
-} from '../../types'
-import {drizzle} from "drizzle-orm/pglite";
-import * as schema from "../../database/schema";
-import {NodePgDatabase} from "drizzle-orm/node-postgres";
-import {migrate} from "drizzle-orm/node-postgres/migrator";
-import DatabaseService from "../../services/DatabaseService";
+import { CredentialAttributeType, CredentialType, IdentifierType, NewPersona, RelyingPartyType, ScenarioType, StepActionType } from '../../types'
+import { drizzle } from 'drizzle-orm/pglite'
+import * as schema from '../../database/schema'
+import { NodePgDatabase } from 'drizzle-orm/node-postgres'
+import { migrate } from 'drizzle-orm/node-postgres/migrator'
+import DatabaseService from '../../services/DatabaseService'
 
 describe('PresentationScenarioController Integration Tests', () => {
   let client: PGlite
@@ -123,46 +109,48 @@ describe('PresentationScenarioController Integration Tests', () => {
     const scenarioRequest: PresentationScenarioRequest = {
       name: 'Test Presentation Scenario',
       description: 'Test scenario description',
-      steps: [{
-        title: 'Initial Step',
-        description: 'Initial step description',
-        order: 1,
-        type: StepType.HumanTask,
-        asset: asset.id,
-        actions: [
-          {
-            title: 'Initial Action',
-            actionType: StepActionType.ARIES_OOB,
-            text: 'Initial action text',
-            proofRequest: {
-              attributes: {
-                attribute1: {
-                  attributes: ['attribute1', 'attribute2'],
-                  restrictions: ['restriction1', 'restriction2'],
+      steps: [
+        {
+          title: 'Initial Step',
+          description: 'Initial step description',
+          order: 1,
+          type: StepType.HumanTask,
+          asset: asset.id,
+          actions: [
+            {
+              title: 'Initial Action',
+              actionType: StepActionType.ARIES_OOB,
+              text: 'Initial action text',
+              proofRequest: {
+                attributes: {
+                  attribute1: {
+                    attributes: ['attribute1', 'attribute2'],
+                    restrictions: ['restriction1', 'restriction2'],
+                  },
+                  attribute2: {
+                    attributes: ['attribute1', 'attribute2'],
+                    restrictions: ['restriction1', 'restriction2'],
+                  },
                 },
-                attribute2: {
-                  attributes: ['attribute1', 'attribute2'],
-                  restrictions: ['restriction1', 'restriction2'],
-                },
-              },
-              predicates: {
-                predicate1: {
-                  name: 'example_name',
-                  type: 'example_type',
-                  value: 'example_value',
-                  restrictions: ['restriction1', 'restriction2'],
-                },
-                predicate2: {
-                  name: 'example_name',
-                  type: 'example_type',
-                  value: 'example_value',
-                  restrictions: ['restriction1', 'restriction2'],
+                predicates: {
+                  predicate1: {
+                    name: 'example_name',
+                    type: 'example_type',
+                    value: 'example_value',
+                    restrictions: ['restriction1', 'restriction2'],
+                  },
+                  predicate2: {
+                    name: 'example_name',
+                    type: 'example_type',
+                    value: 'example_value',
+                    restrictions: ['restriction1', 'restriction2'],
+                  },
                 },
               },
             },
-          },
-        ],
-      }],
+          ],
+        },
+      ],
       personas: [persona.id],
       relyingParty: relyingParty.id,
       hidden: false,
@@ -296,9 +284,9 @@ describe('PresentationScenarioController Integration Tests', () => {
     }
 
     const createActionResponse = await request
-        .post(`/scenarios/presentations/${createdScenario.id}/steps/${createdStep.id}/actions`)
-        .send(actionRequest)
-        .expect(201)
+      .post(`/scenarios/presentations/${createdScenario.id}/steps/${createdStep.id}/actions`)
+      .send(actionRequest)
+      .expect(201)
 
     const createdAction = createActionResponse.body.action
     expect(createdAction).toHaveProperty('id')
@@ -313,19 +301,19 @@ describe('PresentationScenarioController Integration Tests', () => {
 
     // 12. Retrieve the created action
     const getActionResponse = await request
-        .get(`/scenarios/presentations/${createdScenario.id}/steps/${createdStep.id}/actions/${createdAction.id}`)
-        .expect(200)
+      .get(`/scenarios/presentations/${createdScenario.id}/steps/${createdStep.id}/actions/${createdAction.id}`)
+      .expect(200)
 
     expect(getActionResponse.body.action.title).toEqual('Additional Action')
 
     // 13. Update the action
     const updateActionResponse = await request
-        .put(`/scenarios/presentations/${createdScenario.id}/steps/${createdStep.id}/actions/${createdAction.id}`)
-        .send({
-          ...actionRequest,
-          title: 'Updated Action Title',
-        })
-        .expect(200)
+      .put(`/scenarios/presentations/${createdScenario.id}/steps/${createdStep.id}/actions/${createdAction.id}`)
+      .send({
+        ...actionRequest,
+        title: 'Updated Action Title',
+      })
+      .expect(200)
 
     expect(updateActionResponse.body.action.title).toEqual('Updated Action Title')
 

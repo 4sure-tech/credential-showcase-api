@@ -3,12 +3,7 @@ import { createExpressServer, useContainer } from 'routing-controllers'
 import { Container } from 'typedi'
 import IssuanceScenarioController from '../IssuanceScenarioController'
 import { Application } from 'express'
-import {
-  AriesOOBActionRequest,
-  IssuanceScenarioRequest,
-  StepRequest,
-  StepType
-} from 'credential-showcase-openapi'
+import { AriesOOBActionRequest, IssuanceScenarioRequest, StepRequest, StepType } from 'credential-showcase-openapi'
 import AssetRepository from '../../database/repositories/AssetRepository'
 import CredentialSchemaRepository from '../../database/repositories/CredentialSchemaRepository'
 import CredentialDefinitionRepository from '../../database/repositories/CredentialDefinitionRepository'
@@ -17,21 +12,13 @@ import PersonaRepository from '../../database/repositories/PersonaRepository'
 import ScenarioRepository from '../../database/repositories/ScenarioRepository'
 import ScenarioService from '../../services/ScenarioService'
 import supertest = require('supertest')
-import {PGlite} from "@electric-sql/pglite"
-import {drizzle} from "drizzle-orm/pglite"
-import * as schema from "../../database/schema"
-import {NodePgDatabase} from "drizzle-orm/node-postgres"
-import {migrate} from "drizzle-orm/node-postgres/migrator"
-import DatabaseService from "../../services/DatabaseService"
-import {
-  CredentialAttributeType,
-  CredentialType,
-  IdentifierType,
-  IssuerType,
-  NewPersona,
-  ScenarioType,
-  StepActionType
-} from '../../types'
+import { PGlite } from '@electric-sql/pglite'
+import { drizzle } from 'drizzle-orm/pglite'
+import * as schema from '../../database/schema'
+import { NodePgDatabase } from 'drizzle-orm/node-postgres'
+import { migrate } from 'drizzle-orm/node-postgres/migrator'
+import DatabaseService from '../../services/DatabaseService'
+import { CredentialAttributeType, CredentialType, IdentifierType, IssuerType, NewPersona, ScenarioType, StepActionType } from '../../types'
 
 describe('IssuanceScenarioController Integration Tests', () => {
   let client: PGlite

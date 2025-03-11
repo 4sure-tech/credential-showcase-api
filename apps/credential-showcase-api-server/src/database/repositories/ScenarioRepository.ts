@@ -10,15 +10,7 @@ import { isIssuanceScenario, isPresentationScenario } from '../../utils/mappers'
 import { sortSteps } from '../../utils/sort'
 import { generateSlug } from '../../utils/slug'
 import { NotFoundError } from '../../errors'
-import {
-  ariesProofRequests,
-  assets,
-  credentialDefinitions,
-  stepActions,
-  steps,
-  scenarios,
-  scenariosToPersonas
-} from '../schema'
+import { ariesProofRequests, assets, credentialDefinitions, stepActions, steps, scenarios, scenariosToPersonas } from '../schema'
 import {
   AriesOOBAction,
   Issuer,

@@ -8,15 +8,15 @@ import AssetRepository from '../../database/repositories/AssetRepository'
 import CredentialDefinitionRepository from '../../database/repositories/CredentialDefinitionRepository'
 import CredentialSchemaRepository from '../../database/repositories/CredentialSchemaRepository'
 import { Application } from 'express'
-import {CredentialAttributeType, CredentialType, IdentifierType, RelyingPartyType} from '../../types'
-import {IssuerRequest} from 'credential-showcase-openapi'
+import { CredentialAttributeType, CredentialType, IdentifierType, RelyingPartyType } from '../../types'
+import { IssuerRequest } from 'credential-showcase-openapi'
 import supertest = require('supertest')
-import {PGlite} from "@electric-sql/pglite";
-import {drizzle} from "drizzle-orm/pglite";
-import * as schema from "../../database/schema";
-import {NodePgDatabase} from "drizzle-orm/node-postgres";
-import {migrate} from "drizzle-orm/node-postgres/migrator";
-import DatabaseService from "../../services/DatabaseService";
+import { PGlite } from '@electric-sql/pglite'
+import { drizzle } from 'drizzle-orm/pglite'
+import * as schema from '../../database/schema'
+import { NodePgDatabase } from 'drizzle-orm/node-postgres'
+import { migrate } from 'drizzle-orm/node-postgres/migrator'
+import DatabaseService from '../../services/DatabaseService'
 
 describe('IssuerController Integration Tests', () => {
   let client: PGlite
@@ -33,7 +33,6 @@ describe('IssuerController Integration Tests', () => {
       getConnection: jest.fn().mockResolvedValue(database),
     }
     Container.set(DatabaseService, mockDatabaseService)
-
 
     useContainer(Container)
 
@@ -248,7 +247,7 @@ describe('IssuerController Integration Tests', () => {
       organization: 'Test Organization',
       logo: asset.id,
       credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
-      credentialSchemas: [credentialSchema.id]
+      credentialSchemas: [credentialSchema.id],
     }
 
     const createResponse = await request.post('/roles/issuers').send(issuerRequest).expect(201)
