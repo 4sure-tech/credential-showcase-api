@@ -1,7 +1,8 @@
 import { Service } from 'typedi'
 import { Connection, Sender } from 'rhea-promise'
 import { environment } from './environment'
-import { CredentialDefinition } from 'credential-showcase-openapi'
+import { CredentialDefinition, Issuer } from 'credential-showcase-openapi'
+
 
 @Service()
 export class AdapterClientApi {
@@ -56,8 +57,8 @@ export class AdapterClientApi {
     }
   }
 
-  public async storeCredentialDefinition(credentialDefinition: CredentialDefinition): Promise<void> {
-    return this.send('store-credentialdef', credentialDefinition)
+  public async publishIssuer(issuer: Issuer): Promise<void> {
+    return this.send('publish-issuer', issuer)
   }
 
   public async close(): Promise<void> {

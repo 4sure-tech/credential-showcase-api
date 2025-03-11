@@ -7,7 +7,10 @@
   },
   "references": [
     {
-      "path": "../../packages/credential-showcase-openapi"
+      "path": "../../packages/credential-showcase-openapi",
+    },
+    {
+      "path": "../../packages/credential-showcase-adapter-client-api"
     }
   ],
   "exclude": ["**/__tests__/**/*", "**/dist/**/*", "**/drizzle.config.ts"]

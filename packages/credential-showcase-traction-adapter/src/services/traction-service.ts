@@ -150,33 +150,36 @@ export class TractionService {
 
   public async publishIssuer(issuer: Issuer): Promise<void> {
     const issuerId = await this.getOrCreateIssuerId(issuer)
-
+    const schemaIdMap = new Map<string, string>()
     if (issuer.credentialSchemas) {
+      let schemaId: string | null
       for (const credentialSchema of issuer.credentialSchemas) {
-        const schemaId = await this.findExistingSchema(credentialSchema.name, credentialSchema.version, issuerId)
-        if (schemaId) {
-          return Promise.reject(
-            Error(
-              `Credential schema ${credentialSchema.name} version ${credentialSchema.version} for issuer ${issuer.identifier} for issuer ${issuer.id} / ${issuer.name} already exists on the ledger`,
-            ),
-          )
+        schemaId = await this.findExistingSchema(credentialSchema.name, credentialSchema.version, issuerId)
+        if (!schemaId) {
+          schemaId = await this.createSchema(credentialSchema, issuerId)
+          schemaIdMap.set(credentialSchema.id, schemaId)
         }
-        await this.createSchema(credentialSchema, issuerId)
       }
     }
 
     if (issuer.credentialDefinitions) {
       for (const credentialDef of issuer.credentialDefinitions) {
-        const existingCredDef = await this.findExistingCredentialDefinition(credentialDef.id, credentialDef.version)
-        if (existingCredDef) {
-          return existingCredDef
+        const existingCredDef = await this.findExistingCredentialDefinition(credentialDef.id, credentialDef.version, issuerId)
+        if (!existingCredDef) {
+          // Create new credential definition
+          const cdSchemaId = credentialDef.schemaId ?? schemaIdMap.get(credentialDef.id)
+          if (!cdSchemaId) {
+            console.error(
+              `Could not determine the schema id for credential definition ${credentialDef.id} / ${credentialDef.name} version ${credentialDef.version}`,
+            )
+          } else {
+            const apiResponse = await this.anoncredsApi.anoncredsCredentialDefinitionPostRaw({
+              body: credentialDefinitionToCredDefPostRequest(credentialDef, cdSchemaId, issuerId),
+            })
+            const result = await this.handleApiResponse(apiResponse)
+            console.log('created credential definition', result.registrationMetadata)
+          }
         }
-
-        // Create new credential definition
-        const apiResponse = await this.anoncredsApi.anoncredsCredentialDefinitionPostRaw({
-          body: credentialDefinitionToCredDefPostRequest(issuer, schemaId),
-        })
-        return this.handleApiResponse(apiResponse)
       }
     }
   }

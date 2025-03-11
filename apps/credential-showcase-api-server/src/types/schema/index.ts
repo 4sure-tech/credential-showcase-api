@@ -133,6 +133,7 @@ export type IssuanceScenario = Omit<typeof scenarios.$inferSelect, 'relyingParty
   issuer?: Issuer | null
   bannerImage?: Asset | null
 }
+
 export type NewIssuanceScenario = Omit<typeof scenarios.$inferInsert, 'relyingParty' | 'scenarioType'> & {
   personas: string[]
   issuer: string
@@ -193,6 +194,7 @@ export type Showcase = Omit<typeof showcases.$inferSelect, 'bannerImage'> & {
   personas: Persona[]
   bannerImage?: Asset | null
 }
+
 export type NewShowcase = typeof showcases.$inferInsert & {
   scenarios: string[]
   credentialDefinitions: string[]

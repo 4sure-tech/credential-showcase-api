@@ -13,7 +13,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "credential-showcase-openapi": "workspace:*",
-    "credential-showcase-traction-adapter": "workspace:*",
+    "credential-showcase-adapter-client-api": "workspace:*",
     "dotenv-flow": "^4.1.0",
     "drizzle-orm": "^0.39.3",
     "express": "^4.21.2",

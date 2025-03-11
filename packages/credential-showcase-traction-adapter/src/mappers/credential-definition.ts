@@ -38,11 +38,12 @@ export function credentialSchemaToSchemaPostRequest(credentialSchema: Credential
  * Converts a CredentialDefinition to a CredDefPostRequest
  * @param credentialDef The credential definition to convert
  * @param schemaId The schema ID to use in the credential definition
+ * @param issuerId
  * @returns A CredDefPostRequest object
  */
-export function credentialDefinitionToCredDefPostRequest(credentialDef: CredentialDefinition, schemaId: string): CredDefPostRequest {
+export function credentialDefinitionToCredDefPostRequest(credentialDef: CredentialDefinition, schemaId: string, issuerId: string): CredDefPostRequest {
   const innerCredDef: InnerCredDef = {
-    issuerId: 'did:(method):WgWxqztrNooG92RXvxSTWv', // TODO will be available in CredentialDefinition
+    issuerId: issuerId,
     schemaId: schemaId,
     tag: credentialDef.version,
   }

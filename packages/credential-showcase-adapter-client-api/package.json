@@ -1,5 +1,5 @@
 {
-  "name": "credential-showcase-traction-adapter",
+  "name": "credential-showcase-adapter-client-api",
   "version": "0.1.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
