@@ -7,7 +7,7 @@ import { Container } from 'typedi'
 import AssetRepository from '../UserRepository'
 import DatabaseService from '../../../services/DatabaseService'
 import * as schema from '../../schema'
-import { NewUser } from '../../../types'
+import { IdentifierType, NewUser } from '../../../types'
 
 describe('Database user repository tests', (): void => {
   let client: PGlite
@@ -32,6 +32,7 @@ describe('Database user repository tests', (): void => {
 
   it('Should save user to database', async (): Promise<void> => {
     const user: NewUser = {
+      identifierType: IdentifierType.DID,
       identifier: 'test_identifier',
     }
 
@@ -43,6 +44,7 @@ describe('Database user repository tests', (): void => {
 
   it('Should get user by id from database', async (): Promise<void> => {
     const user: NewUser = {
+      identifierType: IdentifierType.DID,
       identifier: 'test_identifier',
     }
 
@@ -57,6 +59,7 @@ describe('Database user repository tests', (): void => {
 
   it('Should get all users from database', async (): Promise<void> => {
     const user: NewUser = {
+      identifierType: IdentifierType.DID,
       identifier: 'test_identifier',
     }
 
@@ -73,6 +76,7 @@ describe('Database user repository tests', (): void => {
 
   it('Should delete user from database', async (): Promise<void> => {
     const user: NewUser = {
+      identifierType: IdentifierType.DID,
       identifier: 'test_identifier',
     }
 
@@ -86,6 +90,7 @@ describe('Database user repository tests', (): void => {
 
   it('Should update user in database', async (): Promise<void> => {
     const user: NewUser = {
+      identifierType: IdentifierType.DID,
       identifier: 'test_identifier',
     }
 

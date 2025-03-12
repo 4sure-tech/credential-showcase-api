@@ -188,6 +188,7 @@ CREATE TABLE "scenariosToPersonas" (
 --> statement-breakpoint
 CREATE TABLE "user" (
     "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+    "identifier_type" "IdentifierType",
     "identifier" text,
     "created_at" timestamp DEFAULT now() NOT NULL,
     "updated_at" timestamp DEFAULT now() NOT NULL,
