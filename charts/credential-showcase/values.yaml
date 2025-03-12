@@ -178,8 +178,9 @@ rabbitmq:
     username: "guest"
     existingSecret: "{{ .Release.Name }}-rabbitmq"
     secretKeys:
-      userKey: username
-      passwordKey: password
+      userKey: rabbitmq-username
+      passwordKey: rabbitmq-password
+      erlangCookieKey: rabbitmq-erlang-cookie
   persistence:
     enabled: true
     size: 1Gi
