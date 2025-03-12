@@ -2535,7 +2535,6 @@ components:
         - version
         - type
         - credentialSchema
-        - icon
         # TODO enable back in SHOWCASE-81
         # - representations
         - createdAt

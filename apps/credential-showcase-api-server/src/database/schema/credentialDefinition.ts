@@ -19,8 +19,7 @@ export const credentialDefinitions = pgTable('credentialDefinition', {
     .references(() => credentialSchemas.id)
     .notNull(),
   icon: uuid()
-    .references(() => assets.id)
-    .notNull(),
+    .references(() => assets.id),
   type: CredentialTypePg().notNull().$type<CredentialType>(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at')
