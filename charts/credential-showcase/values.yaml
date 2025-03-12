@@ -1,0 +1,211 @@
+nameOverride: ""
+fullnameOverride: ""
+
+#ingressSuffix: -dev.apps.silver.devops.gov.bc.ca
+
+api_server:
+  name: credential-showcase-api-server
+  image:
+    repository: public.ecr.aws/k8o4d9r5/bcshowcase/credential-showcase-api-server
+    pullPolicy: IfNotPresent
+    pullSecrets: []
+    tag: ""
+  replicaCount: 1
+  labelOverride: ""
+  port: 3000
+  path: /
+  env:
+    APP_NAME: credential-showcase-api
+    LOG_LEVEL: debug
+    DB_HOST: postgresql
+    DB_PORT: "5432"
+    DB_NAME: postgres
+    DB_USER: postgres
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  podAnnotations: {}
+  podSecurityContext: {}
+  containerSecurityContext: {}
+  service:
+    type: ClusterIP
+    port: 3000
+  affinity: {}
+  nodeSelector: {}
+  tolerations: []
+  networkPolicy:
+    enabled: false
+    ingress:
+      enabled: false
+      namespaceSelector: {}
+      podSelector: {}
+  openshift:
+    route:
+      enabled: true
+      path: "/"
+      targetPort: http
+      timeout: 2m
+      tls:
+        enabled: true
+        insecureEdgeTerminationPolicy: None
+        termination: edge
+      wildcardPolicy: None
+  # serviceAccount:
+  #   create: false
+  #   annotations: {}
+  #   automountServiceAccountToken: true
+  #   name: ""
+  # autoscaling:
+  #   enabled: false
+  #   minReplicas: 1
+  #   maxReplicas: 3
+  #   targetCPUUtilizationPercentage: 80
+  #   targetMemoryUtilizationPercentage: 80
+  #   stabilizationWindowSeconds: 300
+
+traction_adapter:
+  name: credential-showcase-traction-adapter
+  image:
+    repository: ghcr.io/your-org/credential-showcase-traction-adapter
+    pullPolicy: IfNotPresent
+    pullSecrets: []
+    tag: ""
+  replicaCount: 1
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
+    stabilizationWindowSeconds: 300
+  labelOverride: ""
+  port: 3000
+  path: /traction
+  env:
+    APP_NAME: credential-showcase-traction
+    LOG_LEVEL: debug
+    TRACTION_URL: ""
+    TRACTION_API_KEY: ""
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  podAnnotations: {}
+  podSecurityContext: {}
+  containerSecurityContext: {}
+  service:
+    type: ClusterIP
+    port: 3000
+  affinity: {}
+  nodeSelector: {}
+  tolerations: []
+  networkPolicy:
+    enabled: false
+    ingress:
+      enabled: false
+      namespaceSelector: {}
+      podSelector: {}
+  openshift:
+    route:
+      enabled: true
+      path: "/"
+      targetPort: http
+      timeout: 2m
+      tls:
+        enabled: true
+        insecureEdgeTerminationPolicy: None
+        termination: edge
+      wildcardPolicy: None
+  # serviceAccount:
+      #   create: false
+      #   annotations: {}
+      #   automountServiceAccountToken: true
+      #   name: ""
+
+ingress:
+  enabled: true
+  className: ""
+  annotations: {}
+  #  route.openshift.io/termination: edge
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+postgresql:
+  enabled: true
+  fullnameOverride: ""
+  architecture: standalone
+  auth:
+    enablePostgresUser: true
+    postgresPassword: ""
+    username: postgres
+    password: ""
+    database: postgres
+    existingSecret: ""
+  primary:
+    persistence:
+      enabled: true
+      size: 1Gi
+    containerSecurityContext:
+      enabled: false
+    podSecurityContext:
+      enabled: false
+    resources:
+      limits:
+        cpu: 200m
+        memory: 256Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    service:
+      ports:
+        postgresql: 5432
+    extendedConfiguration: |
+      max_connections = 100
+
+rabbitmq:
+  enabled: true
+  auth:
+    username: guest
+    existingSecret: ""
+  persistence:
+    enabled: true
+    size: 1Gi
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  service:
+    type: ClusterIP
+    port: 5672
+    managerPort: 15672
+  containerSecurityContext:
+    enabled: false
+  podSecurityContext:
+    enabled: false
+  # metrics:
+  #   enabled: false
+  # plugins: "rabbitmq_management rabbitmq_prometheus"
+  # extraPlugins: ""
+  # clustering:
+  #   enabled: false
+  replicaCount: 1
+
+global:
+  namespaceOverride: ""

@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-ingress
+  namespace: {{ .Values.namespace }}
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  rules:
+  - host: app.mydomain.com
+    http:
+      paths:
+      {{- range .Values.services }}
+      - path: {{ .path }}
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ $.Release.Name }}-{{ .name }}
+            port:
+              number: {{ .port }}
+      {{- end }}
+  tls:
+  - hosts:
+    - app.mydomain.com
+    secretName: {{ .Release.Name }}-tls

@@ -1,0 +1,157 @@
+{{- if .Values.postgresql.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "credential-showcase.fullname" . }}-postgresql
+  namespace: {{ .Values.global.namespaceOverride | default .Release.Namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "credential-showcase.fullname" . }}-postgresql
+  template:
+    metadata:
+      labels:
+        app: {{ include "credential-showcase.fullname" . }}-postgresql
+    spec:
+      {{- with .Values.postgresql.primary.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: postgresql
+        image: "{{ .Values.postgresql.image.repository }}:{{ .Values.postgresql.image.tag }}"
+        imagePullPolicy: {{ .Values.postgresql.image.pullPolicy }}
+        {{- with .Values.postgresql.primary.containerSecurityContext }}
+        securityContext:
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
+        env:
+        - name: POSTGRES_PASSWORD
+          value: {{ include "postgresql.adminPassword" . | quote }}
+        - name: POSTGRES_USER
+          value: {{ .Values.postgresql.auth.username | quote }}
+        - name: POSTGRES_USER_PASSWORD
+          value: {{ include "postgresql.password" . | quote }}
+        - name: POSTGRES_DB
+          value: {{ .Values.postgresql.auth.database | quote }}
+        ports:
+        - containerPort: {{ .Values.postgresql.primary.service.ports.postgresql }}
+          name: postgresql
+        resources:
+          {{- toYaml .Values.postgresql.primary.resources | nindent 12 }}
+        volumeMounts:
+        - name: postgresql-data
+          mountPath: /var/lib/postgresql/data
+        - name: postgresql-config
+          mountPath: /etc/postgresql/postgresql.conf
+          subPath: postgresql.conf
+      volumes:
+      - name: postgresql-data
+        {{- if .Values.postgresql.primary.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ include "credential-showcase.fullname" . }}-postgresql
+        {{- else }}
+        emptyDir: {}
+        {{- end }}
+      - name: postgresql-config
+        configMap:
+          name: {{ include "credential-showcase.fullname" . }}-postgresql-config
+          items:
+          - key: postgresql.conf
+            path: postgresql.conf
+---
+{{- end }}
+{{- if .Values.api_server.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.api_server.name }}
+  namespace: {{ .Values.global.namespaceOverride | default .Release.Namespace }}
+spec:
+  replicas: {{ .Values.api_server.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-{{ .Values.api_server.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-{{ .Values.api_server.name }}
+      {{- with .Values.api_server.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- with .Values.api_server.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: {{ .Values.api_server.name }}
+        image: "{{ .Values.api_server.image.repository }}:{{ .Values.api_server.image.tag }}"
+        imagePullPolicy: {{ .Values.api_server.image.pullPolicy }}
+        {{- with .Values.api_server.containerSecurityContext }}
+        securityContext:
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
+        ports:
+        - containerPort: {{ .Values.api_server.port }}
+        env:
+        {{- range $key, $value := .Values.api_server.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        {{- if .Values.postgresql.enabled }}
+        - name: DB_PASSWORD
+          value: {{ include "postgresql.password" . | quote }}
+        {{- end }}
+        resources:
+          {{- toYaml .Values.api_server.resources | nindent 12 }}
+---
+{{- end }}
+{{- if .Values.traction_adapter.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.traction_adapter.name }}
+  namespace: {{ .Values.global.namespaceOverride | default .Release.Namespace }}
+spec:
+  replicas: {{ .Values.traction_adapter.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-{{ .Values.traction_adapter.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-{{ .Values.traction_adapter.name }}
+      {{- with .Values.traction_adapter.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- with .Values.traction_adapter.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: {{ .Values.traction_adapter.name }}
+        image: "{{ .Values.traction_adapter.image.repository }}:{{ .Values.traction_adapter.image.tag }}"
+        imagePullPolicy: {{ .Values.traction_adapter.image.pullPolicy }}
+        {{- with .Values.traction_adapter.containerSecurityContext }}
+        securityContext:
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
+        ports:
+        - containerPort: {{ .Values.traction_adapter.port }}
+        env:
+        {{- range $key, $value := .Values.traction_adapter.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        {{- if .Values.rabbitmq.enabled }}
+        - name: RABBITMQ_PASSWORD
+          value: {{ include "rabbitmq.password" . | quote }}
+        {{- end }}
+        resources:
+          {{- toYaml .Values.traction_adapter.resources | nindent 12 }}
+{{- end }}
