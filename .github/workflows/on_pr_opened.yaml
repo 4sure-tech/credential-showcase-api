@@ -28,6 +28,41 @@ jobs:
           echo "true_false=${{ toJSON(github.event.pull_request.draft != true && github.repository_owner == '4sure-tech') }}" >> $GITHUB_OUTPUT #shouuld change to bcgov
           echo "owner_true_false=${{ toJSON(github.repository_owner == '4sure-tech') }}" >> $GITHUB_OUTPUT
 
+  test:
+    name: Test - ${{ inputs.package_name }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.12.3
+          run_install: false
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          # path: ${{ env.STORE_PATH }}
+          # key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          # restore-keys: |
+          #   ${{ runner.os }}-pnpm-store-
+         path: $(pnpm store path)
+         key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+         restore-keys: |
+           ${{ runner.os }}-pnpm-  
+      - name: Install Dependencies
+        run: pnpm install
+      - name: Run Tests
+        run: pnpm test --filter ${{ inputs.package_name }}
+
   build_api_server:
     name: "Build Credential Showcase API Server"
     runs-on: ubuntu-latest
