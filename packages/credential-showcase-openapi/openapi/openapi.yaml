@@ -1793,8 +1793,7 @@ components:
       type: object
       properties:
         identifierType:
-          type: string
-          enum: ['DID']
+          $ref: '#/components/schemas/IdentifierType'
         identifier:
           type: string
         createdAt:
