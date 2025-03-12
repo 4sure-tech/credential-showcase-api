@@ -59,7 +59,7 @@ describe('Database credential schema repository tests', (): void => {
     expect(created.identifierType).toBe(newSchema.identifierType)
     expect(created.version).toBe(newSchema.version)
     expect(created.attributes).toHaveLength(2)
-    expect(created.originType).toBe(OriginType.CREATED)
+    expect(created.originType).toBe(newSchema.originType)
 
     const retrieved = await credentialSchemaRepository.findById(created.id)
     expect(retrieved).toBeDefined()
