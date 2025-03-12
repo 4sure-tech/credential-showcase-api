@@ -46,6 +46,7 @@ describe('CredentialSchemaController Integration Tests', () => {
         version: '1.0',
         identifierType: 'DID',
         identifier: 'did:test:456',
+        source: 'CREATED',
         attributes: [{ name: 'attr1', value: 'value1', type: CredentialAttributeType.String }],
       } satisfies CredentialSchemaRequest)
       .expect(201)
@@ -64,6 +65,7 @@ describe('CredentialSchemaController Integration Tests', () => {
         version: '1.0',
         identifierType: 'DID',
         identifier: 'did:test:456',
+        source: 'IMPORTED',
         attributes: [{ name: 'attr1', value: 'value1', type: CredentialAttributeType.String }],
       } satisfies CredentialSchemaRequest)
       .expect(200)
