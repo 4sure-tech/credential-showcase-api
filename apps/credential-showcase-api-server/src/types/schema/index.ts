@@ -13,7 +13,7 @@ import {
   showcases,
   stepActions,
   steps,
-  users
+  users,
 } from '../../database/schema'
 
 // $inferSelect does not respect nullability of fields and the type has every field as required
@@ -211,7 +211,7 @@ export type NewShowcase = Omit<typeof showcases.$inferInsert, 'slug'> & {
   credentialDefinitions: string[]
   personas: string[]
   bannerImage?: string | null
-  userId?: string | null
+  createdAt?: string | null
   hidden: boolean
   completionMessage?: string | null
 }

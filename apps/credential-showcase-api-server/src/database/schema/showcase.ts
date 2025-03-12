@@ -17,7 +17,7 @@ export const showcases = pgTable('showcase', {
   status: showcaseStatusPg().notNull().$type<ShowcaseStatus>(),
   hidden: boolean().notNull().default(false),
   bannerImage: uuid('banner_image').references(() => assets.id),
-  userId: uuid('user_id').references(() => users.id),
+  createdBy: uuid('created_by').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at')
     .defaultNow()
@@ -33,8 +33,8 @@ export const showcaseRelations = relations(showcases, ({ many, one }) => ({
     fields: [showcases.bannerImage],
     references: [assets.id],
   }),
-  user: one(users, {
-    fields: [showcases.userId],
+  createdBy: one(users, {
+    fields: [showcases.createdBy],
     references: [users.id],
   }),
 }))
