@@ -164,6 +164,7 @@ export const newUserFrom = (user: UserRequest): NewUser => {
 export const userDTOFrom = (user: User): UserDTO => {
   return {
     ...user,
+    identifierType: user.identifierType ? user.identifierType : undefined,
     identifier: user.identifier ? user.identifier : undefined,
   }
 }

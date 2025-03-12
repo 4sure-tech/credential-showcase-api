@@ -1792,6 +1792,9 @@ components:
     User:
       type: object
       properties:
+        identifierType:
+          type: string
+          enum: ['DID']
         identifier:
           type: string
         createdAt:
