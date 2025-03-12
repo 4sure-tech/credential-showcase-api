@@ -152,7 +152,7 @@ postgresql:
   auth:
     username: "showcase-user"
     database: "showcase-db"
-    existingSecret: ""
+    existingSecret: "{{ .Release.Name }}-postgresql"
     secretKeys:
       adminPasswordKey: postgres-password
       userPasswordKey: password
@@ -176,7 +176,7 @@ rabbitmq:
   enabled: true
   auth:
     username: "guest"
-    existingSecret: ""
+    existingSecret: "{{ .Release.Name }}-rabbitmq"
     secretKeys:
       userKey: username
       passwordKey: password
