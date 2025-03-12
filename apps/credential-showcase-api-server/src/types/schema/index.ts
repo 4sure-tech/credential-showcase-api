@@ -112,6 +112,11 @@ export enum IdentifierType {
   DID = 'DID',
 }
 
+export enum OriginType {
+  IMPORTED = 'IMPORTED',
+  CREATED = 'CREATED',
+}
+
 export enum IssuerType {
   ARIES = 'ARIES',
 }

@@ -2296,6 +2296,15 @@ components:
       description: Types of supported identifiers
       example: DID
 
+    OriginType:
+      type: string
+      enum:
+        - IMPORTED
+        - CREATED
+      description: Types of supported origins
+      example: CREATED
+      default: CREATED
+
     IssuerType:
       type: string
       enum:
@@ -2807,6 +2816,8 @@ components:
           type: string
           description: External identifier of this schema
           example: did:sov:XUeUZauFLeBNofY3NhaZCB
+        originType:
+          $ref: '#/components/schemas/OriginType'
         attributes:
           type: array
           items:
@@ -2838,6 +2849,8 @@ components:
           example: '1.0'
         identifierType:
           $ref: '#/components/schemas/IdentifierType'
+        originType:
+          $ref: '#/components/schemas/OriginType'
         identifier:
           type: string
           description: External identifier of this schema
