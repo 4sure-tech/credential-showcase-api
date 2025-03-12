@@ -13,12 +13,13 @@
     "express": "^4.21.2",
     "rhea": "^3.0.3",
     "rhea-promise": "^3.0.3",
+    "supertest": "^7.0.0",
     "typedi": "^0.10.0"
   },
   "devDependencies": {
-    "testcontainers": "^10.18.0",
     "@testcontainers/rabbitmq": "^10.18.0",
-    "@types/express": "^5.0.0"
+    "@types/express": "^5.0.0",
+    "testcontainers": "^10.18.0"
   },
   "files": [
     "dist/**/*",

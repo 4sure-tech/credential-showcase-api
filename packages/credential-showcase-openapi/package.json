@@ -21,5 +21,8 @@
   "repository": "git@github.com:Sphereon-Opensource/credential-showcase-api.git",
   "author": "4Sure",
   "license": "Apache-2.0",
-  "keywords": []
+  "keywords": [],
+  "dependencies": {
+    "supertest": "^7.0.0"
+  }
 }

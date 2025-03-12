@@ -11,6 +11,7 @@ import { users } from './user'
 export const showcases = pgTable('showcase', {
   id: uuid('id').notNull().primaryKey().defaultRandom(),
   name: text().notNull(),
+  slug: text().notNull().unique(),
   description: text().notNull(),
   completionMessage: text(),
   status: showcaseStatusPg().notNull().$type<ShowcaseStatus>(),

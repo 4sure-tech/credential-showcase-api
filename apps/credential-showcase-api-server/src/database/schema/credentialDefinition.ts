@@ -13,8 +13,8 @@ export const credentialDefinitions = pgTable('credentialDefinition', {
   id: uuid('id').notNull().primaryKey().defaultRandom(),
   name: text().notNull(),
   version: text().notNull(),
-  identifierType: IdentifierTypePg('identifier_type').notNull().$type<IdentifierType>(),
-  identifier: text().notNull(),
+  identifierType: IdentifierTypePg('identifier_type').$type<IdentifierType>(),
+  identifier: text(),
   credentialSchema: uuid('credential_schema')
     .references(() => credentialSchemas.id)
     .notNull(),

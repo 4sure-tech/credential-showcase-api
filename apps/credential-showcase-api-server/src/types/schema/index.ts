@@ -1,19 +1,19 @@
 import {
+  ariesProofRequests,
   assets,
-  personas,
   credentialAttributes,
   credentialDefinitions,
-  credentialSchemas,
   credentialRepresentations,
+  credentialSchemas,
   issuers,
+  personas,
   relyingParties,
   revocationInfo,
   scenarios,
-  steps,
-  stepActions,
-  ariesProofRequests,
   showcases,
-  users,
+  stepActions,
+  steps,
+  users
 } from '../../database/schema'
 
 // $inferSelect does not respect nullability of fields and the type has every field as required
@@ -29,7 +29,7 @@ export type Persona = Omit<typeof personas.$inferSelect, 'headshotImage' | 'body
   headshotImage: Asset | null
   bodyImage: Asset | null
 }
-export type NewPersona = typeof personas.$inferInsert & {
+export type NewPersona = Omit<typeof personas.$inferInsert, 'slug'> & {
   headshotImage?: string | null
   bodyImage?: string | null
   hidden: boolean
@@ -47,6 +47,8 @@ export type NewCredentialDefinition = Omit<typeof credentialDefinitions.$inferIn
   type: CredentialType
   representations?: NewCredentialRepresentation[] // TODO SHOWCASE-81 make required
   revocation?: NewRevocationInfo | null
+  identifierType?: IdentifierType | null
+  identifier?: string | null
 }
 
 export type CredentialAttribute = Omit<typeof credentialAttributes.$inferSelect, 'credentialSchema'> & {
@@ -62,6 +64,8 @@ export type CredentialSchema = typeof credentialSchemas.$inferSelect & {
 
 export type NewCredentialSchema = typeof credentialSchemas.$inferInsert & {
   attributes: NewCredentialAttribute[]
+  identifierType?: IdentifierType | null
+  identifier?: string | null
 }
 
 export type CredentialRepresentation = Omit<typeof credentialRepresentations.$inferSelect, 'credentialDefinition'>
@@ -112,6 +116,11 @@ export enum IdentifierType {
   DID = 'DID',
 }
 
+export enum Source {
+  IMPORTED = 'IMPORTED',
+  CREATED = 'CREATED',
+}
+
 export enum IssuerType {
   ARIES = 'ARIES',
 }
@@ -137,7 +146,7 @@ export type IssuanceScenario = Omit<typeof scenarios.$inferSelect, 'relyingParty
   issuer?: Issuer | null
   bannerImage?: Asset | null
 }
-export type NewIssuanceScenario = Omit<typeof scenarios.$inferInsert, 'relyingParty' | 'scenarioType'> & {
+export type NewIssuanceScenario = Omit<typeof scenarios.$inferInsert, 'relyingParty' | 'scenarioType' | 'slug'> & {
   personas: string[]
   issuer: string
   steps: NewStep[]
@@ -151,7 +160,7 @@ export type PresentationScenario = Omit<typeof scenarios.$inferSelect, 'relyingP
   relyingParty?: RelyingParty | null
   bannerImage?: Asset | null
 }
-export type NewPresentationScenario = Omit<typeof scenarios.$inferInsert, 'issuer' | 'scenarioType'> & {
+export type NewPresentationScenario = Omit<typeof scenarios.$inferInsert, 'issuer' | 'scenarioType' | 'slug'> & {
   personas: string[]
   relyingParty: string
   steps: NewStep[]
@@ -197,7 +206,7 @@ export type Showcase = Omit<typeof showcases.$inferSelect, 'bannerImage'> & {
   personas: Persona[]
   bannerImage?: Asset | null
 }
-export type NewShowcase = typeof showcases.$inferInsert & {
+export type NewShowcase = Omit<typeof showcases.$inferInsert, 'slug'> & {
   scenarios: string[]
   credentialDefinitions: string[]
   personas: string[]

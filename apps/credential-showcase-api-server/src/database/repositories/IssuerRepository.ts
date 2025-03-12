@@ -1,13 +1,13 @@
 import { eq, inArray } from 'drizzle-orm'
 import { Service } from 'typedi'
+import { BadRequestError } from 'routing-controllers'
 import DatabaseService from '../../services/DatabaseService'
 import CredentialDefinitionRepository from './CredentialDefinitionRepository'
 import AssetRepository from './AssetRepository'
+import CredentialSchemaRepository from './CredentialSchemaRepository'
 import { NotFoundError } from '../../errors'
-import { credentialDefinitions, credentialSchemas, issuers, issuersToCredentialDefinitions } from '../schema'
+import { credentialDefinitions, credentialSchemas, issuers, issuersToCredentialDefinitions, issuersToCredentialSchemas } from '../schema'
 import { Issuer, NewIssuer, RepositoryDefinition } from '../../types'
-import { issuersToCredentialSchemas } from '../schema/issuersToCredentialSchemas'
-import { CredentialSchemaRepository } from './CredentialSchemaRepository'
 
 @Service()
 class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
@@ -20,10 +20,10 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
 
   async create(issuer: NewIssuer): Promise<Issuer> {
     if (issuer.credentialDefinitions.length === 0) {
-      return Promise.reject(Error('At least one credential definition is required'))
+      return Promise.reject(new BadRequestError('At least one credential definition is required'))
     }
     if (issuer.credentialSchemas.length === 0) {
-      return Promise.reject(Error('At least one credential schema is required'))
+      return Promise.reject(new BadRequestError('At least one credential schema is required'))
     }
 
     const credentialDefinitionPromises = issuer.credentialDefinitions.map(
@@ -113,10 +113,10 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
     await this.findById(id)
 
     if (issuer.credentialDefinitions.length === 0) {
-      return Promise.reject(Error('At least one credential definition is required'))
+      return Promise.reject(new BadRequestError('At least one credential definition is required'))
     }
     if (issuer.credentialSchemas.length === 0) {
-      return Promise.reject(Error('At least one credential schema is required'))
+      return Promise.reject(new BadRequestError('At least one credential schema is required'))
     }
 
     const credentialDefinitionPromises = issuer.credentialDefinitions.map(
@@ -243,8 +243,8 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
     return {
       ...result,
       credentialDefinitions: result.cds.map((item: any) => ({
-        ...item,
-        credentialSchema: item.cs,
+        ...item.cd,
+        credentialSchema: item.cd.cs,
       })),
       credentialSchemas: result.css.map((item) => item.cs),
     }
@@ -287,8 +287,8 @@ class IssuerRepository implements RepositoryDefinition<Issuer, NewIssuer> {
     return result.map((issuer) => ({
       ...issuer,
       credentialDefinitions: issuer.cds.map((item: any) => ({
-        ...item,
-        credentialSchema: item.cs,
+        ...item.cd,
+        credentialSchema: item.cd.cs,
       })),
       credentialSchemas: issuer.css.map((item) => item.cs),
     }))

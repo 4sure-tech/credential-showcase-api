@@ -25,6 +25,10 @@ class ShowcaseService {
   public deleteShowcase = async (id: string): Promise<void> => {
     return this.showcaseRepository.delete(id)
   }
+
+  public getIdBySlug = async (slug: string): Promise<string> => {
+    return this.showcaseRepository.findIdBySlug(slug)
+  }
 }
 
 export default ShowcaseService

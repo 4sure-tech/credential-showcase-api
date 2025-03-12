@@ -5,8 +5,15 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1741345062139,
+      "when": 1741702347695,
       "tag": "0000_credential-showcase-api",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1741772743963,
+      "tag": "0001_credential-showcase-api",
       "breakpoints": true
     }
   ]

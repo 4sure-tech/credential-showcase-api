@@ -2,6 +2,7 @@ import {
   Asset as AssetDTO,
   AssetRequest,
   CredentialDefinition as CredentialDefinitionDTO,
+  CredentialSchema as CredentialSchemaDTO,
   IssuanceScenario as IssuanceScenarioDTO,
   Issuer as IssuerDTO,
   Persona as PersonaDTO,
@@ -15,6 +16,7 @@ import {
 import {
   Asset,
   CredentialDefinition,
+  CredentialSchema,
   IssuanceScenario,
   Issuer,
   NewAsset,
@@ -40,17 +42,29 @@ export const newAssetFrom = (asset: AssetRequest): NewAsset => {
 export const assetDTOFrom = (asset: Asset): AssetDTO => {
   return {
     ...asset,
-    fileName: asset.fileName ? asset.fileName : undefined,
-    description: asset.description ? asset.description : undefined,
+    fileName: asset.fileName || undefined,
+    description: asset.description || undefined,
     content: asset.content.toString(),
+  }
+}
+
+export const credentialSchemaDTOFrom = (credentialSchema: CredentialSchema): CredentialSchemaDTO => {
+  return {
+    ...credentialSchema,
+    identifierType: credentialSchema.identifierType || undefined,
+    identifier: credentialSchema.identifier || undefined,
+    source: credentialSchema.source || undefined,
   }
 }
 
 export const credentialDefinitionDTOFrom = (credentialDefinition: CredentialDefinition): CredentialDefinitionDTO => {
   return {
     ...credentialDefinition,
-    schemaId: credentialDefinition.credentialSchema.id,
-    revocation: credentialDefinition.revocation ? credentialDefinition.revocation : undefined,
+    identifierType: credentialDefinition.identifierType || undefined,
+    identifier: credentialDefinition.identifier || undefined,
+    credentialSchema: credentialSchemaDTOFrom(credentialDefinition.credentialSchema),
+    representations: credentialDefinition.representations,
+    revocation: credentialDefinition.revocation || undefined,
     icon: assetDTOFrom(credentialDefinition.icon),
   }
 }
@@ -58,18 +72,19 @@ export const credentialDefinitionDTOFrom = (credentialDefinition: CredentialDefi
 export const relyingPartyDTOFrom = (relyingParty: RelyingParty): RelyingPartyDTO => {
   return {
     ...relyingParty,
-    organization: relyingParty.organization ? relyingParty.organization : undefined,
+    organization: relyingParty.organization || undefined,
     logo: relyingParty.logo ? assetDTOFrom(relyingParty.logo) : undefined,
-    credentialDefinitions: relyingParty.credentialDefinitions.map((credentialDefinition) => credentialDefinitionDTOFrom(credentialDefinition)),
+    credentialDefinitions: relyingParty.credentialDefinitions.map(credentialDefinitionDTOFrom),
   }
 }
 
 export const issuerDTOFrom = (issuer: Issuer): IssuerDTO => {
   return {
     ...issuer,
-    organization: issuer.organization ? issuer.organization : undefined,
+    organization: issuer.organization || undefined,
     logo: issuer.logo ? assetDTOFrom(issuer.logo) : undefined,
-    credentialDefinitions: issuer.credentialDefinitions.map((credentialDefinition) => credentialDefinitionDTOFrom(credentialDefinition)),
+    credentialDefinitions: issuer.credentialDefinitions.map(credentialDefinitionDTOFrom),
+    credentialSchemas: issuer.credentialSchemas.map(credentialSchemaDTOFrom),
   }
 }
 
@@ -82,8 +97,8 @@ export const issuanceScenarioDTOFrom = (issuanceScenario: IssuanceScenario): Iss
     ...issuanceScenario,
     issuer: issuerDTOFrom(issuanceScenario.issuer),
     type: ScenarioType.ISSUANCE,
-    steps: issuanceScenario.steps.map((step) => stepDTOFrom(step)),
-    personas: issuanceScenario.personas.map((persona) => personaDTOFrom(persona)),
+    steps: issuanceScenario.steps.map(stepDTOFrom),
+    personas: issuanceScenario.personas.map(personaDTOFrom),
   }
 }
 
@@ -96,8 +111,8 @@ export const presentationScenarioDTOFrom = (presentationScenario: PresentationSc
     ...presentationScenario,
     relyingParty: relyingPartyDTOFrom(presentationScenario.relyingParty),
     type: ScenarioType.PRESENTATION,
-    steps: presentationScenario.steps.map((step) => stepDTOFrom(step)),
-    personas: presentationScenario.personas.map((persona) => personaDTOFrom(persona)),
+    steps: presentationScenario.steps.map(stepDTOFrom),
+    personas: presentationScenario.personas.map(personaDTOFrom),
   }
 }
 
@@ -116,7 +131,7 @@ export const stepDTOFrom = (step: Step): StepDTO => {
   return {
     ...step,
     asset: step.asset ? assetDTOFrom(step.asset) : undefined,
-    subScenario: step.subScenario ? step.subScenario : undefined,
+    subScenario: step.subScenario || undefined,
   }
 }
 
@@ -132,11 +147,11 @@ export const personaDTOFrom = (persona: Persona): PersonaDTO => {
 export const showcaseDTOFrom = (showcase: Showcase): ShowcaseDTO => {
   return {
     ...showcase,
-    personas: showcase.personas.map((persona) => personaDTOFrom(persona)),
-    credentialDefinitions: showcase.credentialDefinitions.map((credentialsDefinition) => credentialDefinitionDTOFrom(credentialsDefinition)),
-    scenarios: showcase.scenarios.map((scenario) => scenarioDTOFrom(scenario)),
+    personas: showcase.personas.map(personaDTOFrom),
+    credentialDefinitions: showcase.credentialDefinitions.map(credentialDefinitionDTOFrom),
+    scenarios: showcase.scenarios.map(scenarioDTOFrom),
     bannerImage: showcase.bannerImage ? assetDTOFrom(showcase.bannerImage) : undefined,
-    completionMessage: showcase.completionMessage ? showcase.completionMessage : undefined,
+    completionMessage: showcase.completionMessage || undefined,
   }
 }
 
