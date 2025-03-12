@@ -178,6 +178,15 @@ CREATE TABLE "scenariosToPersonas" (
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "scenariosToPersonas_scenario_persona_pk" PRIMARY KEY("scenario","persona")
 );
+
+--> statement-breakpoint
+CREATE TABLE "user" (
+    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+    "identifier" text,
+    "created_at" timestamp DEFAULT now() NOT NULL,
+    "updated_at" timestamp DEFAULT now() NOT NULL,
+);
+
 --> statement-breakpoint
 CREATE TABLE "showcase" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
@@ -188,7 +197,8 @@ CREATE TABLE "showcase" (
 	"hidden" boolean DEFAULT false NOT NULL,
 	"banner_image" uuid,
 	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+    "created_by" uuid NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "showcasesToCredentialDefinitions" (
@@ -246,4 +256,5 @@ ALTER TABLE "showcasesToCredentialDefinitions" ADD CONSTRAINT "showcasesToCreden
 ALTER TABLE "showcasesToPersonas" ADD CONSTRAINT "showcasesToPersonas_showcase_showcase_id_fk" FOREIGN KEY ("showcase") REFERENCES "public"."showcase"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "showcasesToPersonas" ADD CONSTRAINT "showcasesToPersonas_persona_persona_id_fk" FOREIGN KEY ("persona") REFERENCES "public"."persona"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "showcasesToScenarios" ADD CONSTRAINT "showcasesToScenarios_showcase_showcase_id_fk" FOREIGN KEY ("showcase") REFERENCES "public"."showcase"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "showcasesToScenarios" ADD CONSTRAINT "showcasesToScenarios_scenario_scenario_id_fk" FOREIGN KEY ("scenario") REFERENCES "public"."scenario"("id") ON DELETE cascade ON UPDATE no action;
+ALTER TABLE "showcasesToScenarios" ADD CONSTRAINT "showcasesToScenarios_scenario_scenario_id_fk" FOREIGN KEY ("scenario") REFERENCES "public"."scenario"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "showcase" ADD CONSTRAINT "showcase_created_by_fk" FOREIGN KEY ("created_by") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;-- statement-breakpoint

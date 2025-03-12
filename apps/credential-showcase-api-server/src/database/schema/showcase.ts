@@ -6,6 +6,7 @@ import { showcaseStatusPg } from './showcaseStatus'
 import { ShowcaseStatus } from '../../types'
 import { showcasesToScenarios } from './showcasesToScenarios'
 import { assets } from './asset'
+import { users } from './user'
 
 export const showcases = pgTable('showcase', {
   id: uuid('id').notNull().primaryKey().defaultRandom(),
@@ -15,6 +16,7 @@ export const showcases = pgTable('showcase', {
   status: showcaseStatusPg().notNull().$type<ShowcaseStatus>(),
   hidden: boolean().notNull().default(false),
   bannerImage: uuid('banner_image').references(() => assets.id),
+  userId: uuid('user_id').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at')
     .defaultNow()
@@ -29,5 +31,9 @@ export const showcaseRelations = relations(showcases, ({ many, one }) => ({
   bannerImage: one(assets, {
     fields: [showcases.bannerImage],
     references: [assets.id],
+  }),
+  user: one(users, {
+    fields: [showcases.userId],
+    references: [users.id],
   }),
 }))
