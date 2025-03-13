@@ -74,13 +74,16 @@ spec:
         - name: {{ $key }}
           value: {{ $value | quote }}
         {{- end }}
-        {{- if .Values.rabbitmq.enabled }}
         - name: RABBITMQ_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ .Release.Name }}-rabbitmq
               key: password
-        {{- end }}
+        - name: RABBITMQ_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-rabbitmq
+              key: username
         resources:
           {{- toYaml .Values.traction_adapter.resources | nindent 12 }}
       serviceAccountName: {{ if .Values.traction_adapter.serviceAccount.create }}{{ if .Values.traction_adapter.serviceAccount.name }}{{ .Values.traction_adapter.serviceAccount.name }}{{ else }}{{ $.Release.Name }}-{{ .Values.traction_adapter.name }}{{ end }}{{ end }}
