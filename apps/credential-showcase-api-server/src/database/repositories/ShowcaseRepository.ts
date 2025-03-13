@@ -604,147 +604,186 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
   }
 
   async findAll(): Promise<Showcase[]> {
-    const result = await (
-      await this.databaseService.getConnection()
-    ).query.showcases.findMany({
-      with: {
-        credentialDefinitions: {
-          with: {
-            credentialDefinition: {
-              with: {
-                icon: true,
-                cs: {
-                  with: {
-                    attributes: true,
-                  },
-                },
-                representations: true,
-                revocation: true,
-              },
-            },
-          },
-        },
-        scenarios: {
-          with: {
-            scenario: {
-              with: {
-                steps: {
-                  with: {
-                    actions: {
-                      with: {
-                        proofRequest: true,
-                      },
-                    },
-                    asset: true,
-                  },
-                },
-                issuer: {
-                  with: {
-                    cds: {
-                      with: {
-                        cd: {
-                          with: {
-                            icon: true,
-                            cs: {
-                              with: {
-                                attributes: true,
-                              },
-                            },
-                            representations: true,
-                            revocation: true,
-                          },
-                        },
-                      },
-                    },
-                    css: {
-                      with: {
-                        cs: {
-                          with: {
-                            attributes: true,
-                          },
-                        },
-                      },
-                    },
-                    logo: true,
-                  },
-                },
-                relyingParty: {
-                  with: {
-                    cds: {
-                      with: {
-                        cd: {
-                          with: {
-                            icon: true,
-                            cs: {
-                              with: {
-                                attributes: true,
-                              },
-                            },
-                            representations: true,
-                            revocation: true,
-                          },
-                        },
-                      },
-                    },
-                    logo: true,
-                  },
-                },
-                personas: {
-                  with: {
-                    persona: {
-                      with: {
-                        headshotImage: true,
-                        bodyImage: true,
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-        personas: {
-          with: {
-            persona: {
-              with: {
-                headshotImage: true,
-                bodyImage: true,
-              },
-            },
-          },
-        },
-        bannerImage: true,
-      },
+    const connection = await this.databaseService.getConnection()
+    const showcases = await connection.query.showcases.findMany({
+      with: { bannerImage: true }
     })
+    const showcaseIds = showcases.map((s: any) => s.id)
 
-    return result.map((showcase: any) => ({
-      ...showcase,
-      scenarios: showcase.scenarios.map((scenario: any) => ({
-        ...scenario.scenario,
-        steps: sortSteps(scenario.scenario.steps),
-        ...(scenario.scenario.relyingParty && {
-          relyingParty: {
-            ...(scenario.scenario.relyingParty as any), // TODO check this typing issue at a later point in time
-            credentialDefinitions: scenario.scenario.relyingParty!.cds.map((credentialDefinition: any) => credentialDefinition.cd),
-          },
+    const [credDefData, scenariosData, personasData] = await Promise.all([
+      connection.query.showcasesToCredentialDefinitions.findMany({
+        where: inArray(showcasesToCredentialDefinitions.showcase, showcaseIds),
+        with: {
+          credentialDefinition: {
+            with: {
+              icon: true,
+              cs: {
+                with: {
+                  attributes: true
+                }
+              },
+              representations: true,
+              revocation: true
+            }
+          }
+        }
+      }),
+      connection.query.showcasesToScenarios.findMany({
+        where: inArray(showcasesToScenarios.showcase, showcaseIds),
+        with: {
+          scenario: {
+            with: {
+              steps: {
+                with: {
+                  actions: {
+                    with: {
+                      proofRequest: true
+                    }
+                  },
+                  asset: true
+                }
+              },
+              issuer: {
+                with: {
+                  cds: {
+                    with: {
+                      cd: {
+                        with: {
+                          icon: true,
+                          cs: {
+                            with: {
+                              attributes: true
+                            }
+                          },
+                          representations: true,
+                          revocation: true
+                        }
+                      }
+                    }
+                  },
+                  css: {
+                    with: {
+                      cs: {
+                        with: {
+                          attributes: true
+                        }
+                      }
+                    }
+                  },
+                  logo: true
+                }
+              },
+              relyingParty: {
+                with: {
+                  cds: {
+                    with: {
+                      cd: {
+                        with: {
+                          icon: true,
+                          cs: {
+                            with: {
+                              attributes: true
+                            }
+                          },
+                          representations: true,
+                          revocation: true
+                        }
+                      }
+                    }
+                  },
+                  logo: true
+                }
+              },
+              personas: {
+                with: {
+                  persona: {
+                    with: {
+                      headshotImage: true,
+                      bodyImage: true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }),
+      connection.query.showcasesToPersonas.findMany({
+        where: inArray(showcasesToPersonas.showcase, showcaseIds),
+        with: {
+          persona: {
+            with: {
+              headshotImage: true,
+              bodyImage: true
+            }
+          }
+        }
+      })
+    ])
+
+    // Group join records by showcase id
+    const credDefMap = new Map<string, any[]>()
+    for (const item of credDefData) {
+      const key = item.showcase
+      if (!credDefMap.has(key)) {
+        credDefMap.set(key, [])
+      }
+      credDefMap.get(key)!.push(item)
+    }
+
+    const scenariosMap = new Map<string, any[]>()
+    for (const item of scenariosData) {
+      const key = item.showcase
+      if (!scenariosMap.has(key)) {
+        scenariosMap.set(key, [])
+      }
+      scenariosMap.get(key)!.push(item)
+    }
+
+    const personasMap = new Map<string, any[]>()
+    for (const item of personasData) {
+      const key = item.showcase
+      if (!personasMap.has(key)) {
+        personasMap.set(key, [])
+      }
+      personasMap.get(key)!.push(item)
+    }
+
+    return showcases.map((showcase: any) => {
+      return {
+        ...showcase,
+        scenarios: (scenariosMap.get(showcase.id) || []).map((s: any) => {
+          const scenarioData = { ...s.scenario }
+          scenarioData.steps = sortSteps(s.scenario.steps)
+          if (s.scenario.relyingParty) {
+            scenarioData.relyingParty = {
+              ...s.scenario.relyingParty,
+              credentialDefinitions: s.scenario.relyingParty.cds.map((item: any) => item.cd)
+            }
+          }
+          if (s.scenario.issuer) {
+            scenarioData.issuer = {
+              ...s.scenario.issuer,
+              credentialDefinitions: s.scenario.issuer.cds.map((item: any) => item.cd),
+              credentialSchemas: s.scenario.issuer.css.map((item: any) => item.cs)
+            }
+          }
+          // TODO check this typing issue at a later point in time
+          scenarioData.personas = s.scenario.personas.map((p: any) => p.persona)
+          return scenarioData
         }),
-        ...(scenario.scenario.issuer && {
-          issuer: {
-            ...(scenario.scenario.issuer as any), // TODO check this typing issue at a later point in time
-            credentialDefinitions: scenario.scenario.issuer!.cds.map((credentialDefinition: any) => credentialDefinition.cd),
-            credentialSchemas: scenario.scenario.issuer!.css.map((credentialSchema: any) => credentialSchema.cs),
-          },
+        credentialDefinitions: (credDefMap.get(showcase.id) || []).map((item: any) => {
+          return {
+            ...item.credentialDefinition,
+            credentialSchema: item.credentialDefinition.cs
+          }
+          // TODO check this typing issue at a later point in time
         }),
-        personas: scenario.scenario.personas.map((item: any) => item.persona), // TODO check this typing issue at a later point in time
-      })),
-      credentialDefinitions: showcase.credentialDefinitions.map((item: any) => ({
-        // TODO check this typing issue at a later point in time
-        ...item.credentialDefinition,
-        credentialSchema: item.credentialDefinition.cs,
-      })),
-      personas: showcase.personas.map((item: any) => item.persona), // TODO check this typing issue at a later point in time
-    }))
+        personas: (personasMap.get(showcase.id) || []).map((item: any) => item.persona)
+      }
+    })
   }
+
 
   async findIdBySlug(slug: string): Promise<string> {
     const result = await (
