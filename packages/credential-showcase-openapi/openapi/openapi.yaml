@@ -2590,7 +2590,6 @@ components:
         - name
         - version
         - type
-        - icon
         - credentialSchema
         # TODO enable back in SHOWCASE-81
         # - representations
