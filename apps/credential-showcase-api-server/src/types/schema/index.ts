@@ -165,12 +165,12 @@ export type NewPresentationScenario = Omit<typeof scenarios.$inferInsert, 'issue
 }
 
 export type Step = Omit<typeof steps.$inferSelect, 'asset'> & {
-  actions: AriesOOBAction[]
+  actions?: AriesOOBAction[]
   asset?: Asset | null
 }
 export type NewStep = Omit<typeof steps.$inferInsert, 'scenario'> & {
   asset?: string | null
-  actions: NewAriesOOBAction[]
+  actions?: NewAriesOOBAction[]
   subScenario?: string | null
 }
 

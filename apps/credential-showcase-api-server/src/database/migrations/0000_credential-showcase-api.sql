@@ -129,7 +129,7 @@ CREATE TABLE "stepAction" (
 	"action_type" text NOT NULL,
 	"title" text NOT NULL,
 	"text" text NOT NULL,
-	"step" uuid NOT NULL,
+	"step" uuid,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
