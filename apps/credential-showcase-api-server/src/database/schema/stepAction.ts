@@ -1,21 +1,26 @@
 import { relations } from 'drizzle-orm'
-import { pgTable, uuid, timestamp, text } from 'drizzle-orm/pg-core'
+import { pgTable, uuid, timestamp, text, index } from 'drizzle-orm/pg-core'
 import { steps } from './step'
 import { ariesProofRequests } from './ariesProofRequest'
 import { StepActionType } from '../../types'
 
-export const stepActions = pgTable('stepAction', {
-  id: uuid('id').notNull().primaryKey().defaultRandom(),
-  actionType: text('action_type').notNull().$type<StepActionType>(),
-  title: text().notNull(),
-  text: text().notNull(),
-  step: uuid().references(() => steps.id, { onDelete: 'cascade' }),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at')
-    .defaultNow()
-    .notNull()
-    .$onUpdate(() => new Date()),
-})
+export const stepActions = pgTable(
+  'stepAction',
+  {
+    id: uuid('id').notNull().primaryKey().defaultRandom(),
+    actionType: text('action_type').notNull().$type<StepActionType>(),
+    title: text().notNull(),
+    text: text().notNull(),
+    step: uuid()
+      .references(() => steps.id, { onDelete: 'cascade' }),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at')
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
+  },
+  (t) => [index('idx_step_actions').on(t.step)],
+)
 
 export const stepActionRelations = relations(stepActions, ({ one }) => ({
   step: one(steps, {

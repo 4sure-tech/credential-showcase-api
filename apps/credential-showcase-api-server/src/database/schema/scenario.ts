@@ -1,5 +1,5 @@
 import { relations, sql } from 'drizzle-orm'
-import { check, pgTable, text, timestamp, uuid, boolean } from 'drizzle-orm/pg-core'
+import { check, pgTable, text, timestamp, uuid, boolean, index } from 'drizzle-orm/pg-core'
 import { steps } from './step'
 import { issuers } from './issuer'
 import { scenariosToPersonas } from './scenariosToPersonas'
@@ -26,7 +26,7 @@ export const scenarios = pgTable(
       .notNull()
       .$onUpdate(() => new Date()),
   },
-  () => [
+  (t) => [
     check(
       'scenario_type_check',
       sql`
@@ -34,6 +34,9 @@ export const scenarios = pgTable(
             (scenario_type = 'ISSUANCE' AND issuer IS NOT NULL)
     `,
     ),
+    index('idx_relyingParty_issuer_scenario').on(t.relyingParty),
+    index('idx_issuer_scenario').on(t.issuer),
+    index('idx_bannerImage_issuer_scenario').on(t.bannerImage),
   ],
 )
 
