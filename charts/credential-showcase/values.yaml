@@ -57,18 +57,18 @@ api_server:
         enabled: true
         termination: edge
   enabled: true
-  # serviceAccount:
-  #   create: false
-  #   name: ""
-  #   annotations: {}
-  #   automountServiceAccountToken: true
-  # autoscaling:
-  #   enabled: false
-  #   minReplicas: 1
-  #   maxReplicas: 3
-  #   targetCPUUtilizationPercentage: 80
-  #   targetMemoryUtilizationPercentage: 80
-  #   stabilizationWindowSeconds: 300
+  serviceAccount:
+    create: false
+    name: ""
+    annotations: {}
+    automountServiceAccountToken: true
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
+    stabilizationWindowSeconds: 300
   ingress:
     enabled: true
     annotations:
@@ -80,7 +80,7 @@ api_server:
 traction_adapter:
   name: credential-showcase-traction-adapter
   image:
-    repository: ghcr.io/your-org/credential-showcase-traction-adapter
+    repository: public.ecr.aws/k8o4d9r5/bcshowcase/credential-showcase-traction-adapter
     pullPolicy: IfNotPresent
     pullSecrets: []
     tag: ""
@@ -134,11 +134,11 @@ traction_adapter:
         enabled: true
         termination: edge
   enabled: true
-  # serviceAccount:
-      #   create: false
-      #   annotations: {}
-      #   automountServiceAccountToken: true
-      #   name: ""
+  serviceAccount:
+    create: false
+    annotations: {}
+    automountServiceAccountToken: true
+    name: ""
   ingress:
     enabled: true
     annotations:
@@ -177,11 +177,7 @@ postgresql:
   auth:
     username: "showcase-user"
     database: "showcase-db"
-    existingSecret: "{{ .Release.Name }}-postgresql"
-    secretKeys:
-      adminPasswordKey: postgres-password
-      userPasswordKey: password
-      replicationPasswordKey: replication-password
+    existingSecret: ""
   primary:
     service:
       ports:
@@ -201,11 +197,7 @@ rabbitmq:
   enabled: true
   auth:
     username: "guest"
-    existingSecret: "{{ .Release.Name }}-rabbitmq"
-    secretKeys:
-      userKey: rabbitmq-username
-      passwordKey: rabbitmq-password
-      erlangCookieKey: rabbitmq-erlang-cookie
+    existingSecret: ""
   persistence:
     enabled: true
     size: 1Gi

@@ -14,3 +14,7 @@ helm upgrade --install credential-showcase ./charts/credential-showcase
 kubectl get ingress
 kubectl get ingressroute
 kubectl get certificates
+
+
+
+helm upgrade --install credential-showcase -f ./charts/credential-showcase/values.yaml --set api_server.image.tag=3aed748764b34a1df8a3daeb723f9b47a201ce97  --set traction_adapter.image.tag=0ea06afcb41f2c64d65ec01af1149ed0a13f6e3d  ./charts/credential-showcase --wait
