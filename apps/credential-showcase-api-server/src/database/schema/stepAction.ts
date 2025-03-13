@@ -11,8 +11,7 @@ export const stepActions = pgTable(
     actionType: text('action_type').notNull().$type<StepActionType>(),
     title: text().notNull(),
     text: text().notNull(),
-    step: uuid()
-      .references(() => steps.id, { onDelete: 'cascade' }),
+    step: uuid().references(() => steps.id, { onDelete: 'cascade' }),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at')
       .defaultNow()

@@ -113,27 +113,35 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
       const stepActionsResult = await tx
         .insert(stepActions)
         .values(
-          stepsResult.flatMap((stepResult, index) =>
-            scenario.steps[index].actions && scenario.steps[index].actions.map((action) => ({
-              ...action,
-              step: stepResult.id,
-            })),
-          ).filter(actions => !!actions),
+          stepsResult
+            .flatMap(
+              (stepResult, index) =>
+                scenario.steps[index].actions &&
+                scenario.steps[index].actions.map((action) => ({
+                  ...action,
+                  step: stepResult.id,
+                })),
+            )
+            .filter((actions) => !!actions),
         )
         .returning()
 
       const proofRequestsResult = await tx
         .insert(ariesProofRequests)
         .values(
-          scenario.steps.flatMap((step, index) =>
-            step.actions && step.actions.map((action, actionIndex) => {
-              const stepAction = stepActionsResult[index * (step.actions ? step.actions.length : 0) + actionIndex]
-              return {
-                ...action.proofRequest,
-                stepAction: stepAction.id,
-              }
-            }),
-          ).filter(actions => !!actions),
+          scenario.steps
+            .flatMap(
+              (step, index) =>
+                step.actions &&
+                step.actions.map((action, actionIndex) => {
+                  const stepAction = stepActionsResult[index * (step.actions ? step.actions.length : 0) + actionIndex]
+                  return {
+                    ...action.proofRequest,
+                    stepAction: stepAction.id,
+                  }
+                }),
+            )
+            .filter((actions) => !!actions),
         )
         .returning()
 
@@ -264,27 +272,35 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
       const stepActionsResult = await tx
         .insert(stepActions)
         .values(
-          stepsResult.flatMap((stepResult, index) =>
-            scenario.steps[index].actions && scenario.steps[index].actions.map((action) => ({
-              ...action,
-              step: stepResult.id,
-            })),
-          ).filter(actions => !!actions),
+          stepsResult
+            .flatMap(
+              (stepResult, index) =>
+                scenario.steps[index].actions &&
+                scenario.steps[index].actions.map((action) => ({
+                  ...action,
+                  step: stepResult.id,
+                })),
+            )
+            .filter((actions) => !!actions),
         )
         .returning()
 
       const proofRequestsResult = await tx
         .insert(ariesProofRequests)
         .values(
-          scenario.steps.flatMap((step, index) =>
-            step.actions && step.actions.map((action, actionIndex) => {
-              const stepAction = stepActionsResult[index * (step.actions ? step.actions.length : 0) + actionIndex]
-              return {
-                ...action.proofRequest,
-                stepAction: stepAction.id,
-              }
-            }),
-          ).filter(actions => !!actions),
+          scenario.steps
+            .flatMap(
+              (step, index) =>
+                step.actions &&
+                step.actions.map((action, actionIndex) => {
+                  const stepAction = stepActionsResult[index * (step.actions ? step.actions.length : 0) + actionIndex]
+                  return {
+                    ...action.proofRequest,
+                    stepAction: stepAction.id,
+                  }
+                }),
+            )
+            .filter((actions) => !!actions),
         )
         .returning()
 
@@ -551,7 +567,6 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
           scenario: scenarioId,
         })
         .returning()
-
 
       const actionsResult = await tx
         .insert(stepActions)
