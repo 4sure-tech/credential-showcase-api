@@ -31,6 +31,12 @@
     "dev": {
       "persistent": true,
       "cache": false
+    },
+    "generate:models": {
+      "dependsOn": ["^generate:models"],
+      "outputs": [
+        "src/**"
+      ]
     }
   }
 }
