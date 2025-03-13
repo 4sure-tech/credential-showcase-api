@@ -19,7 +19,15 @@ export class DatabaseService {
   public async getConnection(): Promise<NodePgDatabase<typeof schema>> {
     if (!this.db) {
       const pool = new Pool({ connectionString: this.getDbUrl() })
-      this.db = drizzle(pool, { schema })
+      this.db = drizzle(pool, {
+        schema,
+        /*logger: {
+          logQuery: (query, params) => {
+            console.log('Query:', query)
+            console.log('Params:', params)
+          },
+        },*/
+      })
 
       const migrationsFolder = path.resolve(__dirname, '../database/migrations')
       await migrate(this.db, { migrationsFolder })
