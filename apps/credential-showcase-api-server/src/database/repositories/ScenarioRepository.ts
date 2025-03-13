@@ -114,11 +114,11 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         .insert(stepActions)
         .values(
           stepsResult.flatMap((stepResult, index) =>
-            scenario.steps[index].actions.map((action) => ({
+            scenario.steps[index].actions && scenario.steps[index].actions.map((action) => ({
               ...action,
               step: stepResult.id,
             })),
-          ),
+          ).filter(actions => !!actions),
         )
         .returning()
 
@@ -126,14 +126,14 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         .insert(ariesProofRequests)
         .values(
           scenario.steps.flatMap((step, index) =>
-            step.actions.map((action, actionIndex) => {
-              const stepAction = stepActionsResult[index * step.actions.length + actionIndex]
+            step.actions && step.actions.map((action, actionIndex) => {
+              const stepAction = stepActionsResult[index * (step.actions ? step.actions.length : 0) + actionIndex]
               return {
                 ...action.proofRequest,
                 stepAction: stepAction.id,
               }
             }),
-          ),
+          ).filter(actions => !!actions),
         )
         .returning()
 
@@ -265,11 +265,11 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         .insert(stepActions)
         .values(
           stepsResult.flatMap((stepResult, index) =>
-            scenario.steps[index].actions.map((action) => ({
+            scenario.steps[index].actions && scenario.steps[index].actions.map((action) => ({
               ...action,
               step: stepResult.id,
             })),
-          ),
+          ).filter(actions => !!actions),
         )
         .returning()
 
@@ -277,14 +277,14 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         .insert(ariesProofRequests)
         .values(
           scenario.steps.flatMap((step, index) =>
-            step.actions.map((action, actionIndex) => {
-              const stepAction = stepActionsResult[index * step.actions.length + actionIndex]
+            step.actions && step.actions.map((action, actionIndex) => {
+              const stepAction = stepActionsResult[index * (step.actions ? step.actions.length : 0) + actionIndex]
               return {
                 ...action.proofRequest,
                 stepAction: stepAction.id,
               }
             }),
-          ),
+          ).filter(actions => !!actions),
         )
         .returning()
 
@@ -538,7 +538,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
   async createStep(scenarioId: string, step: NewStep): Promise<Step> {
     await this.findById(scenarioId)
 
-    if (step.actions.length === 0) {
+    if (!step.actions || step.actions.length === 0) {
       return Promise.reject(new BadRequestError('At least one action is required'))
     }
 
@@ -552,9 +552,11 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         })
         .returning()
 
+
       const actionsResult = await tx
         .insert(stepActions)
         .values(
+          // @ts-ignore
           step.actions.map((action: NewAriesOOBAction) => ({
             ...action,
             step: stepResult.id,
@@ -565,6 +567,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
       const proofRequestsResult = await tx
         .insert(ariesProofRequests)
         .values(
+          // @ts-ignore
           step.actions.map((action, index) => {
             const stepAction = actionsResult[index]
             return {
@@ -594,7 +597,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
   async updateStep(scenarioId: string, stepId: string, step: NewStep): Promise<Step> {
     await this.findById(scenarioId)
 
-    if (step.actions.length === 0) {
+    if (!step.actions || step.actions.length === 0) {
       return Promise.reject(new BadRequestError('At least one action is required'))
     }
 
@@ -614,6 +617,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
       const actionsResult = await tx
         .insert(stepActions)
         .values(
+          // @ts-ignore
           step.actions.map((action: NewAriesOOBAction) => ({
             ...action,
             step: stepResult.id,
@@ -624,6 +628,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
       const proofRequestsResult = await tx
         .insert(ariesProofRequests)
         .values(
+          // @ts-ignore
           step.actions.map((action, index) => {
             const stepAction = actionsResult[index]
             return {
