@@ -15,7 +15,7 @@
     "test:ci": "jest --config=jest.json",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --verbose --config=jest.json --coverage=true --detectOpenHandles",
     "db:migrate": "turbo run db:migrate",
-    "generate:models": "turbo run generate:models"
+    "generate:models": "pnpm -r --if-present --stream run generate:models"
   },
   "publishConfig": {
     "access": "public"
@@ -39,6 +39,7 @@
     "jest-environment-node": "^29.7.0",
     "jest-fetch-mock": "^3.0.3",
     "prettier": "^3.4.2",
+    "rimraf": "^6.0.1",
     "ts-jest": "^29.2.5",
     "supertest": "^7.0.0",
     "ts-node": "^10.9.2",
