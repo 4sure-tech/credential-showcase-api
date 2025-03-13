@@ -1,0 +1,55 @@
+# Middleware for common configurations
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: redirect-https
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+# TLS Options
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSOption
+metadata:
+  name: default
+spec:
+  minVersion: VersionTLS12
+---
+# IngressRoute for api-server
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: api-server-route
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`bcshowcase-api.dev.nborbit.ca`)
+      kind: Rule
+      services:
+        - name: credential-showcase-api-server
+          port: 3000
+      middlewares:
+        - name: redirect-https
+  tls:
+    certResolver: letsencrypt
+---
+# IngressRoute for traction-adapter
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traction-adapter-route
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`bcshowcase-traction.dev.nborbit.ca`)
+      kind: Rule
+      services:
+        - name: credential-showcase-traction-adapter
+          port: 3757
+      middlewares:
+        - name: redirect-https
+  tls:
+    certResolver: letsencrypt 

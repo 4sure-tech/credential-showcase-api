@@ -50,12 +50,13 @@ api_server:
       podSelector: {}
   openshift:
     route:
-      enabled: true
+      enabled: false
       path: "/"
       targetPort: http
       tls:
         enabled: true
         termination: edge
+  enabled: true
   # serviceAccount:
   #   create: false
   #   name: ""
@@ -68,6 +69,13 @@ api_server:
   #   targetCPUUtilizationPercentage: 80
   #   targetMemoryUtilizationPercentage: 80
   #   stabilizationWindowSeconds: 300
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: "traefik"
+      traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+      traefik.ingress.kubernetes.io/router.tls: "true"
+    host: "bcshowcase-api.dev.nborbit.ca"
 
 traction_adapter:
   name: credential-showcase-traction-adapter
@@ -119,33 +127,50 @@ traction_adapter:
       podSelector: {}
   openshift:
     route:
-      enabled: true
+      enabled: false
       path: "/"
       targetPort: http
       tls:
         enabled: true
         termination: edge
+  enabled: true
   # serviceAccount:
       #   create: false
       #   annotations: {}
       #   automountServiceAccountToken: true
       #   name: ""
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: "traefik"
+      traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+      traefik.ingress.kubernetes.io/router.tls: "true"
+    host: "bcshowcase-traction.dev.nborbit.ca"
 
+# Global ingress settings
 ingress:
-  enabled: false
-  # className: ""
-  # annotations: {}
-  # #  route.openshift.io/termination: edge
-  # hosts:
-  #   - host: showcase-api-server.apps.silver.devops.gov.bc.ca
-  #     paths:
-  #       - path: /
-  #         pathType: ImplementationSpecific
-  #         service: api-server
-  # tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+  enabled: true
+  className: "traefik"
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+    traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  hosts:
+    - host: api.showcase.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+          service: api-server
+    - host: traction.showcase.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+          service: traction-adapter
+  tls:
+    - secretName: showcase-tls
+      hosts:
+        - api.showcase.example.com
+        - traction.showcase.example.com
 
 postgresql:
   enabled: true
