@@ -16,6 +16,9 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
   ) {}
 
   async create(credentialDefinition: NewCredentialDefinition): Promise<CredentialDefinition> {
+    if (!credentialDefinition.icon) {
+      return Promise.reject('Icon is required')
+    }
     const iconResult = await this.assetRepository.findById(credentialDefinition.icon)
     const credentialSchemaResult = await this.credentialSchemaRepository.findById(credentialDefinition.credentialSchema)
 
@@ -58,6 +61,10 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
 
   async update(id: string, credentialDefinition: NewCredentialDefinition): Promise<CredentialDefinition> {
     await this.findById(id)
+
+    if (!credentialDefinition.icon) {
+      return Promise.reject('Icon is required')
+    }
 
     const iconResult = await this.assetRepository.findById(credentialDefinition.icon)
     const credentialSchemaResult = await this.credentialSchemaRepository.findById(credentialDefinition.credentialSchema)
@@ -123,6 +130,7 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
 
     return {
       ...result,
+      icon: result.icon ? result.icon : undefined,
       credentialSchema: result.cs,
     }
   }
