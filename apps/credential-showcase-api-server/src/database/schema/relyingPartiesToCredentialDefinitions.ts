@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm'
-import {index, pgTable, primaryKey, timestamp, uuid} from 'drizzle-orm/pg-core'
+import { index, pgTable, primaryKey, timestamp, uuid } from 'drizzle-orm/pg-core'
 import { relyingParties } from './relyingParty'
 import { credentialDefinitions } from './credentialDefinition'
 
@@ -18,10 +18,7 @@ export const relyingPartiesToCredentialDefinitions = pgTable(
       .notNull()
       .$onUpdate(() => new Date()),
   },
-  (t) => [
-      primaryKey({ columns: [t.relyingParty, t.credentialDefinition] }),
-      index("idx_relyingParty").on(t.relyingParty),
-  ],
+  (t) => [primaryKey({ columns: [t.relyingParty, t.credentialDefinition] }), index('idx_relyingParty').on(t.relyingParty)],
 )
 
 export const relyingPartiesToCredentialDefinitionsRelations = relations(relyingPartiesToCredentialDefinitions, ({ one }) => ({

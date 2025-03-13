@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm'
-import {index, pgTable, primaryKey, timestamp, uuid} from 'drizzle-orm/pg-core'
+import { index, pgTable, primaryKey, timestamp, uuid } from 'drizzle-orm/pg-core'
 import { showcases } from './showcase'
 import { scenarios } from './scenario'
 
@@ -18,10 +18,7 @@ export const showcasesToScenarios = pgTable(
       .notNull()
       .$onUpdate(() => new Date()),
   },
-  (t) =>
-      [primaryKey({ columns: [t.showcase, t.scenario] }),
-          index("showcases_to_scenarios_showcase_idx").on(t.showcase),
-      ],
+  (t) => [primaryKey({ columns: [t.showcase, t.scenario] }), index('showcases_to_scenarios_showcase_idx').on(t.showcase)],
 )
 
 export const showcasesToScenariosRelations = relations(showcasesToScenarios, ({ one }) => ({

@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm'
-import { pgTable, primaryKey, timestamp, uuid,index } from 'drizzle-orm/pg-core'
+import { pgTable, primaryKey, timestamp, uuid, index } from 'drizzle-orm/pg-core'
 import { showcases } from './showcase'
 import { credentialDefinitions } from './credentialDefinition'
 
@@ -18,9 +18,7 @@ export const showcasesToCredentialDefinitions = pgTable(
       .notNull()
       .$onUpdate(() => new Date()),
   },
-  (t) => [primaryKey({ columns: [t.showcase, t.credentialDefinition] }),
-      index("showcases_to_credential_definitions_showcase_idx").on(t.showcase),
-  ],
+  (t) => [primaryKey({ columns: [t.showcase, t.credentialDefinition] }), index('showcases_to_credential_definitions_showcase_idx').on(t.showcase)],
 )
 
 export const showcasesToCredentialDefinitionsRelations = relations(showcasesToCredentialDefinitions, ({ one }) => ({

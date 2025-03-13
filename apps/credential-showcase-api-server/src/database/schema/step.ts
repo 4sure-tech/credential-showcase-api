@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm'
-import {pgTable, integer, text, timestamp, uuid, unique, index} from 'drizzle-orm/pg-core'
+import { pgTable, integer, text, timestamp, uuid, unique, index } from 'drizzle-orm/pg-core'
 import { StepTypePg } from './stepType'
 import { scenarios } from './scenario'
 import { stepActions } from './stepAction'
@@ -28,8 +28,8 @@ export const steps = pgTable(
   (table) => {
     return {
       uniqueStepOrder: unique().on(table.order, table.scenario),
-      scenarioIndex: index("idx_scenarios_steps").on(table.scenario),
-      assetIndex: index("idx_asset_steps").on(table.asset),
+      scenarioIndex: index('idx_scenarios_steps').on(table.scenario),
+      assetIndex: index('idx_asset_steps').on(table.asset),
     }
   },
 )

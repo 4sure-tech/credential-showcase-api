@@ -455,98 +455,98 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
   }
 
   async findById(id: string): Promise<Showcase> {
-    const prepared = (
-      await this.databaseService.getConnection()
-    ).query.showcases.findFirst({
-      where: eq(showcases.id, id),
-      with: {
-        credentialDefinitions: {
-          with: {
-            credentialDefinition: {
-              with: {
-                icon: true,
-                cs: {
-                  with: {
-                    attributes: true,
+    const prepared = (await this.databaseService.getConnection()).query.showcases
+      .findFirst({
+        where: eq(showcases.id, id),
+        with: {
+          credentialDefinitions: {
+            with: {
+              credentialDefinition: {
+                with: {
+                  icon: true,
+                  cs: {
+                    with: {
+                      attributes: true,
+                    },
                   },
+                  representations: true,
+                  revocation: true,
                 },
-                representations: true,
-                revocation: true,
               },
             },
           },
-        },
-        scenarios: {
-          with: {
-            scenario: {
-              with: {
-                steps: {
-                  with: {
-                    actions: {
-                      with: {
-                        proofRequest: true,
+          scenarios: {
+            with: {
+              scenario: {
+                with: {
+                  steps: {
+                    with: {
+                      actions: {
+                        with: {
+                          proofRequest: true,
+                        },
                       },
+                      asset: true,
                     },
-                    asset: true,
                   },
-                },
-                issuer: {
-                  with: {
-                    cds: {
-                      with: {
-                        cd: {
-                          with: {
-                            icon: true,
-                            cs: {
-                              with: {
-                                attributes: true,
+                  issuer: {
+                    with: {
+                      cds: {
+                        with: {
+                          cd: {
+                            with: {
+                              icon: true,
+                              cs: {
+                                with: {
+                                  attributes: true,
+                                },
                               },
+                              representations: true,
+                              revocation: true,
                             },
-                            representations: true,
-                            revocation: true,
                           },
                         },
                       },
-                    },
-                    css: {
-                      with: {
-                        cs: {
-                          with: {
-                            attributes: true,
+                      css: {
+                        with: {
+                          cs: {
+                            with: {
+                              attributes: true,
+                            },
                           },
                         },
                       },
+                      logo: true,
                     },
-                    logo: true,
                   },
-                },
-                relyingParty: {
-                  with: {
-                    cds: {
-                      with: {
-                        cd: {
-                          with: {
-                            icon: true,
-                            cs: {
-                              with: {
-                                attributes: true,
+                  relyingParty: {
+                    with: {
+                      cds: {
+                        with: {
+                          cd: {
+                            with: {
+                              icon: true,
+                              cs: {
+                                with: {
+                                  attributes: true,
+                                },
                               },
+                              representations: true,
+                              revocation: true,
                             },
-                            representations: true,
-                            revocation: true,
                           },
                         },
                       },
+                      logo: true,
                     },
-                    logo: true,
                   },
-                },
-                personas: {
-                  with: {
-                    persona: {
-                      with: {
-                        headshotImage: true,
-                        bodyImage: true,
+                  personas: {
+                    with: {
+                      persona: {
+                        with: {
+                          headshotImage: true,
+                          bodyImage: true,
+                        },
                       },
                     },
                   },
@@ -554,22 +554,22 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
               },
             },
           },
-        },
-        personas: {
-          with: {
-            persona: {
-              with: {
-                headshotImage: true,
-                bodyImage: true,
+          personas: {
+            with: {
+              persona: {
+                with: {
+                  headshotImage: true,
+                  bodyImage: true,
+                },
               },
             },
           },
+          bannerImage: true,
         },
-        bannerImage: true,
-      },
-    }).prepare("statement_name")
+      })
+      .prepare('statement_name')
 
-    const result = await prepared.execute();
+    const result = await prepared.execute()
 
     if (!result) {
       return Promise.reject(new NotFoundError(`No showcase found for id: ${id}`))
@@ -606,7 +606,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
   async findAll(): Promise<Showcase[]> {
     const connection = await this.databaseService.getConnection()
     const showcases = await connection.query.showcases.findMany({
-      with: { bannerImage: true }
+      with: { bannerImage: true },
     })
     const showcaseIds = showcases.map((s: any) => s.id)
 
@@ -619,14 +619,14 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
               icon: true,
               cs: {
                 with: {
-                  attributes: true
-                }
+                  attributes: true,
+                },
               },
               representations: true,
-              revocation: true
-            }
-          }
-        }
+              revocation: true,
+            },
+          },
+        },
       }),
       connection.query.showcasesToScenarios.findMany({
         where: inArray(showcasesToScenarios.showcase, showcaseIds),
@@ -637,11 +637,11 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                 with: {
                   actions: {
                     with: {
-                      proofRequest: true
-                    }
+                      proofRequest: true,
+                    },
                   },
-                  asset: true
-                }
+                  asset: true,
+                },
               },
               issuer: {
                 with: {
@@ -652,26 +652,26 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                           icon: true,
                           cs: {
                             with: {
-                              attributes: true
-                            }
+                              attributes: true,
+                            },
                           },
                           representations: true,
-                          revocation: true
-                        }
-                      }
-                    }
+                          revocation: true,
+                        },
+                      },
+                    },
                   },
                   css: {
                     with: {
                       cs: {
                         with: {
-                          attributes: true
-                        }
-                      }
-                    }
+                          attributes: true,
+                        },
+                      },
+                    },
                   },
-                  logo: true
-                }
+                  logo: true,
+                },
               },
               relyingParty: {
                 with: {
@@ -682,31 +682,31 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                           icon: true,
                           cs: {
                             with: {
-                              attributes: true
-                            }
+                              attributes: true,
+                            },
                           },
                           representations: true,
-                          revocation: true
-                        }
-                      }
-                    }
+                          revocation: true,
+                        },
+                      },
+                    },
                   },
-                  logo: true
-                }
+                  logo: true,
+                },
               },
               personas: {
                 with: {
                   persona: {
                     with: {
                       headshotImage: true,
-                      bodyImage: true
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
+                      bodyImage: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
       }),
       connection.query.showcasesToPersonas.findMany({
         where: inArray(showcasesToPersonas.showcase, showcaseIds),
@@ -714,11 +714,11 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
           persona: {
             with: {
               headshotImage: true,
-              bodyImage: true
-            }
-          }
-        }
-      })
+              bodyImage: true,
+            },
+          },
+        },
+      }),
     ])
 
     // Group join records by showcase id
@@ -758,14 +758,14 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
           if (s.scenario.relyingParty) {
             scenarioData.relyingParty = {
               ...s.scenario.relyingParty,
-              credentialDefinitions: s.scenario.relyingParty.cds.map((item: any) => item.cd)
+              credentialDefinitions: s.scenario.relyingParty.cds.map((item: any) => item.cd),
             }
           }
           if (s.scenario.issuer) {
             scenarioData.issuer = {
               ...s.scenario.issuer,
               credentialDefinitions: s.scenario.issuer.cds.map((item: any) => item.cd),
-              credentialSchemas: s.scenario.issuer.css.map((item: any) => item.cs)
+              credentialSchemas: s.scenario.issuer.css.map((item: any) => item.cs),
             }
           }
           // TODO check this typing issue at a later point in time
@@ -775,15 +775,14 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
         credentialDefinitions: (credDefMap.get(showcase.id) || []).map((item: any) => {
           return {
             ...item.credentialDefinition,
-            credentialSchema: item.credentialDefinition.cs
+            credentialSchema: item.credentialDefinition.cs,
           }
           // TODO check this typing issue at a later point in time
         }),
-        personas: (personasMap.get(showcase.id) || []).map((item: any) => item.persona)
+        personas: (personasMap.get(showcase.id) || []).map((item: any) => item.persona),
       }
     })
   }
-
 
   async findIdBySlug(slug: string): Promise<string> {
     const result = await (
