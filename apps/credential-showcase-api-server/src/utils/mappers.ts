@@ -61,7 +61,7 @@ export const credentialDefinitionDTOFrom = (credentialDefinition: CredentialDefi
     credentialSchema: credentialSchemaDTOFrom(credentialDefinition.credentialSchema),
     representations: credentialDefinition.representations,
     revocation: credentialDefinition.revocation || undefined,
-    icon: credentialDefinition.icon ? assetDTOFrom(credentialDefinition?.icon) : undefined
+    icon: credentialDefinition.icon ? assetDTOFrom(credentialDefinition?.icon) : undefined,
   }
 }
 
