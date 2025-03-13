@@ -5,11 +5,10 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "postinstall": "pnpm generate-models",
-    "generate-models": "rimraf ./src && mvn clean generate-sources",
     "dev": "tsc --watch",
     "build": "tsc",
-    "build:clean": "tsc --build --clean && tsc --build"
+    "build:clean": "tsc --build --clean && tsc --build",
+    "generate-models": "rimraf ./src && mvn clean generate-sources"
   },
   "files": [
     "dist/**/*",
@@ -23,5 +22,8 @@
   "repository": "git@github.com:Sphereon-Opensource/credential-showcase-api.git",
   "author": "4Sure",
   "license": "Apache-2.0",
-  "keywords": []
+  "keywords": [],
+  "dependencies": {
+    "supertest": "^7.0.0"
+  }
 }

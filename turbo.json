@@ -5,17 +5,25 @@
       "outputs": ["dist/**"],
       "dependsOn": ["^build"]
     },
+    "db:migrate": {
+      "dependsOn": ["^db:migrate"]
+    },
+    "credential-showcase-openapi#build": {
+      "outputs": ["dist/**", "src/models/**"]
+    },
+    "credential-showcase-ts-model#build": {
+      "outputs": ["dist/**"]
+    },
+    "credential-showcase-ts-sdk#build": {
+      "outputs": ["dist/**"]
+    },
+    "credential-showcase-traction-adapter#build": {
+      "outputs": ["dist/**"]
+    },
     "credential-showcase-api-server#build": {
-      "dependsOn": [
-        "^build",
-        "credential-showcase-openapi#build"
-      ],
-      "env": [
-        "DB_URL"
-      ],
-      "outputs": [
-        "dist/**"
-      ]
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"],
+      "env": ["DB_URL"]
     },
     "check-types": {
       "dependsOn": ["^check-types"]
@@ -23,6 +31,12 @@
     "dev": {
       "persistent": true,
       "cache": false
+    },
+    "generate:models": {
+      "dependsOn": ["^generate:models"],
+      "outputs": [
+        "src/**"
+      ]
     }
   }
 }
