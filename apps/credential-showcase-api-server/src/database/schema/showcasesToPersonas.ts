@@ -2,6 +2,7 @@ import { relations } from 'drizzle-orm'
 import { pgTable, primaryKey, timestamp, uuid } from 'drizzle-orm/pg-core'
 import { showcases } from './showcase'
 import { personas } from './persona'
+import { index } from 'drizzle-orm/pg-core'
 
 export const showcasesToPersonas = pgTable(
   'showcasesToPersonas',
@@ -18,7 +19,7 @@ export const showcasesToPersonas = pgTable(
       .notNull()
       .$onUpdate(() => new Date()),
   },
-  (t) => [primaryKey({ columns: [t.showcase, t.persona] })],
+  (t) => [primaryKey({ columns: [t.showcase, t.persona] }), index('showcases_to_personas_showcase_idx').on(t.showcase)],
 )
 
 export const showcasesToPersonasRelations = relations(showcasesToPersonas, ({ one }) => ({
