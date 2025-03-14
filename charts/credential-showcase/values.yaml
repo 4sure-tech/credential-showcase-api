@@ -156,12 +156,12 @@ ingress:
     traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
   hosts:
-    - host: api.showcase.example.com
+    - host: bcshowcase-api.dev.nborbit.ca
       paths:
         - path: /
           pathType: Prefix
           service: api-server
-    - host: traction.showcase.example.com
+    - host: bcshowcase-traction.dev.nborbit.ca
       paths:
         - path: /
           pathType: Prefix
@@ -169,15 +169,15 @@ ingress:
   tls:
     - secretName: showcase-tls
       hosts:
-        - api.showcase.example.com
-        - traction.showcase.example.com
+        - bcshowcase-api.dev.nborbit.ca
+        - bcshowcase-traction.dev.nborbit.ca
 
 postgresql:
   enabled: true
   auth:
     username: "showcase-user"
     database: "showcase-db"
-    existingSecret: ""
+    existingSecret: "credential-showcase-postgresql"
     secretKeys:
       adminPasswordKey: "postgres-password"
       userPasswordKey: "password"
@@ -200,7 +200,7 @@ rabbitmq:
   enabled: true
   auth:
     username: "guest"
-    existingSecret: ""
+    existingSecret: "credential-showcase-rabbitmq"
     secretKeys:
       passwordKey: "rabbitmq-password"
   plugins: "rabbitmq_management"
@@ -211,18 +211,10 @@ rabbitmq:
     ports:
       amqp: 5672
       management: 15672
+  livenessProbe:
+    initialDelaySeconds: 120
   readinessProbe:
-    enabled: true
-    initialDelaySeconds: 30
-    timeoutSeconds: 5
-    periodSeconds: 30
-    successThreshold: 1
-    failureThreshold: 3
-    exec:
-      command:
-        - /bin/bash
-        - -c
-        - rabbitmq-diagnostics -q ping
+    initialDelaySeconds: 60
   persistence:
     enabled: true
     size: 1Gi
@@ -244,6 +236,9 @@ rabbitmq:
   # clustering:
   #   enabled: false
   replicaCount: 1
+  pdb:
+    create: true
+    minAvailable: 1
 
 global:
   namespaceOverride: ""
