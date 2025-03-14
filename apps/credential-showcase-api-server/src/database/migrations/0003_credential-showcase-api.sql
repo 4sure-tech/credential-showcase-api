@@ -1,0 +1,1 @@
+ALTER TABLE "credentialDefinition" ALTER COLUMN "icon" DROP NOT NULL;

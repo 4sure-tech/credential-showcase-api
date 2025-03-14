@@ -43,7 +43,7 @@ CREATE TABLE "credentialDefinition" (
 	"identifier_type" "IdentifierType",
 	"identifier" text,
 	"credential_schema" uuid NOT NULL,
-	"icon" uuid,
+	"icon" uuid NOT NULL,
 	"type" "CredentialType" NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
