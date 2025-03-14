@@ -27,11 +27,13 @@ import {
   NewIssuanceScenario,
   NewIssuer,
   NewPersona,
-  NewShowcase, NewUser,
+  NewShowcase,
+  NewUser,
   Persona,
   ShowcaseStatus,
   StepActionType,
-  StepType, User,
+  StepType,
+  User,
 } from '../../../types'
 import UserRepository from '../UserRepository'
 
@@ -63,7 +65,7 @@ describe('Database showcase repository tests', (): void => {
     const userRepository = Container.get(UserRepository)
     const newUser: NewUser = {
       identifierType: IdentifierType.DID,
-      identifier: 'did:example.org'
+      identifier: 'did:example.org',
     }
 
     user = await userRepository.create(newUser)
@@ -251,7 +253,7 @@ describe('Database showcase repository tests', (): void => {
       credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
       personas: [persona1.id, persona2.id],
       bannerImage: asset.id,
-      createdBy: user.id
+      createdBy: user.id,
     }
 
     const savedShowcase = await repository.create(showcase)
