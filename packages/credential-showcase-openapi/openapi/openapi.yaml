@@ -1790,6 +1790,10 @@ components:
     User:
       type: object
       properties:
+        id:
+          type: string
+          description: Unique identifier of the user
+          example: 123e4567-e89b-12d3-a456-426614174456
         identifierType:
           $ref: '#/components/schemas/IdentifierType'
         identifier:
@@ -1807,6 +1811,8 @@ components:
     UserRequest:
       type: object
       properties:
+        identifierType:
+          $ref: '#/components/schemas/IdentifierType'
         identifier:
           type: string
     UsersResponse:
@@ -3088,6 +3094,8 @@ components:
           type: string
           description: Message to display when the showcase is completed
           example: "You have successfully completed the showcase"
+        user:
+          $ref: '#/components/schemas/User'
         createdAt:
           type: string
           description: Date and time the showcase was created
