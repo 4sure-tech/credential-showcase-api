@@ -225,13 +225,13 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
           steps: sortSteps(scenario.steps),
           ...(scenario.relyingParty && {
             relyingParty: {
-              ...(scenario.relyingParty as any), // TODO check this typing issue at a later point in time
+              ...(scenario.relyingParty as object),
               credentialDefinitions: scenario.relyingParty!.cds.map((credentialDefinition) => credentialDefinition.cd),
             },
           }),
           ...(scenario.issuer && {
             issuer: {
-              ...(scenario.issuer as any), // TODO check this typing issue at a later point in time
+              ...(scenario.issuer as any),
               credentialDefinitions: scenario.issuer!.cds.map((credentialDefinition) => credentialDefinition.cd),
               credentialSchemas: scenario.issuer!.css.map((credentialSchema) => credentialSchema.cs),
             },
@@ -445,13 +445,13 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
           steps: sortSteps(scenario.steps),
           ...(scenario.relyingParty && {
             relyingParty: {
-              ...(scenario.relyingParty as any), // TODO check this typing issue at a later point in time
+              ...(scenario.relyingParty as object),
               credentialDefinitions: scenario.relyingParty!.cds.map((credentialDefinition) => credentialDefinition.cd),
             },
           }),
           ...(scenario.issuer && {
             issuer: {
-              ...(scenario.issuer as any), // TODO check this typing issue at a later point in time
+              ...(scenario.issuer as any),
               credentialDefinitions: scenario.issuer!.cds.map((credentialDefinition) => credentialDefinition.cd),
               credentialSchemas: scenario.issuer!.css.map((credentialSchema) => credentialSchema.cs),
             },
@@ -487,7 +487,6 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
         with: {
           credentialDefinition: {
             with: {
-              // Only include icon if ASSET_CONTENT is in the expands
               ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT) ? { icon: true } : {}),
               cs: {
                 with: {
@@ -515,7 +514,6 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                       proofRequest: true,
                     },
                   },
-                  // Only include asset if ASSET_CONTENT is in the expands
                   ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT) ? { asset: true } : {}),
                 },
               },
@@ -525,7 +523,6 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                     with: {
                       cd: {
                         with: {
-                          // Only include icon if ASSET_CONTENT is in the expands
                           ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT) ? { icon: true } : {}),
                           cs: {
                             with: {
@@ -547,7 +544,6 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                       },
                     },
                   },
-                  // Only include logo if ASSET_CONTENT is in the expands
                   ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT) ? { logo: true } : {}),
                 },
               },
@@ -557,7 +553,6 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                     with: {
                       cd: {
                         with: {
-                          // Only include icon if ASSET_CONTENT is in the expands
                           ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT) ? { icon: true } : {}),
                           cs: {
                             with: {
@@ -570,7 +565,6 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                       },
                     },
                   },
-                  // Only include logo if ASSET_CONTENT is in the expands
                   ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT) ? { logo: true } : {}),
                 },
               },
@@ -578,7 +572,6 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                 with: {
                   persona: {
                     with: {
-                      // Only include images if ASSET_CONTENT is in the expands
                       ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT)
                         ? {
                             headshotImage: true,
@@ -601,7 +594,6 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
         with: {
           persona: {
             with: {
-              // Only include images if ASSET_CONTENT is in the expands
               ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT)
                 ? {
                     headshotImage: true,
@@ -638,7 +630,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
         if (!scenarioJoin.scenario) continue
 
         // Create a type-safe copy of the scenario data
-        const scenarioObj = scenarioJoin.scenario as any
+        const scenarioObj = scenarioJoin.scenario
 
         // Process steps if they exist
         let processedSteps: Step[] = []
@@ -700,7 +692,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
       for (const cdJoin of result.credentialDefinitions) {
         if (!cdJoin.credentialDefinition) continue
 
-        const cdObj = cdJoin.credentialDefinition as any
+        const cdObj = cdJoin.credentialDefinition
 
         credentialDefinitionsArray.push({
           ...cdObj,
@@ -760,7 +752,6 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
         with: {
           credentialDefinition: {
             with: {
-              // Only include icon if ASSET_CONTENT is in the expands
               ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT) ? { icon: true } : {}),
               cs: {
                 with: {
@@ -789,7 +780,6 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                       proofRequest: true,
                     },
                   },
-                  // Only include asset if ASSET_CONTENT is in the expands
                   ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT) ? { asset: true } : {}),
                 },
               },
@@ -799,7 +789,6 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                     with: {
                       cd: {
                         with: {
-                          // Only include icon if ASSET_CONTENT is in the expands
                           ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT) ? { icon: true } : {}),
                           cs: {
                             with: {
@@ -821,7 +810,6 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                       },
                     },
                   },
-                  // Only include logo if ASSET_CONTENT is in the expands
                   ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT) ? { logo: true } : {}),
                 },
               },
@@ -831,7 +819,6 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                     with: {
                       cd: {
                         with: {
-                          // Only include icon if ASSET_CONTENT is in the expands
                           ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT) ? { icon: true } : {}),
                           cs: {
                             with: {
@@ -844,7 +831,6 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                       },
                     },
                   },
-                  // Only include logo if ASSET_CONTENT is in the expands
                   ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT) ? { logo: true } : {}),
                 },
               },
@@ -852,7 +838,6 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                 with: {
                   persona: {
                     with: {
-                      // Only include images if ASSET_CONTENT is in the expands
                       ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT)
                         ? {
                             headshotImage: true,
@@ -876,7 +861,6 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
         with: {
           persona: {
             with: {
-              // Only include images if ASSET_CONTENT is in the expands
               ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT)
                 ? {
                     headshotImage: true,
@@ -935,7 +919,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
         for (const scenarioJoin of scenarioItems) {
           if (!scenarioJoin.scenario) continue
 
-          const scenarioObj = scenarioJoin.scenario as any
+          const scenarioObj = scenarioJoin.scenario
 
           // Process steps
           let processedSteps: Step[] = []
@@ -998,7 +982,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
         for (const cdJoin of cdItems) {
           if (!cdJoin.credentialDefinition) continue
 
-          const cdObj = cdJoin.credentialDefinition as any
+          const cdObj = cdJoin.credentialDefinition
 
           credentialDefinitionsArray.push({
             ...cdObj,

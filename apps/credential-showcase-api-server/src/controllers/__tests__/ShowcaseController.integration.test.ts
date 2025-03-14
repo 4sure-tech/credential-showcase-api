@@ -19,6 +19,7 @@ import * as schema from '../../database/schema'
 import { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { migrate } from 'drizzle-orm/node-postgres/migrator'
 import DatabaseService from '../../services/DatabaseService'
+import { Buffer } from 'buffer'
 import supertest = require('supertest')
 
 describe('ShowcaseController Integration Tests', () => {
@@ -26,36 +27,8 @@ describe('ShowcaseController Integration Tests', () => {
   let app: Application
   let request: any
 
-  beforeAll(async () => {
-    client = new PGlite()
-    const database = drizzle(client, { schema }) as unknown as NodePgDatabase
-    await migrate(database, { migrationsFolder: './apps/credential-showcase-api-server/src/database/migrations' })
-    const mockDatabaseService = {
-      getConnection: jest.fn().mockResolvedValue(database),
-    }
-    Container.set(DatabaseService, mockDatabaseService)
-    useContainer(Container)
-    Container.get(AssetRepository)
-    Container.get(CredentialSchemaRepository)
-    Container.get(CredentialDefinitionRepository)
-    Container.get(IssuerRepository)
-    Container.get(PersonaRepository)
-    Container.get(ScenarioRepository)
-    Container.get(ShowcaseRepository)
-    Container.get(ShowcaseService)
-    app = createExpressServer({
-      controllers: [ShowcaseController],
-    })
-    request = supertest(app)
-  })
-
-  afterAll(async () => {
-    await client.close()
-    Container.reset()
-  })
-
-  it('should create, retrieve, update, and delete a showcase', async () => {
-    // Create prerequisites: asset, credential schema, credential definition, issuer, persona, and scenario
+  // Helper function to create common prerequisites
+  async function createTestPrerequisites() {
     const assetRepository = Container.get(AssetRepository)
     const asset = await assetRepository.create({
       mediaType: 'image/png',
@@ -152,7 +125,41 @@ describe('ShowcaseController Integration Tests', () => {
       hidden: false,
     })
 
-    // 1. Create a showcase
+    return { asset, credentialSchema, credentialDefinition, issuer, persona, scenario }
+  }
+
+  beforeAll(async () => {
+    client = new PGlite()
+    const database = drizzle(client, { schema }) as unknown as NodePgDatabase
+    await migrate(database, { migrationsFolder: './apps/credential-showcase-api-server/src/database/migrations' })
+    const mockDatabaseService = {
+      getConnection: jest.fn().mockResolvedValue(database),
+    }
+    Container.set(DatabaseService, mockDatabaseService)
+    useContainer(Container)
+    // Initialize all repositories and services
+    Container.get(AssetRepository)
+    Container.get(CredentialSchemaRepository)
+    Container.get(CredentialDefinitionRepository)
+    Container.get(IssuerRepository)
+    Container.get(PersonaRepository)
+    Container.get(ScenarioRepository)
+    Container.get(ShowcaseRepository)
+    Container.get(ShowcaseService)
+    app = createExpressServer({
+      controllers: [ShowcaseController],
+    })
+    request = supertest(app)
+  })
+
+  afterAll(async () => {
+    await client.close()
+    Container.reset()
+  })
+
+  it('should create, retrieve, update, and delete a showcase', async () => {
+    const { asset, credentialDefinition, persona, scenario } = await createTestPrerequisites()
+
     const showcaseRequest: ShowcaseRequest = {
       name: 'Test Showcase',
       description: 'Test showcase description',
@@ -195,17 +202,12 @@ describe('ShowcaseController Integration Tests', () => {
     }
 
     const updateResponse = await request.put(`/showcases/${createdShowcase.slug}`).send(updatedRequest).expect(200)
-    const updatedShowcase = updateResponse.body.showcase
-
     expect(updateResponse.body.showcase.name).toEqual('Updated Showcase Name')
     expect(updateResponse.body.showcase.description).toEqual('Updated showcase description')
     expect(updateResponse.body.showcase.status).toEqual(ShowcaseStatus.PENDING)
 
-    // 5. Delete the showcase
-    await request.delete(`/showcases/${updatedShowcase.slug}`).expect(204)
-
-    // 6. Verify showcase deletion
-    await request.get(`/showcases/${updatedShowcase.slug}`).expect(404)
+    await request.delete(`/showcases/${updateResponse.body.showcase.slug}`).expect(204)
+    await request.get(`/showcases/${updateResponse.body.showcase.slug}`).expect(404)
   })
 
   it('should handle errors when accessing non-existent resources', async () => {
@@ -239,102 +241,8 @@ describe('ShowcaseController Integration Tests', () => {
   })
 
   it('should retrieve a showcase with no expands', async () => {
-    // Create prerequisites: asset, credential schema, credential definition, issuer, persona, and scenario
-    const assetRepository = Container.get(AssetRepository)
-    const asset = await assetRepository.create({
-      mediaType: 'image/png',
-      fileName: 'test.png',
-      description: 'Test image',
-      content: Buffer.from('binary data'),
-    })
-
-    const credentialSchemaRepository = Container.get(CredentialSchemaRepository)
-    const credentialSchema = await credentialSchemaRepository.create({
-      name: 'example_name',
-      version: 'example_version',
-      identifierType: IdentifierType.DID,
-      identifier: 'did:sov:XUeUZauFLeBNofY3NhaZCB',
-      attributes: [
-        {
-          name: 'example_attribute_name1',
-          value: 'example_attribute_value1',
-          type: CredentialAttributeType.STRING,
-        },
-        {
-          name: 'example_attribute_name2',
-          value: 'example_attribute_value2',
-          type: CredentialAttributeType.STRING,
-        },
-      ],
-    })
-
-    const credentialDefinitionRepository = Container.get(CredentialDefinitionRepository)
-    const credentialDefinition = await credentialDefinitionRepository.create({
-      name: 'Test Definition',
-      version: '1.0',
-      identifierType: IdentifierType.DID,
-      identifier: 'did:test:123',
-      icon: asset.id,
-      type: CredentialType.ANONCRED,
-      credentialSchema: credentialSchema.id,
-    })
-
-    const issuerRepository = Container.get(IssuerRepository)
-    const issuer = await issuerRepository.create({
-      name: 'Test Issuer',
-      type: IssuerType.ARIES,
-      credentialDefinitions: [credentialDefinition.id],
-      credentialSchemas: [credentialSchema.id],
-      description: 'Test issuer description',
-      organization: 'Test Organization',
-      logo: asset.id,
-    })
-
-    // Create a persona
-    const personaRepository = Container.get(PersonaRepository)
-    const persona = await personaRepository.create({
-      name: 'John Doe',
-      role: 'Software Engineer',
-      description: 'Experienced developer',
-      headshotImage: asset.id,
-      bodyImage: asset.id,
-      hidden: false,
-    })
-
-    // Create an issuance scenario with at least one step
-    const scenarioRepository = Container.get(ScenarioRepository)
-    const scenario = await scenarioRepository.create({
-      name: 'Test Scenario',
-      description: 'Test scenario description',
-      issuer: issuer.id, // This makes it an issuance scenario
-      steps: [
-        {
-          title: 'Test Step',
-          description: 'Test step description',
-          order: 1,
-          type: StepType.HUMAN_TASK,
-          asset: asset.id,
-          actions: [
-            {
-              title: 'Test Action',
-              actionType: StepActionType.ARIES_OOB,
-              text: 'Test action text',
-              proofRequest: {
-                attributes: {
-                  attribute1: {
-                    attributes: ['attribute1', 'attribute2'],
-                    restrictions: ['restriction1', 'restriction2'],
-                  },
-                },
-                predicates: {},
-              },
-            },
-          ],
-        },
-      ],
-      personas: [persona.id],
-      hidden: false,
-    })
+    const { asset, scenario } = await createTestPrerequisites()
+    const { credentialDefinition, persona } = await createTestPrerequisites()
 
     const showcaseRequest: ShowcaseRequest = {
       name: 'Expand Test Showcase',
@@ -363,103 +271,7 @@ describe('ShowcaseController Integration Tests', () => {
   })
 
   it('should retrieve a showcase with all expands except asset content', async () => {
-    // Create prerequisites: asset, credential schema, credential definition, issuer, persona, and scenario
-    const assetRepository = Container.get(AssetRepository)
-    const asset = await assetRepository.create({
-      mediaType: 'image/png',
-      fileName: 'test.png',
-      description: 'Test image',
-      content: Buffer.from('binary data'),
-    })
-
-    const credentialSchemaRepository = Container.get(CredentialSchemaRepository)
-    const credentialSchema = await credentialSchemaRepository.create({
-      name: 'example_name',
-      version: 'example_version',
-      identifierType: IdentifierType.DID,
-      identifier: 'did:sov:XUeUZauFLeBNofY3NhaZCB',
-      attributes: [
-        {
-          name: 'example_attribute_name1',
-          value: 'example_attribute_value1',
-          type: CredentialAttributeType.STRING,
-        },
-        {
-          name: 'example_attribute_name2',
-          value: 'example_attribute_value2',
-          type: CredentialAttributeType.STRING,
-        },
-      ],
-    })
-
-    const credentialDefinitionRepository = Container.get(CredentialDefinitionRepository)
-    const credentialDefinition = await credentialDefinitionRepository.create({
-      name: 'Test Definition',
-      version: '1.0',
-      identifierType: IdentifierType.DID,
-      identifier: 'did:test:123',
-      icon: asset.id,
-      type: CredentialType.ANONCRED,
-      credentialSchema: credentialSchema.id,
-    })
-
-    const issuerRepository = Container.get(IssuerRepository)
-    const issuer = await issuerRepository.create({
-      name: 'Test Issuer',
-      type: IssuerType.ARIES,
-      credentialDefinitions: [credentialDefinition.id],
-      credentialSchemas: [credentialSchema.id],
-      description: 'Test issuer description',
-      organization: 'Test Organization',
-      logo: asset.id,
-    })
-
-    // Create a persona
-    const personaRepository = Container.get(PersonaRepository)
-    const persona = await personaRepository.create({
-      name: 'John Doe',
-      role: 'Software Engineer',
-      description: 'Experienced developer',
-      headshotImage: asset.id,
-      bodyImage: asset.id,
-      hidden: false,
-    })
-
-    // Create an issuance scenario with at least one step
-    const scenarioRepository = Container.get(ScenarioRepository)
-    const scenario = await scenarioRepository.create({
-      name: 'Test Scenario',
-      description: 'Test scenario description',
-      issuer: issuer.id, // This makes it an issuance scenario
-      steps: [
-        {
-          title: 'Test Step',
-          description: 'Test step description',
-          order: 1,
-          type: StepType.HUMAN_TASK,
-          asset: asset.id,
-          actions: [
-            {
-              title: 'Test Action',
-              actionType: StepActionType.ARIES_OOB,
-              text: 'Test action text',
-              proofRequest: {
-                attributes: {
-                  attribute1: {
-                    attributes: ['attribute1', 'attribute2'],
-                    restrictions: ['restriction1', 'restriction2'],
-                  },
-                },
-                predicates: {},
-              },
-            },
-          ],
-        },
-      ],
-      personas: [persona.id],
-      hidden: false,
-    })
-
+    const { asset, scenario, credentialDefinition, persona } = await createTestPrerequisites()
     const showcaseRequest: ShowcaseRequest = {
       name: 'All Expands Showcase',
       description: 'Testing all expands except asset content',
@@ -477,7 +289,9 @@ describe('ShowcaseController Integration Tests', () => {
 
     // Retrieve with all expands except asset content
     const getResponse = await request
-      .get(`/showcases/${createdShowcase.slug}?expand=${ShowcaseExpand.Scenarios}&expand=${ShowcaseExpand.CredentialDefinitions}&expand=${ShowcaseExpand.Personas}`)
+      .get(
+        `/showcases/${createdShowcase.slug}?expand=${ShowcaseExpand.Scenarios}&expand=${ShowcaseExpand.CredentialDefinitions}&expand=${ShowcaseExpand.Personas}`,
+      )
       .expect(200)
 
     // Verify related entities are expanded
@@ -502,103 +316,7 @@ describe('ShowcaseController Integration Tests', () => {
   })
 
   it('should retrieve a showcase with all expands including asset content', async () => {
-    // Create prerequisites: asset, credential schema, credential definition, issuer, persona, and scenario
-    const assetRepository = Container.get(AssetRepository)
-    const asset = await assetRepository.create({
-      mediaType: 'image/png',
-      fileName: 'test.png',
-      description: 'Test image',
-      content: Buffer.from('binary data'),
-    })
-
-    const credentialSchemaRepository = Container.get(CredentialSchemaRepository)
-    const credentialSchema = await credentialSchemaRepository.create({
-      name: 'example_name',
-      version: 'example_version',
-      identifierType: IdentifierType.DID,
-      identifier: 'did:sov:XUeUZauFLeBNofY3NhaZCB',
-      attributes: [
-        {
-          name: 'example_attribute_name1',
-          value: 'example_attribute_value1',
-          type: CredentialAttributeType.STRING,
-        },
-        {
-          name: 'example_attribute_name2',
-          value: 'example_attribute_value2',
-          type: CredentialAttributeType.STRING,
-        },
-      ],
-    })
-
-    const credentialDefinitionRepository = Container.get(CredentialDefinitionRepository)
-    const credentialDefinition = await credentialDefinitionRepository.create({
-      name: 'Test Definition',
-      version: '1.0',
-      identifierType: IdentifierType.DID,
-      identifier: 'did:test:123',
-      icon: asset.id,
-      type: CredentialType.ANONCRED,
-      credentialSchema: credentialSchema.id,
-    })
-
-    const issuerRepository = Container.get(IssuerRepository)
-    const issuer = await issuerRepository.create({
-      name: 'Test Issuer',
-      type: IssuerType.ARIES,
-      credentialDefinitions: [credentialDefinition.id],
-      credentialSchemas: [credentialSchema.id],
-      description: 'Test issuer description',
-      organization: 'Test Organization',
-      logo: asset.id,
-    })
-
-    // Create a persona
-    const personaRepository = Container.get(PersonaRepository)
-    const persona = await personaRepository.create({
-      name: 'John Doe',
-      role: 'Software Engineer',
-      description: 'Experienced developer',
-      headshotImage: asset.id,
-      bodyImage: asset.id,
-      hidden: false,
-    })
-
-    // Create an issuance scenario with at least one step
-    const scenarioRepository = Container.get(ScenarioRepository)
-    const scenario = await scenarioRepository.create({
-      name: 'Test Scenario',
-      description: 'Test scenario description',
-      issuer: issuer.id, // This makes it an issuance scenario
-      steps: [
-        {
-          title: 'Test Step',
-          description: 'Test step description',
-          order: 1,
-          type: StepType.HUMAN_TASK,
-          asset: asset.id,
-          actions: [
-            {
-              title: 'Test Action',
-              actionType: StepActionType.ARIES_OOB,
-              text: 'Test action text',
-              proofRequest: {
-                attributes: {
-                  attribute1: {
-                    attributes: ['attribute1', 'attribute2'],
-                    restrictions: ['restriction1', 'restriction2'],
-                  },
-                },
-                predicates: {},
-              },
-            },
-          ],
-        },
-      ],
-      personas: [persona.id],
-      hidden: false,
-    })
-
+    const { asset, scenario, credentialDefinition, persona } = await createTestPrerequisites()
     const showcaseRequest: ShowcaseRequest = {
       name: 'Assets Content Showcase',
       description: 'Testing all expands with asset content',
@@ -616,7 +334,9 @@ describe('ShowcaseController Integration Tests', () => {
 
     // Retrieve with all expands including asset content
     const getResponse = await request
-      .get(`/showcases/${createdShowcase.slug}?expand=${ShowcaseExpand.Scenarios}&expand=${ShowcaseExpand.CredentialDefinitions}&expand=${ShowcaseExpand.Personas}&expand=${ShowcaseExpand.AssetContent}`)
+      .get(
+        `/showcases/${createdShowcase.slug}?expand=${ShowcaseExpand.Scenarios}&expand=${ShowcaseExpand.CredentialDefinitions}&expand=${ShowcaseExpand.Personas}&expand=${ShowcaseExpand.AssetContent}`,
+      )
       .expect(200)
 
     // Verify related entities are expanded
@@ -648,34 +368,7 @@ describe('ShowcaseController Integration Tests', () => {
   })
 
   it('should retrieve all showcases with various expand combinations', async () => {
-    // Create prerequisites: asset, credential schema, credential definition, issuer, persona, and scenario
-    const assetRepository = Container.get(AssetRepository)
-    const asset = await assetRepository.create({
-      mediaType: 'image/png',
-      fileName: 'test.png',
-      description: 'Test image',
-      content: Buffer.from('binary data'),
-    })
-
-    const credentialSchemaRepository = Container.get(CredentialSchemaRepository)
-    const credentialSchema = await credentialSchemaRepository.create({
-      name: 'example_name',
-      version: 'example_version',
-      identifierType: IdentifierType.DID,
-      identifier: 'did:sov:XUeUZauFLeBNofY3NhaZCB',
-      attributes: [
-        {
-          name: 'example_attribute_name1',
-          value: 'example_attribute_value1',
-          type: CredentialAttributeType.STRING,
-        },
-        {
-          name: 'example_attribute_name2',
-          value: 'example_attribute_value2',
-          type: CredentialAttributeType.STRING,
-        },
-      ],
-    })
+    const { asset, credentialSchema } = await createTestPrerequisites()
 
     const credentialDefinitionRepository = Container.get(CredentialDefinitionRepository)
     const credentialDefinition = await credentialDefinitionRepository.create({
@@ -797,7 +490,11 @@ describe('ShowcaseController Integration Tests', () => {
     expect(response3.body.showcases[0].completionMessage).toBeDefined()
 
     // Test 4: Get all with all expands including asset content
-    const response4 = await request.get(`/showcases?expand=${ShowcaseExpand.Scenarios}&expand=${ShowcaseExpand.CredentialDefinitions}&expand=${ShowcaseExpand.Personas}&expand=${ShowcaseExpand.AssetContent}`).expect(200)
+    const response4 = await request
+      .get(
+        `/showcases?expand=${ShowcaseExpand.Scenarios}&expand=${ShowcaseExpand.CredentialDefinitions}&expand=${ShowcaseExpand.Personas}&expand=${ShowcaseExpand.AssetContent}`,
+      )
+      .expect(200)
     expect(response4.body.showcases.length).toBeGreaterThanOrEqual(2)
     expect(response4.body.showcases[0].scenarios.length).toBeGreaterThanOrEqual(1)
     expect(response4.body.showcases[0].credentialDefinitions.length).toBeGreaterThanOrEqual(1)
@@ -813,103 +510,7 @@ describe('ShowcaseController Integration Tests', () => {
   })
 
   it('should handle mixed valid and invalid expand parameters', async () => {
-    // Create prerequisites: asset, credential schema, credential definition, issuer, persona, and scenario
-    const assetRepository = Container.get(AssetRepository)
-    const asset = await assetRepository.create({
-      mediaType: 'image/png',
-      fileName: 'test.png',
-      description: 'Test image',
-      content: Buffer.from('binary data'),
-    })
-
-    const credentialSchemaRepository = Container.get(CredentialSchemaRepository)
-    const credentialSchema = await credentialSchemaRepository.create({
-      name: 'example_name',
-      version: 'example_version',
-      identifierType: IdentifierType.DID,
-      identifier: 'did:sov:XUeUZauFLeBNofY3NhaZCB',
-      attributes: [
-        {
-          name: 'example_attribute_name1',
-          value: 'example_attribute_value1',
-          type: CredentialAttributeType.STRING,
-        },
-        {
-          name: 'example_attribute_name2',
-          value: 'example_attribute_value2',
-          type: CredentialAttributeType.STRING,
-        },
-      ],
-    })
-
-    const credentialDefinitionRepository = Container.get(CredentialDefinitionRepository)
-    const credentialDefinition = await credentialDefinitionRepository.create({
-      name: 'Test Definition',
-      version: '1.0',
-      identifierType: IdentifierType.DID,
-      identifier: 'did:test:123',
-      icon: asset.id,
-      type: CredentialType.ANONCRED,
-      credentialSchema: credentialSchema.id,
-    })
-
-    const issuerRepository = Container.get(IssuerRepository)
-    const issuer = await issuerRepository.create({
-      name: 'Test Issuer',
-      type: IssuerType.ARIES,
-      credentialDefinitions: [credentialDefinition.id],
-      credentialSchemas: [credentialSchema.id],
-      description: 'Test issuer description',
-      organization: 'Test Organization',
-      logo: asset.id,
-    })
-
-    // Create a persona
-    const personaRepository = Container.get(PersonaRepository)
-    const persona = await personaRepository.create({
-      name: 'John Doe',
-      role: 'Software Engineer',
-      description: 'Experienced developer',
-      headshotImage: asset.id,
-      bodyImage: asset.id,
-      hidden: false,
-    })
-
-    // Create an issuance scenario with at least one step
-    const scenarioRepository = Container.get(ScenarioRepository)
-    const scenario = await scenarioRepository.create({
-      name: 'Test Scenario',
-      description: 'Test scenario description',
-      issuer: issuer.id, // This makes it an issuance scenario
-      steps: [
-        {
-          title: 'Test Step',
-          description: 'Test step description',
-          order: 1,
-          type: StepType.HUMAN_TASK,
-          asset: asset.id,
-          actions: [
-            {
-              title: 'Test Action',
-              actionType: StepActionType.ARIES_OOB,
-              text: 'Test action text',
-              proofRequest: {
-                attributes: {
-                  attribute1: {
-                    attributes: ['attribute1', 'attribute2'],
-                    restrictions: ['restriction1', 'restriction2'],
-                  },
-                },
-                predicates: {},
-              },
-            },
-          ],
-        },
-      ],
-      personas: [persona.id],
-      hidden: false,
-    })
-
+    const { asset, scenario, credentialDefinition, persona } = await createTestPrerequisites()
     const showcaseRequest: ShowcaseRequest = {
       name: 'Mixed Expand Test',
       description: 'Testing mixed valid and invalid expand parameters',
@@ -925,8 +526,9 @@ describe('ShowcaseController Integration Tests', () => {
     const createResponse = await request.post('/showcases').send(showcaseRequest).expect(201)
     const createdShowcase = createResponse.body.showcase
 
-    // Send request with valid and invalid expand parameters
-    const getResponse = await request.get(`/showcases/${createdShowcase.slug}?expand=${ShowcaseExpand.Scenarios}&expand=invalidExpand&expand=${ShowcaseExpand.Personas}`).expect(200)
+    const getResponse = await request
+      .get(`/showcases/${createdShowcase.slug}?expand=${ShowcaseExpand.Scenarios}&expand=invalidExpand&expand=${ShowcaseExpand.Personas}`)
+      .expect(200)
 
     // Verify valid expands are processed and invalid ones are ignored
     expect(getResponse.body.showcase.scenarios.length).toEqual(1)

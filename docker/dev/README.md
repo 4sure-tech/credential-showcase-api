@@ -58,6 +58,7 @@ docker-compose up -d
 ```
 
 This will start:
+
 - The API server accessible on port defined in your `.env` file
 - The Traction adapter service
 - PostgreSQL database with persistent storage
@@ -66,6 +67,7 @@ This will start:
 ## Network Configuration
 
 The system uses two isolated Docker networks:
+
 - `messagebroker_net`: For RabbitMQ communication
 - `db_net`: For database access
 
@@ -93,6 +95,7 @@ To push the images to a Docker registry:
 ```
 
 The script:
+
 - Checks that API server and Traction adapter versions match
 - Tags images with the appropriate version number from package.json
 - Pushes images to the configured registry (default: sphereonregistry.azurecr.io)

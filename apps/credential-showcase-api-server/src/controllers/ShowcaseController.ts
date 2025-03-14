@@ -1,7 +1,8 @@
 import { BadRequestError, Body, Delete, Get, HttpCode, JsonController, OnUndefined, Param, Post, Put, QueryParam } from 'routing-controllers'
 import { Service } from 'typedi'
 import {
-  instanceOfShowcaseRequest, ShowcaseExpand,
+  instanceOfShowcaseRequest,
+  ShowcaseExpand,
   ShowcaseRequest,
   ShowcaseRequestToJSONTyped,
   ShowcaseResponse,

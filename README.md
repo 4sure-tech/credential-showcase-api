@@ -4,7 +4,7 @@ A TypeScript-based monorepo for the Credential Showcase API, consisting of backe
 
 # credential-showcase-api-server
 
-the backend server for the Credential Showcase application. It provides REST API endpoints for managing and showcasing credentials. 
+the backend server for the Credential Showcase application. It provides REST API endpoints for managing and showcasing credentials.
 
 # credential-showcase-openapi
 

@@ -18,12 +18,12 @@ export const normalizeExpandParams = (expand?: string[]): ShowcaseExpand[] => {
 
   return (
     (expand
-      ?.map((exp) => {
-        const normalizedKey = exp.toLowerCase().trim()
+      ?.map((expandValue) => {
+        const normalizedKey = expandValue.toLowerCase().trim()
         if (normalizedKey in expandMap) {
           return expandMap[normalizedKey as keyof typeof expandMap]
         }
-        console.warn(`Invalid expand parameter: ${exp}`)
+        console.warn(`Invalid expand parameter: ${expandValue}`)
         return null
       })
       .filter(Boolean) as ShowcaseExpand[]) || []

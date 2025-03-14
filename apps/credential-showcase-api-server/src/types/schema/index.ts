@@ -224,7 +224,7 @@ export const ShowcaseExpand = {
   SCENARIOS: 'SCENARIOS',
   CREDENTIAL_DEFINITIONS: 'CREDENTIAL_DEFINITIONS',
   PERSONAS: 'PERSONAS',
-  ASSET_CONTENT: 'ASSET_CONTENT'
-} as const;
+  ASSET_CONTENT: 'ASSET_CONTENT',
+} as const
 
-export type ShowcaseExpand = typeof ShowcaseExpand[keyof typeof ShowcaseExpand];
+export type ShowcaseExpand = (typeof ShowcaseExpand)[keyof typeof ShowcaseExpand]

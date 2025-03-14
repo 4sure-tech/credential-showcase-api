@@ -62,9 +62,7 @@ export const credentialDefinitionDTOFrom = (credentialDefinition: CredentialDefi
     representations: credentialDefinition.representations,
     revocation: credentialDefinition.revocation || undefined,
     iconId: typeof credentialDefinition.icon === 'string' ? credentialDefinition.icon : undefined,
-    icon: credentialDefinition.icon && typeof credentialDefinition.icon !== 'string'
-      ? assetDTOFrom(credentialDefinition.icon as Asset)
-      : undefined,
+    icon: credentialDefinition.icon && typeof credentialDefinition.icon !== 'string' ? assetDTOFrom(credentialDefinition.icon as Asset) : undefined,
   }
 }
 
@@ -73,10 +71,8 @@ export const relyingPartyDTOFrom = (relyingParty: RelyingParty): RelyingPartyDTO
     ...relyingParty,
     organization: relyingParty.organization || undefined,
     logoId: typeof relyingParty.logo === 'string' ? relyingParty.logo : undefined,
-    logo: relyingParty.logo && typeof relyingParty.logo !== 'string'
-      ? assetDTOFrom(relyingParty.logo as Asset)
-      : undefined,
-    credentialDefinitions: relyingParty.credentialDefinitions.map(credentialDefinitionDTOFrom)
+    logo: relyingParty.logo && typeof relyingParty.logo !== 'string' ? assetDTOFrom(relyingParty.logo as Asset) : undefined,
+    credentialDefinitions: relyingParty.credentialDefinitions.map(credentialDefinitionDTOFrom),
   }
 }
 
@@ -85,11 +81,9 @@ export const issuerDTOFrom = (issuer: Issuer): IssuerDTO => {
     ...issuer,
     organization: issuer.organization || undefined,
     logoId: typeof issuer.logo === 'string' ? issuer.logo : undefined,
-    logo: issuer.logo && typeof issuer.logo !== 'string'
-      ? assetDTOFrom(issuer.logo as Asset)
-      : undefined,
+    logo: issuer.logo && typeof issuer.logo !== 'string' ? assetDTOFrom(issuer.logo as Asset) : undefined,
     credentialDefinitions: issuer.credentialDefinitions.map(credentialDefinitionDTOFrom),
-    credentialSchemas: issuer.credentialSchemas.map(credentialSchemaDTOFrom)
+    credentialSchemas: issuer.credentialSchemas.map(credentialSchemaDTOFrom),
   }
 }
 
@@ -136,10 +130,8 @@ export const stepDTOFrom = (step: Step): StepDTO => {
   return {
     ...step,
     assetId: typeof step.asset === 'string' ? step.asset : undefined,
-    asset: step.asset && typeof step.asset !== 'string'
-      ? assetDTOFrom(step.asset as Asset)
-      : undefined,
-    subScenario: step.subScenario || undefined
+    asset: step.asset && typeof step.asset !== 'string' ? assetDTOFrom(step.asset as Asset) : undefined,
+    subScenario: step.subScenario || undefined,
   }
 }
 
@@ -147,14 +139,10 @@ export const personaDTOFrom = (persona: Persona): PersonaDTO => {
   return {
     ...persona,
     headshotImageId: typeof persona.headshotImage === 'string' ? persona.headshotImage : undefined,
-    headshotImage: persona.headshotImage && typeof persona.headshotImage !== 'string'
-      ? assetDTOFrom(persona.headshotImage as Asset)
-      : undefined,
+    headshotImage: persona.headshotImage && typeof persona.headshotImage !== 'string' ? assetDTOFrom(persona.headshotImage as Asset) : undefined,
     bodyImageId: typeof persona.bodyImage === 'string' ? persona.bodyImage : undefined,
-    bodyImage: persona.bodyImage && typeof persona.bodyImage !== 'string'
-      ? assetDTOFrom(persona.bodyImage as Asset)
-      : undefined,
-    hidden: persona.hidden
+    bodyImage: persona.bodyImage && typeof persona.bodyImage !== 'string' ? assetDTOFrom(persona.bodyImage as Asset) : undefined,
+    hidden: persona.hidden,
   }
 }
 
@@ -165,10 +153,8 @@ export const showcaseDTOFrom = (showcase: Showcase): ShowcaseDTO => {
     credentialDefinitions: showcase.credentialDefinitions.map(credentialDefinitionDTOFrom),
     scenarios: showcase.scenarios.map(scenarioDTOFrom),
     bannerImageId: typeof showcase.bannerImage === 'string' ? showcase.bannerImage : undefined,
-    bannerImage: showcase.bannerImage && typeof showcase.bannerImage !== 'string'
-      ? assetDTOFrom(showcase.bannerImage as Asset)
-      : undefined,
-    completionMessage: showcase.completionMessage || undefined
+    bannerImage: showcase.bannerImage && typeof showcase.bannerImage !== 'string' ? assetDTOFrom(showcase.bannerImage as Asset) : undefined,
+    completionMessage: showcase.completionMessage || undefined,
   }
 }
 
