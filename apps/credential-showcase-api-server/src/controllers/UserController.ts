@@ -1,7 +1,14 @@
 import { Body, Delete, Get, HttpCode, JsonController, OnUndefined, Param, Post, Put } from 'routing-controllers'
 import { Service } from 'typedi'
-import { UserRequest, UserResponse, UserResponseFromJSONTyped, UsersResponse, UsersResponseFromJSONTyped } from 'credential-showcase-openapi'
-import { userDTOFrom, newUserFrom } from '../utils/mappers'
+import {
+  UserRequest,
+  UserRequestToJSONTyped,
+  UserResponse,
+  UserResponseFromJSONTyped,
+  UsersResponse,
+  UsersResponseFromJSONTyped,
+} from 'credential-showcase-openapi'
+import { userDTOFrom } from '../utils/mappers'
 import UserService from '../services/UserService'
 
 @JsonController('/users')
@@ -25,13 +32,13 @@ class UserController {
   @HttpCode(201)
   @Post('/')
   public async post(@Body() userRequest: UserRequest): Promise<UserResponse> {
-    const result = await this.userService.createUser(newUserFrom(userRequest))
+    const result = await this.userService.createUser(UserRequestToJSONTyped(userRequest))
     return UserResponseFromJSONTyped({ user: userDTOFrom(result) }, false)
   }
 
   @Put('/:id')
   public async put(@Param('id') id: string, @Body() userRequest: UserRequest): Promise<UserResponse> {
-    const result = await this.userService.updateUser(id, newUserFrom(userRequest))
+    const result = await this.userService.updateUser(id, UserRequestToJSONTyped(userRequest))
     return UserResponseFromJSONTyped({ user: userDTOFrom(result) }, false)
   }
 
