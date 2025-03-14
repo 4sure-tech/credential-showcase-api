@@ -25,13 +25,19 @@ spec:
         - name: {{ $key }}
           value: {{ $value | quote }}
         {{- end }}
-        {{- if .Values.postgresql.enabled }}
+        - name: DB_HOST
+          value: "credential-showcase-postgresql"
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_NAME
+          value: {{ .Values.postgresql.auth.database | quote }}
+        - name: DB_USERNAME
+          value: {{ .Values.postgresql.auth.username | quote }}
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ .Release.Name }}-postgresql
               key: password
-        {{- end }}
       serviceAccountName: {{ if .Values.api_server.serviceAccount.create }}{{ if .Values.api_server.serviceAccount.name }}{{ .Values.api_server.serviceAccount.name }}{{ else }}{{ $.Release.Name }}-{{ .Values.api_server.name }}{{ end }}{{ end }}
 ---
 {{- end }}
@@ -78,7 +84,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: {{ .Release.Name }}-rabbitmq
-              key: password
+              key: rabbitmq-password
         - name: RABBITMQ_USERNAME
           valueFrom:
             secretKeyRef:

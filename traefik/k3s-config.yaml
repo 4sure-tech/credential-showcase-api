@@ -1,0 +1,26 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: traefik
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    # Simple configuration
+    additionalArguments:
+      - "--certificatesresolvers.default.acme.email=your-email@example.com"
+      - "--certificatesresolvers.default.acme.storage=/data/acme.json"
+      - "--certificatesresolvers.default.acme.tlschallenge=true"
+      - "--certificatesresolvers.default.acme.caserver=https://acme-v02.api.letsencrypt.org/directory"
+    
+    # Service configuration
+    service:
+      type: LoadBalancer
+    
+    # Dashboard
+    dashboard:
+      enabled: true
+    
+    # Logs
+    logs:
+      general:
+        level: INFO 

@@ -21,6 +21,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: api-server-route
+  namespace: kube-system
 spec:
   entryPoints:
     - websecure
@@ -28,10 +29,11 @@ spec:
     - match: Host(`bcshowcase-api.dev.nborbit.ca`)
       kind: Rule
       services:
-        - name: credential-showcase-api-server
+        - name: credential-showcase-credential-showcase-api-server
           port: 3000
       middlewares:
         - name: redirect-https
+          namespace: kube-system
   tls:
     secretName: showcase-tls
 ---
@@ -40,6 +42,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: traction-adapter-route
+  namespace: kube-system
 spec:
   entryPoints:
     - websecure
@@ -47,9 +50,10 @@ spec:
     - match: Host(`bcshowcase-traction.dev.nborbit.ca`)
       kind: Rule
       services:
-        - name: credential-showcase-traction-adapter
+        - name: credential-showcase-credential-showcase-traction-adapter
           port: 3757
       middlewares:
         - name: redirect-https
+          namespace: kube-system
   tls:
-    secretName: showcase-tls 
+    secretName: showcase-tls
