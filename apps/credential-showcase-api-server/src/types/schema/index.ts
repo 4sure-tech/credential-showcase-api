@@ -211,7 +211,6 @@ export type NewShowcase = Omit<typeof showcases.$inferInsert, 'slug'> & {
   credentialDefinitions: string[]
   personas: string[]
   bannerImage?: string | null
-  createdAt?: string | null
   hidden: boolean
   completionMessage?: string | null
 }
