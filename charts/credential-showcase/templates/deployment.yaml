@@ -21,10 +21,6 @@ spec:
         ports:
         - containerPort: {{ .Values.api_server.port }}
         env:
-        {{- range $key, $value := .Values.api_server.env }}
-        - name: {{ $key }}
-          value: {{ $value | quote }}
-        {{- end }}
         - name: DB_HOST
           value: "credential-showcase-postgresql"
         - name: DB_PORT
@@ -38,6 +34,12 @@ spec:
             secretKeyRef:
               name: {{ .Release.Name }}-postgresql
               key: password
+        {{- range $key, $value := .Values.api_server.env }}
+        {{- if and (ne $key "DB_HOST") (ne $key "DB_PASSWORD") }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        {{- end }}
       serviceAccountName: {{ if .Values.api_server.serviceAccount.create }}{{ if .Values.api_server.serviceAccount.name }}{{ .Values.api_server.serviceAccount.name }}{{ else }}{{ $.Release.Name }}-{{ .Values.api_server.name }}{{ end }}{{ end }}
 ---
 {{- end }}
