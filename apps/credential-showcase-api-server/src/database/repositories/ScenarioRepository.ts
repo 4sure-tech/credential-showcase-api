@@ -564,7 +564,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         })
         .returning()
 
-      if (step.actions) {
+      if (step.actions && step.actions.length > 0) {
         const actionsResult = await tx
           .insert(stepActions)
           .values(
@@ -599,7 +599,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
       }
       return {
         ...stepResult,
-        asset: assetResult
+        asset: assetResult,
       }
     })
   }
@@ -625,7 +625,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
 
       await tx.delete(stepActions).where(eq(stepActions.step, stepId))
 
-      if (step.actions) {
+      if (step.actions && step.actions.length > 0) {
         const actionsResult = await tx
           .insert(stepActions)
           .values(
@@ -660,7 +660,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
       }
       return {
         ...stepResult,
-        asset: assetResult
+        asset: assetResult,
       }
     })
   }

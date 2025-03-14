@@ -2219,7 +2219,7 @@ describe('Database scenario repository tests', (): void => {
     expect(fromDb.steps[1].actions![0].proofRequest!.predicates!.predicate1.restrictions!.length).toEqual(2)
   })
 
-  it('Should throw error when adding scenario step with no actions', async (): Promise<void> => {
+  it('Should not throw error when adding scenario step with no actions', async (): Promise<void> => {
     const issuanceScenario: NewIssuanceScenario = {
       name: 'example_name',
       description: 'example_description',
@@ -2282,7 +2282,26 @@ describe('Database scenario repository tests', (): void => {
       actions: [],
     }
 
-    await expect(repository.createStep(savedIssuanceScenario.id, step)).rejects.toThrowError(`At least one action is required`)
+    await expect(repository.createStep(savedIssuanceScenario.id, step)).resolves.toEqual({
+      asset: {
+        content: expect.any(Buffer),
+        createdAt: expect.any(Date),
+        description: 'some image',
+        fileName: 'image.png',
+        id: expect.any(String),
+        mediaType: 'image/png',
+        updatedAt: expect.any(Date),
+      },
+      createdAt: expect.any(Date),
+      description: 'example_description',
+      id: expect.any(String),
+      order: 2,
+      scenario: expect.any(String),
+      subScenario: null,
+      title: 'example_title',
+      type: 'HUMAN_TASK',
+      updatedAt: expect.any(Date),
+    })
   })
 
   it('Should get scenario step by step id from database', async (): Promise<void> => {
@@ -2781,7 +2800,7 @@ describe('Database scenario repository tests', (): void => {
     expect(updatedStepResult.actions![0].proofRequest!.predicates!.predicate1.restrictions!.length).toEqual(2)
   })
 
-  it('Should throw error when updating scenario step with no actions', async (): Promise<void> => {
+  it('Should not throw error when updating scenario step with no actions', async (): Promise<void> => {
     const issuanceScenario: NewIssuanceScenario = {
       name: 'example_name',
       description: 'example_description',
@@ -2841,9 +2860,26 @@ describe('Database scenario repository tests', (): void => {
       asset: savedIssuanceScenario.steps[0].asset!.id,
     }
 
-    await expect(repository.updateStep(savedIssuanceScenario.id, savedIssuanceScenario.steps[0].id, updatedStep)).rejects.toThrowError(
-      `At least one action is required`,
-    )
+    await expect(repository.updateStep(savedIssuanceScenario.id, savedIssuanceScenario.steps[0].id, updatedStep)).resolves.toEqual({
+      asset: {
+        content: expect.any(Buffer),
+        createdAt: expect.any(Date),
+        description: 'some image',
+        fileName: 'image.png',
+        id: expect.any(String),
+        mediaType: 'image/png',
+        updatedAt: expect.any(Date),
+      },
+      createdAt: expect.any(Date),
+      description: 'example_description',
+      id: expect.any(String),
+      order: 1,
+      scenario: expect.any(String),
+      subScenario: null,
+      title: 'example_title',
+      type: 'HUMAN_TASK',
+      updatedAt: expect.any(Date),
+    })
   })
 
   it('Should add to scenario step action to database', async (): Promise<void> => {
