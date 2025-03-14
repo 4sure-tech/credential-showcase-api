@@ -1,35 +1,40 @@
+import {
+  CreateShowcaseParams,
+  DeleteShowcaseParams,
+  GetIdBySlugParams,
+  GetShowcaseParams,
+  GetShowcasesParams,
+  Showcase,
+  UpdateShowcaseParams,
+} from '../types'
 import { Service } from 'typedi'
 import ShowcaseRepository from '../database/repositories/ShowcaseRepository'
-import { Showcase, NewShowcase } from '../types'
-import { ShowcaseExpand } from 'credential-showcase-openapi'
 
 @Service()
-class ShowcaseService {
+export class ShowcaseService {
   constructor(private readonly showcaseRepository: ShowcaseRepository) {}
 
-  public getShowcases = async (expand?: ShowcaseExpand[]): Promise<Showcase[]> => {
-    return this.showcaseRepository.findAll(expand)
+  public getShowcases = async (params: GetShowcasesParams = {}): Promise<Showcase[]> => {
+    return this.showcaseRepository.findAll(params.expand)
   }
 
-  public getShowcase = async (id: string, expand?: ShowcaseExpand[]): Promise<Showcase> => {
-    return this.showcaseRepository.findById(id, expand)
+  public getShowcase = async (params: GetShowcaseParams): Promise<Showcase> => {
+    return this.showcaseRepository.findById(params.id, params.expand)
   }
 
-  public createShowcase = async (showcase: NewShowcase): Promise<Showcase> => {
-    return this.showcaseRepository.create(showcase)
+  public createShowcase = async (params: CreateShowcaseParams): Promise<Showcase> => {
+    return this.showcaseRepository.create(params.showcase)
   }
 
-  public updateShowcase = async (id: string, showcase: NewShowcase): Promise<Showcase> => {
-    return this.showcaseRepository.update(id, showcase)
+  public updateShowcase = async (params: UpdateShowcaseParams): Promise<Showcase> => {
+    return this.showcaseRepository.update(params.id, params.showcase)
   }
 
-  public deleteShowcase = async (id: string): Promise<void> => {
-    return this.showcaseRepository.delete(id)
+  public deleteShowcase = async (params: DeleteShowcaseParams): Promise<void> => {
+    return this.showcaseRepository.delete(params.id)
   }
 
-  public getIdBySlug = async (slug: string): Promise<string> => {
-    return this.showcaseRepository.findIdBySlug(slug)
+  public getIdBySlug = async (params: GetIdBySlugParams): Promise<string> => {
+    return this.showcaseRepository.findIdBySlug(params.slug)
   }
 }
-
-export default ShowcaseService

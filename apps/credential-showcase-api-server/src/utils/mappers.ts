@@ -9,6 +9,7 @@ import {
   PresentationScenario as PresentationScenarioDTO,
   RelyingParty as RelyingPartyDTO,
   Showcase as ShowcaseDTO,
+  ShowcasePersonasInner,
   Step as StepDTO,
 } from 'credential-showcase-openapi'
 import {
@@ -146,10 +147,21 @@ export const personaDTOFrom = (persona: Persona): PersonaDTO => {
   }
 }
 
+export const showcasePersonaDTOFrom = (persona: Persona): ShowcasePersonasInner => {
+  return {
+    ...persona,
+    headshotImageId: typeof persona.headshotImage === 'string' ? persona.headshotImage : undefined,
+    headshotImage: persona.headshotImage && typeof persona.headshotImage !== 'string' ? assetDTOFrom(persona.headshotImage as Asset) : undefined,
+    bodyImageId: typeof persona.bodyImage === 'string' ? persona.bodyImage : undefined,
+    bodyImage: persona.bodyImage && typeof persona.bodyImage !== 'string' ? assetDTOFrom(persona.bodyImage as Asset) : undefined,
+    hidden: persona.hidden,
+  }
+}
+
 export const showcaseDTOFrom = (showcase: Showcase): ShowcaseDTO => {
   return {
     ...showcase,
-    personas: showcase.personas.map(personaDTOFrom),
+    personas: [], // showcase.personas.map(showcasePersonaDTOFrom as Persona), // FIXME
     credentialDefinitions: showcase.credentialDefinitions.map(credentialDefinitionDTOFrom),
     scenarios: showcase.scenarios.map(scenarioDTOFrom),
     bannerImageId: typeof showcase.bannerImage === 'string' ? showcase.bannerImage : undefined,

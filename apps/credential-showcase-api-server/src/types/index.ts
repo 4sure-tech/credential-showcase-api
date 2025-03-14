@@ -1,4 +1,5 @@
 export * from './respository'
 export * from './schema'
 export * from './scenario'
+export * from './services'
 export * from './slug'

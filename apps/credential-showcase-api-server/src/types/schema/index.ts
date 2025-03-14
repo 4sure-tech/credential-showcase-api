@@ -197,9 +197,9 @@ export type AriesProofRequest = typeof ariesProofRequests.$inferSelect
 export type NewAriesProofRequest = Omit<typeof ariesProofRequests.$inferInsert, 'stepAction'>
 
 export type Showcase = Omit<typeof showcases.$inferSelect, 'bannerImage'> & {
-  scenarios: Scenario[]
-  credentialDefinitions: CredentialDefinition[]
-  personas: Persona[]
+  scenarios: (Scenario | string)[]
+  credentialDefinitions: (CredentialDefinition | string)[]
+  personas: (Persona | string)[]
   bannerImage?: string | Asset | null
 }
 export type NewShowcase = Omit<typeof showcases.$inferInsert, 'slug'> & {

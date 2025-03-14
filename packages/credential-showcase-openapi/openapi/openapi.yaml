@@ -1675,6 +1675,15 @@ components:
       openIdConnectUrl: <https://auth.example.com/.well-known/openid-configuration>
       description: OpenID Connect security scheme for OAuth2 flows
   schemas:
+    Id:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          description: item id
+          example: 123e4567-e89b-12d3-a456-426614174469
     Asset:
       type: object
       required:
@@ -2943,17 +2952,23 @@ components:
           type: array
           description: List of scenarios in this showcase
           items:
-            $ref: '#/components/schemas/Scenario'
+            oneOf:
+              - $ref: '#/components/schemas/Scenario'
+              - $ref: '#/components/schemas/Id'
         credentialDefinitions:
           type: array
           description: List of credential definitions used in this showcase
           items:
-            $ref: '#/components/schemas/CredentialDefinition'
+            oneOf:
+              - $ref: '#/components/schemas/CredentialDefinition'
+              - $ref: '#/components/schemas/Id'
         personas:
           type: object
           description: List of personas involved in this showcase
           items:
-            $ref: '#/components/schemas/Persona'
+            oneOf:
+              - $ref: '#/components/schemas/Persona'
+              - $ref: '#/components/schemas/Id'
         bannerImageId:
           type: string
           description: The asset id
