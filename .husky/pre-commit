@@ -6,7 +6,7 @@ echo "Saved unstaged files to stash, ref: $stash_ref"
 # Run prettier formatting
 pnpm prettier
 
-# Stage only previously prettier files
+# Stage only prettier modified files
 git add -u
 
 # Restore unstaged changes from stash, if any
