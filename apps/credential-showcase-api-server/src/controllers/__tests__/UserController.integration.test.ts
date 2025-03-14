@@ -44,17 +44,17 @@ describe('UserController Integration Tests', () => {
     const createResponse = await request
       .post('/users')
       .send({
-        identifier_type: 'DID',
+        identifierType: 'DID',
         identifier: 'did:example.com',
       })
       .expect(201)
     const created = createResponse.body.user
     expect(created).toHaveProperty('id')
-    expect(created.identifier_type).toEqual('DID')
+    expect(created.identifierType).toEqual('DID')
     expect(created.identifier).toEqual('did:example.com')
 
     const getResponse = await request.get(`/users/${created.id}`).expect(200)
-    expect(getResponse.body.user.identifier_type).toEqual('DID')
+    expect(getResponse.body.user.identifierType).toEqual('DID')
     expect(getResponse.body.user.identifier).toEqual('did:example.com')
 
     const allResponse = await request.get('/users').expect(200)
@@ -64,11 +64,11 @@ describe('UserController Integration Tests', () => {
     const updateResponse = await request
       .put(`/users/${created.id}`)
       .send({
-        identifier_type: 'DID',
+        identifierType: 'DID',
         identifier: 'did:example.org',
       })
       .expect(200)
-    expect(updateResponse.body.user.identifier_type).toEqual('DID')
+    expect(updateResponse.body.user.identifierType).toEqual('DID')
     expect(updateResponse.body.user.identifier).toEqual('did:example:org')
 
     await request.delete(`/users/${created.id}`).expect(204)
