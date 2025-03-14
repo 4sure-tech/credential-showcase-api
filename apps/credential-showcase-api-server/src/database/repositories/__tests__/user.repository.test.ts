@@ -101,6 +101,6 @@ describe('Database user repository tests', (): void => {
     const updatedUser = await repository.update(savedUser.id, { ...savedUser, identifier: newUserIdentifier })
 
     expect(updatedUser).toBeDefined()
-    expect(updatedUser.identifier).toEqual(user.identifier)
+    expect(updatedUser.identifier).toEqual(newUserIdentifier)
   })
 })
