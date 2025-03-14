@@ -576,6 +576,7 @@ describe('Database showcase repository tests', (): void => {
       scenarios: [issuanceScenario1.id, issuanceScenario2.id],
       credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
       personas: [persona1.id, persona2.id],
+      createdBy: 'test_user',
     }
 
     const savedShowcase = await repository.create(showcase)
