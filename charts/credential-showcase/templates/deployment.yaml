@@ -21,6 +21,16 @@ spec:
         ports:
         - containerPort: {{ .Values.api_server.port }}
         env:
+        # Define a list of environment variables to override
+        {{- $overrideEnvs := list "DB_HOST" "DB_PORT" "DB_NAME" "DB_USERNAME" "DB_PASSWORD" }}
+        # First add the environment variables from values.yaml, excluding the ones we'll override
+        {{- range $key, $value := .Values.api_server.env }}
+        {{- if not (has $key $overrideEnvs) }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        {{- end }}
+        # Then add our overridden environment variables
         - name: DB_HOST
           value: "credential-showcase-postgresql"
         - name: DB_PORT
@@ -32,14 +42,8 @@ spec:
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .Release.Name }}-postgresql
-              key: password
-        {{- range $key, $value := .Values.api_server.env }}
-        {{- if and (ne $key "DB_HOST") (ne $key "DB_PASSWORD") }}
-        - name: {{ $key }}
-          value: {{ $value | quote }}
-        {{- end }}
-        {{- end }}
+              name: {{ include "credential-showcase.database.secret.name" . }}
+              key: {{ include "credential-showcase.database.userPasswordKey" . }}
       serviceAccountName: {{ if .Values.api_server.serviceAccount.create }}{{ if .Values.api_server.serviceAccount.name }}{{ .Values.api_server.serviceAccount.name }}{{ else }}{{ $.Release.Name }}-{{ .Values.api_server.name }}{{ end }}{{ end }}
 ---
 {{- end }}
@@ -85,8 +89,8 @@ spec:
         - name: RABBITMQ_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .Release.Name }}-rabbitmq
-              key: rabbitmq-password
+              name: {{ include "credential-showcase.rabbitmq.secret.name" . }}
+              key: {{ include "credential-showcase.rabbitmq.passwordKey" . }}
         - name: RABBITMQ_USERNAME
           valueFrom:
             secretKeyRef:

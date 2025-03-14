@@ -178,6 +178,9 @@ postgresql:
     username: "showcase-user"
     database: "showcase-db"
     existingSecret: ""
+    secretKeys:
+      adminPasswordKey: "postgres-password"
+      userPasswordKey: "password"
   primary:
     service:
       ports:
@@ -197,8 +200,9 @@ rabbitmq:
   enabled: true
   auth:
     username: "guest"
-    password: "guest"
     existingSecret: ""
+    secretKeys:
+      passwordKey: "rabbitmq-password"
   plugins: "rabbitmq_management"
   extraConfiguration: |
     management.listener.port = 15672
