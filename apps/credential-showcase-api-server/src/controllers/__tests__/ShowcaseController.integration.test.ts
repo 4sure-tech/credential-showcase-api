@@ -509,7 +509,7 @@ describe('ShowcaseController Integration Tests', () => {
     }
   })
 
-  it('should handle mixed valid and invalid expand parameters', async () => {
+  it('should throw an error for invalid expand parameters', async () => {
     const { asset, scenario, credentialDefinition, persona } = await createTestPrerequisites()
     const showcaseRequest: ShowcaseRequest = {
       name: 'Mixed Expand Test',
@@ -520,20 +520,26 @@ describe('ShowcaseController Integration Tests', () => {
       credentialDefinitions: [credentialDefinition.id],
       personas: [persona.id],
       bannerImage: asset.id,
-      completionMessage: 'Mixed expand test completion message',
+      completionMessage: 'Test completion message',
     }
 
     const createResponse = await request.post('/showcases').send(showcaseRequest).expect(201)
     const createdShowcase = createResponse.body.showcase
 
-    const getResponse = await request
+    // Should now expect a 400 Bad Request error when using invalid expand parameter
+    await request
       .get(`/showcases/${createdShowcase.slug}?expand=${ShowcaseExpand.Scenarios}&expand=invalidExpand&expand=${ShowcaseExpand.Personas}`)
+      .expect(400)
+
+    // Test with only valid expand parameters
+    const validResponse = await request
+      .get(`/showcases/${createdShowcase.slug}?expand=${ShowcaseExpand.Scenarios}&expand=${ShowcaseExpand.Personas}`)
       .expect(200)
 
-    // Verify valid expands are processed and invalid ones are ignored
-    expect(getResponse.body.showcase.scenarios.length).toEqual(1)
-    expect(getResponse.body.showcase.personas.length).toEqual(1)
-    expect(getResponse.body.showcase.credentialDefinitions).toEqual([])
-    expect(getResponse.body.showcase.completionMessage).toEqual('Mixed expand test completion message')
+    // Verify valid expands are processed correctly
+    expect(validResponse.body.showcase.scenarios.length).toEqual(1)
+    expect(validResponse.body.showcase.personas.length).toEqual(1)
+    expect(validResponse.body.showcase.credentialDefinitions).toEqual([])
+    expect(validResponse.body.showcase.completionMessage).toEqual('Test completion message')
   })
 })
