@@ -11,7 +11,6 @@ import {
   Showcase as ShowcaseDTO,
   Step as StepDTO,
   User as UserDTO,
-  UserRequest,
 } from 'credential-showcase-openapi'
 import {
   Asset,
@@ -21,7 +20,6 @@ import {
   Issuer,
   NewAsset,
   NewScenario,
-  NewUser,
   Persona,
   PresentationScenario,
   RelyingParty,
@@ -155,17 +153,11 @@ export const showcaseDTOFrom = (showcase: Showcase): ShowcaseDTO => {
   }
 }
 
-export const newUserFrom = (user: UserRequest): NewUser => {
-  return {
-    ...user,
-  }
-}
-
 export const userDTOFrom = (user: User): UserDTO => {
   return {
     ...user,
-    identifierType: user.identifierType ? user.identifierType : undefined,
-    identifier: user.identifier ? user.identifier : undefined,
+    identifierType: user.identifierType ?? undefined,
+    identifier: user.identifier ?? undefined,
   }
 }
 
