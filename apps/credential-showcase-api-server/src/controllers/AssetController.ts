@@ -43,7 +43,7 @@ class AssetController {
 
   @HttpCode(201)
   @Post('/')
-  public async post(@Body() assetRequest: AssetRequest): Promise<AssetResponse> {
+  public async post(@Body({ options: { limit: '250mb' } }) assetRequest: AssetRequest): Promise<AssetResponse> {
     try {
       if (!instanceOfAssetRequest(assetRequest)) {
         return Promise.reject(new BadRequestError())
@@ -57,7 +57,7 @@ class AssetController {
   }
 
   @Put('/:id')
-  public async put(@Param('id') id: string, @Body() assetRequest: AssetRequest): Promise<AssetResponse> {
+  public async put(@Param('id') id: string, @Body({ options: { limit: '250mb' } }) assetRequest: AssetRequest): Promise<AssetResponse> {
     try {
       if (!instanceOfAssetRequest(assetRequest)) {
         return Promise.reject(new BadRequestError())
