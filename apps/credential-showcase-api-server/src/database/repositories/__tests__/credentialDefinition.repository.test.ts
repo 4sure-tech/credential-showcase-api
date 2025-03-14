@@ -116,6 +116,37 @@ describe('Database credential definition repository tests', (): void => {
     // expect(savedCredentialDefinition.revocation!.description).toEqual(credentialDefinition.revocation!.description)
   })
 
+  it('Should save the credential definition without icon to database', async (): Promise<void> => {
+    const credentialDefinition: NewCredentialDefinition = {
+      name: 'example_name',
+      version: 'example_version',
+      identifierType: IdentifierType.DID,
+      identifier: 'did:sov:XUeUZauFLeBNofY3NhaZCB',
+      type: CredentialType.ANONCRED,
+      credentialSchema: credentialSchema.id,
+      // representations: [
+      //     { // TODO SHOWCASE-81 OCARepresentation
+      //
+      //     },
+      //     { // TODO SHOWCASE-81 OCARepresentation
+      //
+      //     }
+      // ],
+      //revocation: {
+      // TODO SHOWCASE-80 AnonCredRevocation
+      //title: 'example_revocation_title',
+      //     description: 'example_revocation_description',
+      // },
+    }
+
+    const savedCredentialDefinition = await credentialDefinitionRepository.create(credentialDefinition)
+
+    expect(savedCredentialDefinition).toBeDefined()
+    expect(savedCredentialDefinition.name).toEqual(credentialDefinition.name)
+    expect(savedCredentialDefinition.version).toEqual(credentialDefinition.version)
+    expect(savedCredentialDefinition.icon).toBeUndefined()
+  })
+
   it('Should throw error when saving credential definition with invalid icon id', async (): Promise<void> => {
     const unknownIconId = 'a197e5b2-e4e5-4788-83b1-ecaa0e99ed3a'
     const credentialDefinition: NewCredentialDefinition = {

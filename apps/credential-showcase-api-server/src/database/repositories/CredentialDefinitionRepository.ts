@@ -16,10 +16,7 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
   ) {}
 
   async create(credentialDefinition: NewCredentialDefinition): Promise<CredentialDefinition> {
-    if (!credentialDefinition.icon) {
-      return Promise.reject('Icon is required')
-    }
-    const iconResult = await this.assetRepository.findById(credentialDefinition.icon)
+    const iconResult = credentialDefinition.icon && (await this.assetRepository.findById(credentialDefinition.icon))
     const credentialSchemaResult = await this.credentialSchemaRepository.findById(credentialDefinition.credentialSchema)
 
     return (await this.databaseService.getConnection()).transaction(async (tx): Promise<CredentialDefinition> => {
@@ -47,7 +44,7 @@ class CredentialDefinitionRepository implements RepositoryDefinition<CredentialD
       return {
         ...credentialDefinitionResult,
         credentialSchema: credentialSchemaResult,
-        icon: iconResult,
+        icon: iconResult ? iconResult : undefined,
         representations: [], //credentialRepresentationsResult, TODO SHOWCASE-81 enable
         revocation: revocationResult,
       }
