@@ -1,17 +1,18 @@
 import { Service } from 'typedi'
 import ShowcaseRepository from '../database/repositories/ShowcaseRepository'
 import { Showcase, NewShowcase } from '../types'
+import { ShowcaseExpand } from 'credential-showcase-openapi'
 
 @Service()
 class ShowcaseService {
   constructor(private readonly showcaseRepository: ShowcaseRepository) {}
 
-  public getShowcases = async (): Promise<Showcase[]> => {
-    return this.showcaseRepository.findAll()
+  public getShowcases = async (expand?: ShowcaseExpand[]): Promise<Showcase[]> => {
+    return this.showcaseRepository.findAll(expand)
   }
 
-  public getShowcase = async (id: string): Promise<Showcase> => {
-    return this.showcaseRepository.findById(id)
+  public getShowcase = async (id: string, expand?: ShowcaseExpand[]): Promise<Showcase> => {
+    return this.showcaseRepository.findById(id, expand)
   }
 
   public createShowcase = async (showcase: NewShowcase): Promise<Showcase> => {

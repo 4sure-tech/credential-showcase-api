@@ -22,8 +22,8 @@ export type Asset = typeof assets.$inferSelect
 export type NewAsset = typeof assets.$inferInsert & { fileName?: string | null; description?: string | null }
 
 export type Persona = Omit<typeof personas.$inferSelect, 'headshotImage' | 'bodyImage'> & {
-  headshotImage: Asset | null
-  bodyImage: Asset | null
+  headshotImage: string | Asset | null
+  bodyImage: string | Asset | null
 }
 export type NewPersona = Omit<typeof personas.$inferInsert, 'slug'> & {
   headshotImage?: string | null
@@ -72,7 +72,7 @@ export type NewRevocationInfo = Omit<typeof revocationInfo.$inferInsert, 'creden
 
 export type RelyingParty = Omit<typeof relyingParties.$inferSelect, 'logo'> & {
   credentialDefinitions: CredentialDefinition[]
-  logo: Asset | null
+  logo: string | Asset | null
 }
 export type NewRelyingParty = Omit<typeof relyingParties.$inferInsert, 'logo'> & {
   credentialDefinitions: string[]
@@ -83,7 +83,7 @@ export type NewRelyingParty = Omit<typeof relyingParties.$inferInsert, 'logo'> &
 export type Issuer = Omit<typeof issuers.$inferSelect, 'logo'> & {
   credentialDefinitions: CredentialDefinition[]
   credentialSchemas: CredentialSchema[]
-  logo: Asset | null
+  logo: string | Asset | null
 }
 export type NewIssuer = Omit<typeof issuers.$inferInsert, 'logo'> & {
   credentialDefinitions: string[]
@@ -140,7 +140,7 @@ export type IssuanceScenario = Omit<typeof scenarios.$inferSelect, 'relyingParty
   personas: Persona[]
   steps: Step[]
   issuer?: Issuer | null
-  bannerImage?: Asset | null
+  bannerImage?: string | Asset | null
 }
 export type NewIssuanceScenario = Omit<typeof scenarios.$inferInsert, 'relyingParty' | 'scenarioType' | 'slug'> & {
   personas: string[]
@@ -154,7 +154,7 @@ export type PresentationScenario = Omit<typeof scenarios.$inferSelect, 'relyingP
   personas: Persona[]
   steps: Step[]
   relyingParty?: RelyingParty | null
-  bannerImage?: Asset | null
+  bannerImage?: string | Asset | null
 }
 export type NewPresentationScenario = Omit<typeof scenarios.$inferInsert, 'issuer' | 'scenarioType' | 'slug'> & {
   personas: string[]
@@ -166,7 +166,7 @@ export type NewPresentationScenario = Omit<typeof scenarios.$inferInsert, 'issue
 
 export type Step = Omit<typeof steps.$inferSelect, 'asset'> & {
   actions: AriesOOBAction[]
-  asset?: Asset | null
+  asset?: string | Asset | null
 }
 export type NewStep = Omit<typeof steps.$inferInsert, 'scenario'> & {
   asset?: string | null
@@ -200,7 +200,7 @@ export type Showcase = Omit<typeof showcases.$inferSelect, 'bannerImage'> & {
   scenarios: Scenario[]
   credentialDefinitions: CredentialDefinition[]
   personas: Persona[]
-  bannerImage?: Asset | null
+  bannerImage?: string | Asset | null
 }
 export type NewShowcase = Omit<typeof showcases.$inferInsert, 'slug'> & {
   scenarios: string[]
@@ -219,3 +219,12 @@ export enum ShowcaseStatus {
   ACTIVE = 'ACTIVE',
   ARCHIVED = 'ARCHIVED',
 }
+
+export const ShowcaseExpand = {
+  SCENARIOS: 'SCENARIOS',
+  CREDENTIAL_DEFINITIONS: 'CREDENTIAL_DEFINITIONS',
+  PERSONAS: 'PERSONAS',
+  ASSET_CONTENT: 'ASSET_CONTENT'
+} as const;
+
+export type ShowcaseExpand = typeof ShowcaseExpand[keyof typeof ShowcaseExpand];

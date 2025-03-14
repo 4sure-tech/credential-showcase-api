@@ -1,16 +1,17 @@
-import { BadRequestError, Body, Delete, Get, HttpCode, JsonController, OnUndefined, Param, Post, Put } from 'routing-controllers'
+import { BadRequestError, Body, Delete, Get, HttpCode, JsonController, OnUndefined, Param, Post, Put, QueryParam } from 'routing-controllers'
 import { Service } from 'typedi'
 import {
-  ShowcaseResponse,
-  ShowcaseResponseFromJSONTyped,
+  instanceOfShowcaseRequest, ShowcaseExpand,
   ShowcaseRequest,
   ShowcaseRequestToJSONTyped,
+  ShowcaseResponse,
+  ShowcaseResponseFromJSONTyped,
   ShowcasesResponse,
   ShowcasesResponseFromJSONTyped,
-  instanceOfShowcaseRequest,
 } from 'credential-showcase-openapi'
 import ShowcaseService from '../services/ShowcaseService'
 import { showcaseDTOFrom } from '../utils/mappers'
+import { normalizeExpandParams } from '../utils/normalize'
 
 @JsonController('/showcases')
 @Service()
@@ -18,9 +19,9 @@ class ShowcaseController {
   constructor(private showcaseService: ShowcaseService) {}
 
   @Get('/')
-  public async getAll(): Promise<ShowcasesResponse> {
+  public async getAll(@QueryParam('expand') expand?: ShowcaseExpand[]): Promise<ShowcasesResponse> {
     try {
-      const result = await this.showcaseService.getShowcases()
+      const result = await this.showcaseService.getShowcases(normalizeExpandParams(expand))
       const showcases = result.map((showcase) => showcaseDTOFrom(showcase))
       return ShowcasesResponseFromJSONTyped({ showcases }, false)
     } catch (e) {
@@ -32,10 +33,10 @@ class ShowcaseController {
   }
 
   @Get('/:slug')
-  public async getOne(@Param('slug') slug: string): Promise<ShowcaseResponse> {
+  public async getOne(@Param('slug') slug: string, @QueryParam('expand') expand?: ShowcaseExpand[]): Promise<ShowcaseResponse> {
     const id = await this.showcaseService.getIdBySlug(slug)
     try {
-      const result = await this.showcaseService.getShowcase(id)
+      const result = await this.showcaseService.getShowcase(id, normalizeExpandParams(expand))
       return ShowcaseResponseFromJSONTyped({ showcase: showcaseDTOFrom(result) }, false)
     } catch (e) {
       if (e.httpCode !== 404) {
