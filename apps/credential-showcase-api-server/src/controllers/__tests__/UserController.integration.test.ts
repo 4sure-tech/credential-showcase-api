@@ -69,7 +69,7 @@ describe('UserController Integration Tests', () => {
       })
       .expect(200)
     expect(updateResponse.body.user.identifierType).toEqual('DID')
-    expect(updateResponse.body.user.identifier).toEqual('did:example:org')
+    expect(updateResponse.body.user.identifier).toEqual('did:example.org')
 
     await request.delete(`/users/${created.id}`).expect(204)
     await request.get(`/users/${created.id}`).expect(404)

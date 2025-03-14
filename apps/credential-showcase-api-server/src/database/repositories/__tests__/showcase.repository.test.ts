@@ -27,12 +27,13 @@ import {
   NewIssuanceScenario,
   NewIssuer,
   NewPersona,
-  NewShowcase,
+  NewShowcase, NewUser,
   Persona,
   ShowcaseStatus,
   StepActionType,
-  StepType,
+  StepType, User,
 } from '../../../types'
+import UserRepository from '../UserRepository'
 
 describe('Database showcase repository tests', (): void => {
   let client: PGlite
@@ -44,6 +45,7 @@ describe('Database showcase repository tests', (): void => {
   let credentialDefinition1: CredentialDefinition
   let credentialDefinition2: CredentialDefinition
   let asset: Asset
+  let user: User
 
   beforeEach(async (): Promise<void> => {
     client = new PGlite()
@@ -58,6 +60,14 @@ describe('Database showcase repository tests', (): void => {
     const credentialSchemaRepository = Container.get(CredentialSchemaRepository)
     const credentialDefinitionRepository = Container.get(CredentialDefinitionRepository)
     const assetRepository = Container.get(AssetRepository)
+    const userRepository = Container.get(UserRepository)
+    const newUser: NewUser = {
+      identifierType: IdentifierType.DID,
+      identifier: 'did:example.org'
+    }
+
+    user = await userRepository.create(newUser)
+
     const newAsset: NewAsset = {
       mediaType: 'image/png',
       fileName: 'image.png',
@@ -241,6 +251,7 @@ describe('Database showcase repository tests', (): void => {
       credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
       personas: [persona1.id, persona2.id],
       bannerImage: asset.id,
+      createdBy: user.id
     }
 
     const savedShowcase = await repository.create(showcase)
@@ -259,6 +270,7 @@ describe('Database showcase repository tests', (): void => {
     expect(savedShowcase.bannerImage!.fileName).toEqual(asset.fileName)
     expect(savedShowcase.bannerImage!.description).toEqual(asset.description)
     expect(savedShowcase.bannerImage!.content).toStrictEqual(asset.content)
+    expect(savedShowcase.createdBy).toEqual(user.id)
   })
 
   it('Should throw error when saving showcase with no personas', async (): Promise<void> => {
@@ -576,7 +588,7 @@ describe('Database showcase repository tests', (): void => {
       scenarios: [issuanceScenario1.id, issuanceScenario2.id],
       credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
       personas: [persona1.id, persona2.id],
-      createdBy: 'test_user',
+      createdBy: user.id,
     }
 
     const savedShowcase = await repository.create(showcase)

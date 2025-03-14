@@ -26,7 +26,7 @@ class UserController {
   @Get('/:id')
   public async getOne(@Param('id') id: string): Promise<UserResponse> {
     const result = await this.userService.getUser(id)
-    return UserResponseFromJSONTyped({ asset: userDTOFrom(result) }, false)
+    return UserResponseFromJSONTyped({ user: userDTOFrom(result) }, false)
   }
 
   @HttpCode(201)
