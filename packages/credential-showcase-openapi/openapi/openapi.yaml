@@ -1675,23 +1675,10 @@ components:
       openIdConnectUrl: <https://auth.example.com/.well-known/openid-configuration>
       description: OpenID Connect security scheme for OAuth2 flows
   schemas:
-    Id:
-      type: object
-      required:
-        - id
-      properties:
-        id:
-          type: string
-          description: item id
-          example: 123e4567-e89b-12d3-a456-426614174469
     Asset:
       type: object
       required:
         - id
-        - mediaType
-        - content
-        - createdAt
-        - updatedAt
       properties:
         id:
           type: string
@@ -2070,12 +2057,6 @@ components:
       type: object
       required:
         - id
-        - name
-        - slug
-        - role
-        - description
-        - createdAt
-        - updatedAt
       properties:
         id:
           type: string
@@ -2097,14 +2078,8 @@ components:
           type: string
           description: Detailed description of the persona
           example: John Doe is a verifier for the system
-        headshotImageId:
-          type: string
-          description: The asset id
         headshotImage:
           $ref: '#/components/schemas/Asset'
-        bodyImageId:
-          type: string
-          description: The asset id
         bodyImage:
           $ref: '#/components/schemas/Asset'
         hidden:
@@ -2165,14 +2140,6 @@ components:
       type: object
       required:
         - id
-        - name
-        - slug
-        - type
-        - description
-        - steps
-        - personas
-        - createdAt
-        - updatedAt
       properties:
         id:
           type: string
@@ -2216,6 +2183,8 @@ components:
           description: Date and time the scenario was last updated
           format: date-time
           example: 2025-03-06T11:30:16.573Z
+        bannerImage:
+          $ref: '#/components/schemas/Asset'
     ScenarioRequest:
       type: object
       required:
@@ -2567,14 +2536,6 @@ components:
       type: object
       required:
         - id
-        - name
-        - version
-        - type
-        - credentialSchema
-        # TODO enable back in SHOWCASE-81
-        # - representations
-        - createdAt
-        - updatedAt
       properties:
         id:
           type: string
@@ -2952,26 +2913,17 @@ components:
           type: array
           description: List of scenarios in this showcase
           items:
-            oneOf:
-              - $ref: '#/components/schemas/Scenario'
-              - $ref: '#/components/schemas/Id'
+              $ref: '#/components/schemas/Scenario'
         credentialDefinitions:
           type: array
           description: List of credential definitions used in this showcase
           items:
-            oneOf:
-              - $ref: '#/components/schemas/CredentialDefinition'
-              - $ref: '#/components/schemas/Id'
+              $ref: '#/components/schemas/CredentialDefinition'
         personas:
           type: object
           description: List of personas involved in this showcase
           items:
-            oneOf:
-              - $ref: '#/components/schemas/Persona'
-              - $ref: '#/components/schemas/Id'
-        bannerImageId:
-          type: string
-          description: The asset id
+             $ref: '#/components/schemas/Persona'
         bannerImage:
           $ref: '#/components/schemas/Asset'
         completionMessage:

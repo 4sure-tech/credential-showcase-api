@@ -11,7 +11,7 @@ import IssuerRepository from '../../database/repositories/IssuerRepository'
 import PersonaRepository from '../../database/repositories/PersonaRepository'
 import ScenarioRepository from '../../database/repositories/ScenarioRepository'
 import ShowcaseRepository from '../../database/repositories/ShowcaseRepository'
-import ShowcaseService from '../../services/ShowcaseService'
+import { ShowcaseService } from '../../services/ShowcaseService'
 import { Showcase, ShowcaseExpand, ShowcaseRequest } from 'credential-showcase-openapi'
 import { PGlite } from '@electric-sql/pglite'
 import { drizzle } from 'drizzle-orm/pglite'
@@ -262,12 +262,15 @@ describe('ShowcaseController Integration Tests', () => {
     // Retrieve without any expands
     const getResponse = await request.get(`/showcases/${createdShowcase.slug}`).expect(200)
 
-    // Verify no related entities are expanded
-    expect(getResponse.body.showcase.scenarios).toEqual([])
-    expect(getResponse.body.showcase.credentialDefinitions).toEqual([])
-    expect(getResponse.body.showcase.personas).toEqual([])
-    expect(getResponse.body.showcase.bannerImage).toBeUndefined()
-    expect(getResponse.body.showcase.bannerImageId).toBe(asset.id)
+    // Verify related entities have IDs but no expanded content
+    expect(getResponse.body.showcase.scenarios).toHaveLength(1)
+    expect(getResponse.body.showcase.scenarios[0]).toHaveProperty('id')
+    expect(getResponse.body.showcase.credentialDefinitions).toHaveLength(1)
+    expect(getResponse.body.showcase.credentialDefinitions[0]).toHaveProperty('id')
+    expect(getResponse.body.showcase.personas).toHaveLength(1)
+    expect(getResponse.body.showcase.personas[0]).toHaveProperty('id')
+    expect(getResponse.body.showcase.bannerImage).toHaveProperty('id')
+    expect(Object.keys(getResponse.body.showcase.bannerImage).length).toBe(1) // Only contains id
   })
 
   it('should retrieve a showcase with all expands except asset content', async () => {
@@ -303,16 +306,17 @@ describe('ShowcaseController Integration Tests', () => {
     expect(getResponse.body.showcase.completionMessage).toEqual('Testing completion message')
 
     // Verify banner image is a string ID without content
-    expect(typeof getResponse.body.showcase.bannerImageId).toBe('string')
-
-    // Check that persona image references are string IDs
+    expect(getResponse.body.showcase.bannerImage).toHaveProperty('id')
+    expect(getResponse.body.showcase.bannerImage).not.toHaveProperty('content')
+    // Check that persona image references are objects with id
     const responsePersona = getResponse.body.showcase.personas[0]
-    expect(typeof responsePersona.headshotImageId).toBe('string')
-    expect(typeof responsePersona.bodyImageId).toBe('string')
-
-    // Check that scenario assets are string IDs
+    expect(responsePersona.headshotImage).toHaveProperty('id')
+    expect(responsePersona.headshotImage).not.toHaveProperty('content')
+    expect(responsePersona.bodyImage).toHaveProperty('id')
+    expect(responsePersona.bodyImage).not.toHaveProperty('content')
+    // Check that scenario assets are objects with id
     const step = getResponse.body.showcase.scenarios[0].steps[0]
-    expect(typeof step.assetId).toBe('string')
+    expect(step.asset).toHaveProperty('id')
   })
 
   it('should retrieve a showcase with all expands including asset content', async () => {
@@ -465,20 +469,24 @@ describe('ShowcaseController Integration Tests', () => {
     await request.post('/showcases').send(showcaseRequest1).expect(201)
     await request.post('/showcases').send(showcaseRequest2).expect(201)
 
-    // Test 1: Get all with no expands
     const response1 = await request.get('/showcases').expect(200)
     expect(response1.body.showcases.length).toBeGreaterThanOrEqual(2)
-    expect(response1.body.showcases[0].scenarios).toEqual([])
-    expect(response1.body.showcases[0].credentialDefinitions).toEqual([])
-    expect(response1.body.showcases[0].personas).toEqual([])
+    expect(response1.body.showcases[0].scenarios.length).toBeGreaterThanOrEqual(1)
+    expect(response1.body.showcases[0].scenarios[0]).toHaveProperty('id')
+    expect(response1.body.showcases[0].credentialDefinitions.length).toBeGreaterThanOrEqual(1)
+    expect(response1.body.showcases[0].credentialDefinitions[0]).toHaveProperty('id')
+    expect(response1.body.showcases[0].personas.length).toBeGreaterThanOrEqual(1)
+    expect(response1.body.showcases[0].personas[0]).toHaveProperty('id')
     expect(response1.body.showcases[0].completionMessage).toBeDefined()
 
     // Test 2: Get all with only scenarios expanded
     const response2 = await request.get(`/showcases?expand=${ShowcaseExpand.Scenarios}`).expect(200)
     expect(response2.body.showcases.length).toBeGreaterThanOrEqual(2)
     expect(response2.body.showcases[0].scenarios.length).toBeGreaterThanOrEqual(1)
-    expect(response2.body.showcases[0].credentialDefinitions).toEqual([])
-    expect(response2.body.showcases[0].personas).toEqual([])
+    expect(response2.body.showcases[0].credentialDefinitions.length).toBeGreaterThanOrEqual(1)
+    expect(response2.body.showcases[0].credentialDefinitions[0]).toHaveProperty('id')
+    expect(response2.body.showcases[0].personas.length).toBeGreaterThanOrEqual(1)
+    expect(response2.body.showcases[0].personas[0]).toHaveProperty('id')
     expect(response2.body.showcases[0].completionMessage).toBeDefined()
 
     // Test 3: Get all with scenarios and credential definitions expanded
@@ -486,7 +494,8 @@ describe('ShowcaseController Integration Tests', () => {
     expect(response3.body.showcases.length).toBeGreaterThanOrEqual(2)
     expect(response3.body.showcases[0].scenarios.length).toBeGreaterThanOrEqual(1)
     expect(response3.body.showcases[0].credentialDefinitions.length).toBeGreaterThanOrEqual(1)
-    expect(response3.body.showcases[0].personas).toEqual([])
+    expect(response3.body.showcases[0].personas.length).toBeGreaterThanOrEqual(1)
+    expect(response3.body.showcases[0].personas[0]).toHaveProperty('id')
     expect(response3.body.showcases[0].completionMessage).toBeDefined()
 
     // Test 4: Get all with all expands including asset content
@@ -536,10 +545,14 @@ describe('ShowcaseController Integration Tests', () => {
       .get(`/showcases/${createdShowcase.slug}?expand=${ShowcaseExpand.Scenarios}&expand=${ShowcaseExpand.Personas}`)
       .expect(200)
 
-    // Verify valid expands are processed correctly
-    expect(validResponse.body.showcase.scenarios.length).toEqual(1)
-    expect(validResponse.body.showcase.personas.length).toEqual(1)
-    expect(validResponse.body.showcase.credentialDefinitions).toEqual([])
-    expect(validResponse.body.showcase.completionMessage).toEqual('Test completion message')
+    // Verify related entities have IDs but no expanded content
+    expect(validResponse.body.showcase.scenarios).toHaveLength(1)
+    expect(validResponse.body.showcase.scenarios[0]).toHaveProperty('id')
+    expect(validResponse.body.showcase.credentialDefinitions).toHaveLength(1)
+    expect(validResponse.body.showcase.credentialDefinitions[0]).toHaveProperty('id')
+    expect(validResponse.body.showcase.personas).toHaveLength(1)
+    expect(validResponse.body.showcase.personas[0]).toHaveProperty('id')
+    expect(validResponse.body.showcase.bannerImage).toHaveProperty('id')
+    expect(Object.keys(validResponse.body.showcase.bannerImage).length).toBe(1) // Only contains id
   })
 })

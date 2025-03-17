@@ -394,10 +394,13 @@ describe('Database showcase repository tests', (): void => {
     expect(fromDb.description).toEqual(showcase.description)
     expect(fromDb.status).toEqual(showcase.status)
     expect(fromDb.hidden).toEqual(showcase.hidden)
-    expect(fromDb.scenarios).toEqual([])
-    expect(fromDb.credentialDefinitions).toEqual([])
-    expect(fromDb.personas).toEqual([])
-    expect(fromDb.bannerImage).toBeNull() // bannerImage is undefined when not expanded
+    expect(fromDb.scenarios.length).toBeGreaterThan(0)
+    expect(fromDb.scenarios[0]).toBe(issuanceScenario1.id)
+    expect(fromDb.credentialDefinitions.length).toBeGreaterThan(0)
+    expect(fromDb.credentialDefinitions[0]).toBe(credentialDefinition1.id)
+    expect(fromDb.personas.length).toBeGreaterThan(0)
+    expect(fromDb.personas[0]).toBe(persona1.id)
+    expect(fromDb.bannerImage).toBeNull() // bannerImage is null when not expanded
   })
 
   it('Should get showcase by id from database with all expands including asset content', async (): Promise<void> => {
