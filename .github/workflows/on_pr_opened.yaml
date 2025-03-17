@@ -160,7 +160,55 @@ jobs:
           script: |
             cd /home/ubuntu/pipeline/charts/credential-showcase
             helm dependency update && helm upgrade --install pr-${{ github.event.number }}-credential-showcase -f ./values.yaml --set api_server.image.tag=${{ github.sha }} --set traction_adapter.image.tag=${{ github.sha }} . --wait
+
+            cat > pr-values.yaml <<EOF
+            # API Server configuration
+            api_server:
+              ingress:
+                enabled: true
+                annotations:
+                  kubernetes.io/ingress.class: "traefik"
+                  traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+                  traefik.ingress.kubernetes.io/router.tls: "true"
+                host: "pr-${{ github.event.number }}-api.dev.nborbit.ca"
             
+            # Traction Adapter configuration  
+            traction_adapter:
+              ingress:
+                enabled: true
+                annotations:
+                  kubernetes.io/ingress.class: "traefik"
+                  traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+                  traefik.ingress.kubernetes.io/router.tls: "true"
+                host: "pr-${{ github.event.number }}-traction.dev.nborbit.ca"
+            
+            # Global ingress settings
+            ingress:
+              enabled: true
+              className: "traefik"
+              annotations:
+                kubernetes.io/ingress.class: "traefik"
+                traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+                cert-manager.io/cluster-issuer: "letsencrypt-prod"
+              hosts:
+                - host: pr-${{ github.event.number }}-api.dev.nborbit.ca
+                  paths:
+                    - path: /
+                      pathType: Prefix
+                      service: api-server
+                - host: pr-${{ github.event.number }}-traction.dev.nborbit.ca
+                  paths:
+                    - path: /
+                      pathType: Prefix
+                      service: traction-adapter
+              tls:
+                - secretName: pr-${{ github.event.number }}-showcase-tls
+                  hosts:
+                    - pr-${{ github.event.number }}-api.dev.nborbit.ca
+                    - pr-${{ github.event.number }}-traction.dev.nborbit.ca
+            EOF
+
+
             # Create PR-specific Certificate
             cat <<EOF | sudo kubectl apply -f -
             apiVersion: cert-manager.io/v1
@@ -177,45 +225,45 @@ jobs:
                 - pr-${{ github.event.number }}-traction.dev.nborbit.ca
             EOF
             
-            # Create PR-specific API Server IngressRoute
-            cat <<EOF | sudo kubectl apply -f -
-            apiVersion: traefik.containo.us/v1alpha1
-            kind: IngressRoute
-            metadata:
-              name: pr-${{ github.event.number }}-api-server-route
-              namespace: kube-system
-            spec:
-              entryPoints:
-                - websecure
-              routes:
-                - match: Host(\`pr-${{ github.event.number }}-api.dev.nborbit.ca\`)
-                  kind: Rule
-                  services:
-                    - name: pr-${{ github.event.number }}-credential-showcase-credential-showcase-api-server
-                      port: 3000
-              tls:
-                secretName: pr-${{ github.event.number }}-showcase-tls
-            EOF
+            # # Create PR-specific API Server IngressRoute
+            # cat <<EOF | sudo kubectl apply -f -
+            # apiVersion: traefik.containo.us/v1alpha1
+            # kind: IngressRoute
+            # metadata:
+            #   name: pr-${{ github.event.number }}-api-server-route
+            #   namespace: kube-system
+            # spec:
+            #   entryPoints:
+            #     - websecure
+            #   routes:
+            #     - match: Host(\`pr-${{ github.event.number }}-api.dev.nborbit.ca\`)
+            #       kind: Rule
+            #       services:
+            #         - name: pr-${{ github.event.number }}-credential-showcase-credential-showcase-api-server
+            #           port: 3000
+            #   tls:
+            #     secretName: pr-${{ github.event.number }}-showcase-tls
+            # EOF
 
-            # Create PR-specific Traction Adapter IngressRoute
-            cat <<EOF | sudo kubectl apply -f -
-            apiVersion: traefik.containo.us/v1alpha1
-            kind: IngressRoute
-            metadata:
-              name: pr-${{ github.event.number }}-traction-adapter-route
-              namespace: kube-system
-            spec:
-              entryPoints:
-                - websecure
-              routes:
-                - match: Host(\`pr-${{ github.event.number }}-traction.dev.nborbit.ca\`)
-                  kind: Rule
-                  services:
-                    - name: pr-${{ github.event.number }}-credential-showcase-credential-showcase-traction-adapter
-                      port: 3757
-              tls:
-                secretName: pr-${{ github.event.number }}-showcase-tls
-            EOF
+            # # Create PR-specific Traction Adapter IngressRoute
+            # cat <<EOF | sudo kubectl apply -f -
+            # apiVersion: traefik.containo.us/v1alpha1
+            # kind: IngressRoute
+            # metadata:
+            #   name: pr-${{ github.event.number }}-traction-adapter-route
+            #   namespace: kube-system
+            # spec:
+            #   entryPoints:
+            #     - websecure
+            #   routes:
+            #     - match: Host(\`pr-${{ github.event.number }}-traction.dev.nborbit.ca\`)
+            #       kind: Rule
+            #       services:
+            #         - name: pr-${{ github.event.number }}-credential-showcase-credential-showcase-traction-adapter
+            #           port: 3757
+            #   tls:
+            #     secretName: pr-${{ github.event.number }}-showcase-tls
+            # EOF
 
             rm -rf /home/ubuntu/pipeline/charts
       
