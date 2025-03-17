@@ -122,11 +122,7 @@ describe('Database issuer repository tests', (): void => {
     expect(savedIssuer.description).toEqual(issuer.description)
     expect(savedIssuer.organization).toEqual(issuer.organization)
     expect(savedIssuer.credentialDefinitions.length).toEqual(2)
-<<<<<<< Updated upstream
     const logoAsset = savedIssuer.logo as Asset
-=======
-    const logoAsset = savedIssuer.logo  as Asset
->>>>>>> Stashed changes
     expect(logoAsset).not.toBeNull()
     expect(logoAsset!.id).toBeDefined()
     expect(logoAsset!.mediaType).toEqual(asset.mediaType)
@@ -215,11 +211,7 @@ describe('Database issuer repository tests', (): void => {
     expect(fromDb.description).toEqual(issuer.description)
     expect(fromDb.organization).toEqual(issuer.organization)
     expect(fromDb.credentialDefinitions.length).toEqual(2)
-<<<<<<< Updated upstream
     const logoAsset = fromDb.logo as Asset
-=======
-    const logoAsset = fromDb.logo  as Asset
->>>>>>> Stashed changes
     expect(logoAsset).not.toBeNull()
     expect(logoAsset!.id).toBeDefined()
     expect(logoAsset!.mediaType).toEqual(asset.mediaType)
@@ -296,11 +288,7 @@ describe('Database issuer repository tests', (): void => {
     expect(updatedIssuer.description).toEqual(issuer.description)
     expect(updatedIssuer.organization).toEqual(issuer.organization)
     expect(updatedIssuer.credentialDefinitions.length).toEqual(1)
-<<<<<<< Updated upstream
     const logoAsset = updatedIssuer.logo as Asset
-=======
-    const logoAsset = updatedIssuer.logo  as Asset
->>>>>>> Stashed changes
     expect(logoAsset).not.toBeNull()
     expect(logoAsset!.id).toBeDefined()
     expect(logoAsset!.mediaType).toEqual(asset.mediaType)

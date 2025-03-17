@@ -61,18 +61,12 @@ export const credentialDefinitionDTOFrom = (credentialDefinition: CredentialDefi
     credentialSchema: credentialSchemaDTOFrom(credentialDefinition.credentialSchema),
     representations: credentialDefinition.representations,
     revocation: credentialDefinition.revocation || undefined,
-<<<<<<< Updated upstream
     icon:
       typeof credentialDefinition.icon === 'string'
         ? { id: credentialDefinition.icon }
         : credentialDefinition.icon
           ? assetDTOFrom(credentialDefinition.icon as Asset)
           : undefined,
-=======
-    icon: typeof credentialDefinition.icon === 'string'
-      ? { id: credentialDefinition.icon }
-      : credentialDefinition.icon ? assetDTOFrom(credentialDefinition.icon as Asset) : undefined
->>>>>>> Stashed changes
   }
 }
 
@@ -80,16 +74,9 @@ export const relyingPartyDTOFrom = (relyingParty: RelyingParty): RelyingPartyDTO
   return {
     ...relyingParty,
     organization: relyingParty.organization || undefined,
-<<<<<<< Updated upstream
     logo:
       typeof relyingParty.logo === 'string' ? { id: relyingParty.logo } : relyingParty.logo ? assetDTOFrom(relyingParty.logo as Asset) : undefined,
     credentialDefinitions: relyingParty.credentialDefinitions.map(credentialDefinitionDTOFrom),
-=======
-    logo: typeof relyingParty.logo === 'string'
-      ? { id: relyingParty.logo }
-      : relyingParty.logo ? assetDTOFrom(relyingParty.logo as Asset) : undefined,
-    credentialDefinitions: relyingParty.credentialDefinitions.map(credentialDefinitionDTOFrom)
->>>>>>> Stashed changes
   }
 }
 
@@ -97,15 +84,9 @@ export const issuerDTOFrom = (issuer: Issuer): IssuerDTO => {
   return {
     ...issuer,
     organization: issuer.organization || undefined,
-<<<<<<< Updated upstream
     logo: typeof issuer.logo === 'string' ? { id: issuer.logo } : issuer.logo ? assetDTOFrom(issuer.logo as Asset) : undefined,
-=======
-    logo: typeof issuer.logo === 'string'
-      ? { id: issuer.logo }
-      : issuer.logo ? assetDTOFrom(issuer.logo as Asset) : undefined,
->>>>>>> Stashed changes
     credentialDefinitions: issuer.credentialDefinitions.map(credentialDefinitionDTOFrom),
-    credentialSchemas: issuer.credentialSchemas.map(credentialSchemaDTOFrom)
+    credentialSchemas: issuer.credentialSchemas.map(credentialSchemaDTOFrom),
   }
 }
 
@@ -120,18 +101,12 @@ export const issuanceScenarioDTOFrom = (issuanceScenario: IssuanceScenario): Iss
     type: ScenarioType.ISSUANCE,
     steps: issuanceScenario.steps.map(stepDTOFrom),
     personas: issuanceScenario.personas.map(personaDTOFrom),
-<<<<<<< Updated upstream
     bannerImage:
       typeof issuanceScenario.bannerImage === 'string'
         ? { id: issuanceScenario.bannerImage }
         : issuanceScenario.bannerImage
           ? assetDTOFrom(issuanceScenario.bannerImage as Asset)
           : undefined,
-=======
-    bannerImage: typeof issuanceScenario.bannerImage === 'string'
-      ? { id: issuanceScenario.bannerImage }
-      : issuanceScenario.bannerImage ? assetDTOFrom(issuanceScenario.bannerImage as Asset) : undefined
->>>>>>> Stashed changes
   }
 }
 
@@ -146,18 +121,12 @@ export const presentationScenarioDTOFrom = (presentationScenario: PresentationSc
     type: ScenarioType.PRESENTATION,
     steps: presentationScenario.steps.map(stepDTOFrom),
     personas: presentationScenario.personas.map(personaDTOFrom),
-<<<<<<< Updated upstream
     bannerImage:
       typeof presentationScenario.bannerImage === 'string'
         ? { id: presentationScenario.bannerImage }
         : presentationScenario.bannerImage
           ? assetDTOFrom(presentationScenario.bannerImage as Asset)
           : undefined,
-=======
-    bannerImage: typeof presentationScenario.bannerImage === 'string'
-      ? { id: presentationScenario.bannerImage }
-      : presentationScenario.bannerImage ? assetDTOFrom(presentationScenario.bannerImage as Asset) : undefined
->>>>>>> Stashed changes
   }
 }
 
@@ -175,22 +144,14 @@ export const scenarioDTOFrom = (scenario: Scenario): IssuanceScenarioDTO | Prese
 export const stepDTOFrom = (step: Step): StepDTO => {
   return {
     ...step,
-<<<<<<< Updated upstream
     asset: typeof step.asset === 'string' ? { id: step.asset } : step.asset ? assetDTOFrom(step.asset as Asset) : undefined,
     subScenario: step.subScenario || undefined,
-=======
-    asset: typeof step.asset === 'string'
-      ? { id: step.asset }
-      : step.asset ? assetDTOFrom(step.asset as Asset) : undefined,
-    subScenario: step.subScenario || undefined
->>>>>>> Stashed changes
   }
 }
 
 export const personaDTOFrom = (persona: Persona): PersonaDTO => {
   return {
     ...persona,
-<<<<<<< Updated upstream
     headshotImage:
       typeof persona.headshotImage === 'string'
         ? { id: persona.headshotImage }
@@ -200,22 +161,12 @@ export const personaDTOFrom = (persona: Persona): PersonaDTO => {
     bodyImage:
       typeof persona.bodyImage === 'string' ? { id: persona.bodyImage } : persona.bodyImage ? assetDTOFrom(persona.bodyImage as Asset) : undefined,
     hidden: persona.hidden,
-=======
-    headshotImage: typeof persona.headshotImage === 'string'
-      ? { id: persona.headshotImage }
-      : persona.headshotImage ? assetDTOFrom(persona.headshotImage as Asset) : undefined,
-    bodyImage: typeof persona.bodyImage === 'string'
-      ? { id: persona.bodyImage }
-      : persona.bodyImage ? assetDTOFrom(persona.bodyImage as Asset) : undefined,
-    hidden: persona.hidden
->>>>>>> Stashed changes
   }
 }
 
 export const showcaseDTOFrom = (showcase: Showcase): ShowcaseDTO => {
   return {
     ...showcase,
-<<<<<<< Updated upstream
     personas: showcase.personas.map((persona) => (typeof persona === 'string' ? { id: persona } : personaDTOFrom(persona as Persona))),
     credentialDefinitions: showcase.credentialDefinitions.map((credentialDef) =>
       typeof credentialDef === 'string' ? { id: credentialDef } : credentialDefinitionDTOFrom(credentialDef as CredentialDefinition),
@@ -228,23 +179,6 @@ export const showcaseDTOFrom = (showcase: Showcase): ShowcaseDTO => {
           ? assetDTOFrom(showcase.bannerImage as Asset)
           : undefined,
     completionMessage: showcase.completionMessage || undefined,
-=======
-    personas: showcase.personas.map(persona =>
-      typeof persona === 'string'
-        ? { id: persona }
-        : personaDTOFrom(persona as Persona)),
-    credentialDefinitions: showcase.credentialDefinitions.map(credentialDef =>
-      typeof credentialDef === 'string'
-        ? { id: credentialDef }
-        : credentialDefinitionDTOFrom(credentialDef as CredentialDefinition)),
-    scenarios: showcase.scenarios.map(scenario =>
-      typeof scenario === 'string'
-        ? { id: scenario }
-        : scenarioDTOFrom(scenario as Scenario)),    bannerImage: typeof showcase.bannerImage === 'string'
-      ? { id: showcase.bannerImage }
-      : showcase.bannerImage ? assetDTOFrom(showcase.bannerImage as Asset) : undefined,
-    completionMessage: showcase.completionMessage || undefined
->>>>>>> Stashed changes
   }
 }
 

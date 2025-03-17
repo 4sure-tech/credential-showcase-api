@@ -54,11 +54,7 @@ class ShowcaseController {
       if (!instanceOfShowcaseRequest(showcaseRequest)) {
         return Promise.reject(new BadRequestError())
       }
-<<<<<<< Updated upstream
       const result = await this.showcaseService.createShowcase({ showcase: ShowcaseRequestToJSONTyped(showcaseRequest) })
-=======
-      const result = await this.showcaseService.createShowcase({showcase: ShowcaseRequestToJSONTyped(showcaseRequest)})
->>>>>>> Stashed changes
       return ShowcaseResponseFromJSONTyped({ showcase: showcaseDTOFrom(result) }, false)
     } catch (e) {
       if (e.httpCode !== 404) {
