@@ -44,15 +44,8 @@ jobs:
           script: |
             helm uninstall pr-${{ env.PR_NUM }}-credential-showcase || echo "Release not found"
             
-            kubectl delete secret,pvc,ingress,service,deployment,statefulset,configmap,certificate \
+            sudo kubectl delete secret,pvc,ingress,service,deployment,statefulset,configmap,certificate \
               --selector "app.kubernetes.io/instance=pr-${{ env.PR_NUM }}-credential-showcase" || echo "No resources to delete"
-            
-            kubectl delete ingressroute pr-${{ env.PR_NUM }}-api-server-route -n kube-system || echo "API IngressRoute not found"
-            kubectl delete ingressroute pr-${{ env.PR_NUM }}-traction-adapter-route -n kube-system || echo "Traction IngressRoute not found"
-            
-            # Final check for persistent resources that might need explicit deletion
-            kubectl delete pvc -l "app.kubernetes.io/instance=pr-${{ env.PR_NUM }}-credential-showcase" || echo "No PVCs to delete"
-
   # clean-ghcr:
   #   runs-on: ubuntu-latest
   #   if: ${{ false }}
