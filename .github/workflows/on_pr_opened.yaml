@@ -64,7 +64,7 @@ jobs:
 
       - name: Login to Amazon Public ECR
         run: |
-          aws ecr-public get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin public.ecr.aws
+          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/${{ secrets.ECR_REGISTRY }}
 
       - name: Build and Push Docker Image
         id: builder
@@ -102,7 +102,7 @@ jobs:
 
       - name: Login to Amazon Public ECR
         run: |
-          aws ecr-public get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin public.ecr.aws
+          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/${{ secrets.ECR_REGISTRY }}
 
       - name: Build and Push Docker Image
         id: builder
