@@ -159,7 +159,6 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             cd /home/ubuntu/pipeline/charts/credential-showcase
-            helm dependency update && helm upgrade --install pr-${{ github.event.number }}-credential-showcase -f ./values.yaml --set api_server.image.tag=${{ github.sha }} --set traction_adapter.image.tag=${{ github.sha }} . --wait
 
             cat > pr-values.yaml <<EOF
             # API Server configuration
@@ -208,7 +207,6 @@ jobs:
                     - pr-${{ github.event.number }}-traction.dev.nborbit.ca
             EOF
 
-
             # Create PR-specific Certificate
             cat <<EOF | sudo kubectl apply -f -
             apiVersion: cert-manager.io/v1
@@ -224,6 +222,9 @@ jobs:
                 - pr-${{ github.event.number }}-api.dev.nborbit.ca
                 - pr-${{ github.event.number }}-traction.dev.nborbit.ca
             EOF
+
+            helm dependency update && helm upgrade --install pr-${{ github.event.number }}-credential-showcase -f ./pr-values.yaml --set api_server.image.tag=${{ github.sha }} --set traction_adapter.image.tag=${{ github.sha }} . --wait
+
             
             # # Create PR-specific API Server IngressRoute
             # cat <<EOF | sudo kubectl apply -f -
