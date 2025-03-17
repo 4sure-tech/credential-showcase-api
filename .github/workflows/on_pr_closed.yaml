@@ -3,6 +3,7 @@ on:
   pull_request:
     branches:
       - main
+      - develop
     paths:
       - "apps/credential-showcase-api-server/**"
       - "packages/credential-showcase-traction-adapter/**"

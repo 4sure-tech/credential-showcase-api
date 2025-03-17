@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - develop
     paths:
         - "apps/credential-showcase-api-server/**"
         - "packages/credential-showcase-traction-adapter/**"
