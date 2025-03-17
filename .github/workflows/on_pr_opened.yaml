@@ -211,7 +211,7 @@ jobs:
               auth:
                 username: "showcase-user"
                 database: "showcase-db"
-                existingSecret: "{{ .Release.Name }}-postgresql"
+                existingSecret: "pr-${{ github.event.number }}-credential-showcase-postgresql"
                 secretKeys:
                   adminPasswordKey: "postgres-password"
                   userPasswordKey: "password"
