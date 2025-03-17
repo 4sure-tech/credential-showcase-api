@@ -41,8 +41,8 @@ jobs:
           file: docker/dev/credential-showcase-api-server/Dockerfile
           push: true
           tags: | 
-            public.ecr.aws/${{ secrets.ECR_REGISTRY }}/credential-showcase-api-server:${{ github.sha }}
-            public.ecr.aws/${{ secrets.ECR_REGISTRY }}/credential-showcase-api-server:latest
+            public.ecr.aws/k8o4d9r5/bcshowcase/credential-showcase-api-server:${{ github.sha }}
+            public.ecr.aws/k8o4d9r5/bcshowcase/credential-showcase-api-server:latest
           no-cache: true
     outputs:
       image_tag: ${{ github.sha }}
@@ -76,8 +76,8 @@ jobs:
           file: docker/dev/credential-showcase-traction-adapter/Dockerfile
           push: true
           tags: | 
-            public.ecr.aws/${{ secrets.ECR_REGISTRY }}/credential-showcase-traction-adapter:${{ github.sha }}
-            public.ecr.aws/${{ secrets.ECR_REGISTRY }}/credential-showcase-traction-adapter:latest
+            public.ecr.aws/k8o4d9r5/bcshowcase/credential-showcase-traction-adapter:${{ github.sha }}
+            public.ecr.aws/k8o4d9r5/bcshowcase/credential-showcase-traction-adapter:latest
           no-cache: true
     outputs:
       image_tag: ${{ github.sha }}
