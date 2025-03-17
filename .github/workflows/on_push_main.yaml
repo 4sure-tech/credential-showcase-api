@@ -193,7 +193,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - deploy
-    # if: ${{ (fromJSON(needs.ready.outputs.deploy) == true) && !(contains(needs.*.result, 'failure')) }}
+    if: ${{ (fromJSON(needs.ready.outputs.deploy) == true) && !(contains(needs.*.result, 'failure')) }}
     steps:
       - uses: actions/checkout@v4
 
