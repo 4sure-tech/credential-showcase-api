@@ -17,7 +17,7 @@ api_server:
   env:
     APP_NAME: credential-showcase-api
     LOG_LEVEL: debug
-    DB_HOST: credential-showcase-postgresql
+    # DB_HOST: credential-showcase-postgresql
     DB_PORT: "5432"
     DB_NAME: showcase-db
     DB_USERNAME: showcase-user
@@ -99,7 +99,7 @@ traction_adapter:
     APP_NAME: credential-showcase-traction-adapter
     LOG_LEVEL: debug
     NODE_PORT: 3757
-    RABBITMQ_HOST: rabbitmq
+    # RABBITMQ_HOST: rabbitmq
     RABBITMQ_PORT: 5672
     RABBITMQ_USER: guest
     RABBITMQ_VHOST: /
