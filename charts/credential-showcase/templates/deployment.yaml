@@ -21,24 +21,23 @@ spec:
         ports:
         - containerPort: {{ .Values.api_server.port }}
         env:
-        # Add standard environment variables from values.yaml
+        - name: DB_HOST
+          value: {{ .Release.Name }}-postgresql
         {{- range $key, $value := .Values.api_server.env }}
-        {{- if kindIs "map" $value }}
+        {{- if and (ne $key "DB_HOST") (kindIs "map" $value) }}
         - name: {{ $key }}
           valueFrom:
             {{- toYaml $value | nindent 12 }}
-        {{- else }}
+        {{- else if ne $key "DB_HOST" }}
         - name: {{ $key }}
           value: {{ $value | quote }}
         {{- end }}
         {{- end }}
-        # Add PostgreSQL password from Bitnami-created secret
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ include "credential-showcase.database.secret.name" . }}
               key: {{ include "credential-showcase.database.userPasswordKey" . }}
-        # Add auth token environment variable
         - name: AUTH_TOKEN
           valueFrom:
             secretKeyRef:
@@ -82,17 +81,18 @@ spec:
         ports:
         - containerPort: {{ .Values.traction_adapter.port }}
         env:
+        - name: RABBITMQ_HOST
+          value: {{ .Release.Name }}-rabbitmq
         {{- range $key, $value := .Values.traction_adapter.env }}
-        {{- if kindIs "map" $value }}
+        {{- if and (ne $key "RABBITMQ_HOST") (kindIs "map" $value) }}
         - name: {{ $key }}
           valueFrom:
             {{- toYaml $value | nindent 12 }}
-        {{- else }}
+        {{- else if ne $key "RABBITMQ_HOST" }}
         - name: {{ $key }}
           value: {{ $value | quote }}
         {{- end }}
         {{- end }}
-        # Get RabbitMQ password from Bitnami-created secret
         - name: RABBITMQ_PASSWORD
           valueFrom:
             secretKeyRef:
