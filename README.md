@@ -17,3 +17,7 @@ Contains the generated TypeScript SDK client code for interacting with the Crede
 # credential-showcase-ts-model
 
 Contains the TypeScript models generated from the OpenAPI specification. These models define the data structure used across the Credential Showcase API and ensure consistency between client and server
+
+# Build, Push and Deploy
+
+Using helm charts and github actions. Beyond the galaxy!!!!
