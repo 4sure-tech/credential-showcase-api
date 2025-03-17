@@ -19,7 +19,31 @@ useContainer(Container);
 
 async function bootstrap() {
     try {
-        const app = createExpressServer({
+        const allowedOrigins = [
+            'https://bcshowcase-ui.dev.nborbit.ca',
+            'http://localhost:3000',
+            'http://localhost:8080',
+        ];
+
+        const corsOptions = {
+            origin: (requestOrigin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+                console.log("Request Origin:", requestOrigin);
+                if (!requestOrigin) return callback(null, true);
+                if (allowedOrigins.indexOf(requestOrigin) === -1) {
+                    const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+                    return callback(new Error(msg), false);
+                }
+                return callback(null, true);
+            },
+            methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+            credentials: true,
+        };
+
+        const app = require('express')(); 
+        app.use(cors(corsOptions));      
+
+        const routingControllersApp = createExpressServer({
             controllers: [
                 AssetController,
                 PersonaController,
@@ -35,35 +59,14 @@ async function bootstrap() {
             defaultErrorHandler: false,
         });
 
-        const allowedOrigins = [
-            'https://bcshowcase-ui.dev.nborbit.ca',
-            'http://localhost:3000',             
-            'http://localhost:8080',
-            '*'          
-        ];
+        app.use(routingControllersApp);
 
-        app.use(cors({
-            origin: function (origin, callback) {
-              console.log("Request Origin:", origin); 
-
-                if (!origin) return callback(null, true);
-
-                if (allowedOrigins.indexOf(origin) === -1) {
-                    const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-                    return callback(new Error(msg), false);
-                }
-                return callback(null, true);
-            },
-            methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], 
-            allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"], 
-            credentials: true, 
-        }));
-
-        const port = 3000; 
+        const port = 3000;
 
         app.listen(port, (): void => {
             console.log(`Server is running on port ${port}`);
         });
+
     } catch (error) {
         console.error('Failed to start application:', error);
         process.exit(1);
