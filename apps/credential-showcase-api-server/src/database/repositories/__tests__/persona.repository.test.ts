@@ -58,18 +58,20 @@ describe('Database persona repository tests', (): void => {
     expect(savedPersona.role).toEqual(persona.role)
     expect(savedPersona.description).toEqual(persona.description)
     expect(savedPersona.hidden).toEqual(persona.hidden)
-    expect(savedPersona.headshotImage).toBeDefined()
-    expect(savedPersona.headshotImage!.id).toBeDefined()
-    expect(savedPersona.headshotImage!.mediaType).toEqual(asset.mediaType)
-    expect(savedPersona.headshotImage!.fileName).toEqual(asset.fileName)
-    expect(savedPersona.headshotImage!.description).toEqual(asset.description)
-    expect(savedPersona.headshotImage!.content).toStrictEqual(asset.content)
-    expect(savedPersona.bodyImage).toBeDefined()
-    expect(savedPersona.bodyImage!.id).toBeDefined()
-    expect(savedPersona.bodyImage!.mediaType).toEqual(asset.mediaType)
-    expect(savedPersona.bodyImage!.fileName).toEqual(asset.fileName)
-    expect(savedPersona.bodyImage!.description).toEqual(asset.description)
-    expect(savedPersona.bodyImage!.content).toStrictEqual(asset.content)
+    const hsAsset = savedPersona.headshotImage as Asset
+    expect(hsAsset).toBeDefined()
+    expect(hsAsset!.id).toBeDefined()
+    expect(hsAsset!.mediaType).toEqual(asset.mediaType)
+    expect(hsAsset!.fileName).toEqual(asset.fileName)
+    expect(hsAsset!.description).toEqual(asset.description)
+    expect(hsAsset!.content).toStrictEqual(asset.content)
+    const biAsset = savedPersona.bodyImage as Asset
+    expect(biAsset).toBeDefined()
+    expect(biAsset!.id).toBeDefined()
+    expect(biAsset!.mediaType).toEqual(asset.mediaType)
+    expect(biAsset!.fileName).toEqual(asset.fileName)
+    expect(biAsset!.description).toEqual(asset.description)
+    expect(biAsset!.content).toStrictEqual(asset.content)
   })
 
   it('Should save persona without images to database', async (): Promise<void> => {
@@ -135,18 +137,20 @@ describe('Database persona repository tests', (): void => {
     expect(fromDb.name).toEqual(persona.name)
     expect(fromDb.role).toEqual(persona.role)
     expect(fromDb.description).toEqual(persona.description)
-    expect(fromDb.headshotImage).toBeDefined()
-    expect(fromDb.headshotImage!.id).toBeDefined()
-    expect(fromDb.headshotImage!.mediaType).toEqual(asset.mediaType)
-    expect(fromDb.headshotImage!.fileName).toEqual(asset.fileName)
-    expect(fromDb.headshotImage!.description).toEqual(asset.description)
-    expect(fromDb.headshotImage!.content).toStrictEqual(asset.content)
-    expect(fromDb.bodyImage).toBeDefined()
-    expect(fromDb.bodyImage!.id).toBeDefined()
-    expect(fromDb.bodyImage!.mediaType).toEqual(asset.mediaType)
-    expect(fromDb.bodyImage!.fileName).toEqual(asset.fileName)
-    expect(fromDb.bodyImage!.description).toEqual(asset.description)
-    expect(fromDb.bodyImage!.content).toStrictEqual(asset.content)
+    const hsAsset = fromDb.headshotImage as Asset
+    expect(hsAsset).toBeDefined()
+    expect(hsAsset!.id).toBeDefined()
+    expect(hsAsset!.mediaType).toEqual(asset.mediaType)
+    expect(hsAsset!.fileName).toEqual(asset.fileName)
+    expect(hsAsset!.description).toEqual(asset.description)
+    expect(hsAsset!.content).toStrictEqual(asset.content)
+    const biAsset = fromDb.bodyImage as Asset
+    expect(biAsset).toBeDefined()
+    expect(biAsset!.id).toBeDefined()
+    expect(biAsset!.mediaType).toEqual(asset.mediaType)
+    expect(biAsset!.fileName).toEqual(asset.fileName)
+    expect(biAsset!.description).toEqual(asset.description)
+    expect(biAsset!.content).toStrictEqual(asset.content)
   })
 
   it('Should get all personas from database', async (): Promise<void> => {
@@ -204,8 +208,8 @@ describe('Database persona repository tests', (): void => {
     const newName = 'Jane Doe'
     const updatedPersona = await personaRepository.update(savedPersona.id, {
       ...savedPersona,
-      headshotImage: savedPersona.headshotImage!.id,
-      bodyImage: savedPersona.bodyImage!.id,
+      headshotImage: (savedPersona.headshotImage as Asset)!.id,
+      bodyImage: (savedPersona.bodyImage as Asset)!.id,
       name: newName,
     })
 
@@ -215,18 +219,20 @@ describe('Database persona repository tests', (): void => {
     expect(updatedPersona.role).toEqual(persona.role)
     expect(updatedPersona.description).toEqual(persona.description)
     expect(updatedPersona.hidden).toEqual(persona.hidden)
-    expect(updatedPersona.headshotImage).toBeDefined()
-    expect(updatedPersona.headshotImage!.id).toBeDefined()
-    expect(updatedPersona.headshotImage!.mediaType).toEqual(asset.mediaType)
-    expect(updatedPersona.headshotImage!.fileName).toEqual(asset.fileName)
-    expect(updatedPersona.headshotImage!.description).toEqual(asset.description)
-    expect(updatedPersona.headshotImage!.content).toStrictEqual(asset.content)
-    expect(updatedPersona.bodyImage).toBeDefined()
-    expect(updatedPersona.bodyImage!.id).toBeDefined()
-    expect(updatedPersona.bodyImage!.mediaType).toEqual(asset.mediaType)
-    expect(updatedPersona.bodyImage!.fileName).toEqual(asset.fileName)
-    expect(updatedPersona.bodyImage!.description).toEqual(asset.description)
-    expect(updatedPersona.bodyImage!.content).toStrictEqual(asset.content)
+    const hsAsset = updatedPersona.headshotImage as Asset
+    expect(hsAsset).toBeDefined()
+    expect(hsAsset!.id).toBeDefined()
+    expect(hsAsset!.mediaType).toEqual(asset.mediaType)
+    expect(hsAsset!.fileName).toEqual(asset.fileName)
+    expect(hsAsset!.description).toEqual(asset.description)
+    expect(hsAsset!.content).toStrictEqual(asset.content)
+    const biAsset = updatedPersona.bodyImage as Asset
+    expect(biAsset).toBeDefined()
+    expect(biAsset!.id).toBeDefined()
+    expect(biAsset!.mediaType).toEqual(asset.mediaType)
+    expect(biAsset!.fileName).toEqual(asset.fileName)
+    expect(biAsset!.description).toEqual(asset.description)
+    expect(biAsset!.content).toStrictEqual(asset.content)
   })
 
   it('Should throw error when updating persona with invalid headshot image id', async (): Promise<void> => {
@@ -246,7 +252,7 @@ describe('Database persona repository tests', (): void => {
     const updatedPersona: NewPersona = {
       ...savedPersona,
       headshotImage: unknownImageId,
-      bodyImage: savedPersona.bodyImage!.id,
+      bodyImage: (savedPersona.bodyImage as Asset)!.id,
     }
 
     await expect(personaRepository.update(savedPersona.id, updatedPersona)).rejects.toThrowError(`No asset found for id: ${unknownImageId}`)
@@ -268,7 +274,7 @@ describe('Database persona repository tests', (): void => {
 
     const updatedPersona: NewPersona = {
       ...savedPersona,
-      headshotImage: savedPersona.headshotImage!.id,
+      headshotImage: (savedPersona.headshotImage as Asset).id,
       bodyImage: unknownImageId,
     }
 

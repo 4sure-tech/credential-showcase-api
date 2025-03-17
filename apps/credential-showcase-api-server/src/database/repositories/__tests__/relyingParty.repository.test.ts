@@ -13,15 +13,15 @@ import * as schema from '../../schema'
 import {
   Asset,
   CredentialAttributeType,
-  CredentialType,
   CredentialDefinition,
+  CredentialSchema,
+  CredentialType,
+  IdentifierType,
   NewAsset,
   NewCredentialDefinition,
+  NewCredentialSchema,
   NewRelyingParty,
   RelyingPartyType,
-  NewCredentialSchema,
-  IdentifierType,
-  CredentialSchema,
 } from '../../../types'
 
 describe('Database relying party repository tests', (): void => {
@@ -122,12 +122,13 @@ describe('Database relying party repository tests', (): void => {
     expect(savedRelyingParty.description).toEqual(relyingParty.description)
     expect(savedRelyingParty.organization).toEqual(relyingParty.organization)
     expect(savedRelyingParty.credentialDefinitions.length).toEqual(2)
-    expect(savedRelyingParty.logo).not.toBeNull()
-    expect(savedRelyingParty.logo!.id).toBeDefined()
-    expect(savedRelyingParty.logo!.mediaType).toEqual(asset.mediaType)
-    expect(savedRelyingParty.logo!.fileName).toEqual(asset.fileName)
-    expect(savedRelyingParty.logo!.description).toEqual(asset.description)
-    expect(savedRelyingParty.logo!.content).toStrictEqual(asset.content)
+    const logoAsset = savedRelyingParty.logo as Asset
+    expect(logoAsset).not.toBeNull()
+    expect(logoAsset!.id).toBeDefined()
+    expect(logoAsset!.mediaType).toEqual(logoAsset.mediaType)
+    expect(logoAsset!.fileName).toEqual(logoAsset.fileName)
+    expect(logoAsset!.description).toEqual(logoAsset.description)
+    expect(logoAsset!.content).toStrictEqual(logoAsset.content)
   })
 
   it('Should throw error when saving relying party with invalid logo id', async (): Promise<void> => {
@@ -192,12 +193,13 @@ describe('Database relying party repository tests', (): void => {
     expect(fromDb.description).toEqual(relyingParty.description)
     expect(fromDb.organization).toEqual(relyingParty.organization)
     expect(fromDb.credentialDefinitions.length).toEqual(2)
-    expect(fromDb.logo).not.toBeNull()
-    expect(fromDb.logo!.id).toBeDefined()
-    expect(fromDb.logo!.mediaType).toEqual(asset.mediaType)
-    expect(fromDb.logo!.fileName).toEqual(asset.fileName)
-    expect(fromDb.logo!.description).toEqual(asset.description)
-    expect(fromDb.logo!.content).toStrictEqual(asset.content)
+    const logoAsset = fromDb.logo as Asset
+    expect(logoAsset).not.toBeNull()
+    expect(logoAsset!.id).toBeDefined()
+    expect(logoAsset!.mediaType).toEqual(logoAsset.mediaType)
+    expect(logoAsset!.fileName).toEqual(logoAsset.fileName)
+    expect(logoAsset!.description).toEqual(logoAsset.description)
+    expect(logoAsset!.content).toStrictEqual(logoAsset.content)
   })
 
   it('Should get all relying parties from database', async (): Promise<void> => {
@@ -255,7 +257,7 @@ describe('Database relying party repository tests', (): void => {
       ...savedRelyingParty,
       name: newName,
       credentialDefinitions: [credentialDefinition1.id],
-      logo: savedRelyingParty.logo?.id,
+      logo: (savedRelyingParty.logo as Asset)?.id,
     })
 
     expect(updatedRelyingParty).toBeDefined()
@@ -264,12 +266,13 @@ describe('Database relying party repository tests', (): void => {
     expect(updatedRelyingParty.description).toEqual(relyingParty.description)
     expect(updatedRelyingParty.organization).toEqual(relyingParty.organization)
     expect(updatedRelyingParty.credentialDefinitions.length).toEqual(1)
-    expect(updatedRelyingParty.logo).not.toBeNull()
-    expect(updatedRelyingParty.logo!.id).toBeDefined()
-    expect(updatedRelyingParty.logo!.mediaType).toEqual(asset.mediaType)
-    expect(updatedRelyingParty.logo!.fileName).toEqual(asset.fileName)
-    expect(updatedRelyingParty.logo!.description).toEqual(asset.description)
-    expect(updatedRelyingParty.logo!.content).toStrictEqual(asset.content)
+    const logoAsset = updatedRelyingParty.logo as Asset
+    expect(logoAsset).not.toBeNull()
+    expect(logoAsset!.id).toBeDefined()
+    expect(logoAsset!.mediaType).toEqual(logoAsset.mediaType)
+    expect(logoAsset!.fileName).toEqual(logoAsset.fileName)
+    expect(logoAsset!.description).toEqual(logoAsset.description)
+    expect(logoAsset!.content).toStrictEqual(logoAsset.content)
   })
 
   it('Should throw error when updating relying party with invalid logo id', async (): Promise<void> => {

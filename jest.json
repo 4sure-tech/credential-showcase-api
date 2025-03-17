@@ -1,12 +1,7 @@
 {
   "preset": "ts-jest",
   "testTimeout": 60000,
-  "moduleFileExtensions": [
-    "ts",
-    "js",
-    "json",
-    "jsonld"
-  ],
+  "moduleFileExtensions": ["ts", "js", "json", "jsonld"],
   "collectCoverage": true,
   "collectCoverageFrom": [
     "packages/**/src/**/*.ts",
@@ -17,14 +12,8 @@
     "!**/node_modules/**",
     "!**/packages/**/index.ts"
   ],
-  "coveragePathIgnorePatterns": [
-    "packages/credential-showcase-openapi"
-  ],
-  "coverageReporters": [
-    "text",
-    "lcov",
-    "json"
-  ],
+  "coveragePathIgnorePatterns": ["packages/credential-showcase-openapi"],
+  "coverageReporters": ["text", "lcov", "json"],
   "coverageDirectory": "./coverage",
   "transform": {
     "\\.jsx?$": "babel-jest",
@@ -35,10 +24,7 @@
       }
     ]
   },
-  "testMatch": [
-    "**/__tests__/**/*.test.*",
-    "!dist/*"
-  ],
+  "testMatch": ["**/__tests__/**/*.test.*", "!dist/*"],
   "testEnvironment": "node",
   "automock": false,
   "verbose": true

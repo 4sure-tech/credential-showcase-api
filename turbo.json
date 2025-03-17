@@ -34,9 +34,7 @@
     },
     "generate:models": {
       "dependsOn": ["^generate:models"],
-      "outputs": [
-        "src/**"
-      ]
+      "outputs": ["src/**"]
     }
   }
 }

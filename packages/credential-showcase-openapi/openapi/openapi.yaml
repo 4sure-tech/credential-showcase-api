@@ -86,7 +86,7 @@ paths:
         schema:
           type: string
     get:
-      tags: [ "Issuance Scenario" ]
+      tags: ['Issuance Scenario']
       summary: Retrieve a single issuance scenario
       operationId: getIssuanceScenario
       responses:
@@ -107,7 +107,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     put:
-      tags: [ "Issuance Scenario" ]
+      tags: ['Issuance Scenario']
       summary: Update an issuance scenario (overwrite)
       operationId: updateIssuanceScenario
       requestBody:
@@ -134,7 +134,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     delete:
-      tags: [ "Issuance Scenario" ]
+      tags: ['Issuance Scenario']
       summary: Delete an issuance scenario
       operationId: deleteIssuanceScenario
       responses:
@@ -160,7 +160,7 @@ paths:
           type: string
     get:
       tags:
-        - "Issuance Scenario"
+        - 'Issuance Scenario'
       summary: List steps in an issuance scenario
       operationId: listIssuanceScenarioSteps
       responses:
@@ -181,7 +181,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     post:
-      tags: [ "Issuance Scenario" ]
+      tags: ['Issuance Scenario']
       summary: Add a step to an issuance scenario
       operationId: createIssuanceScenarioStep
       requestBody:
@@ -220,7 +220,7 @@ paths:
         schema:
           type: string
     get:
-      tags: [ "Issuance Scenario" ]
+      tags: ['Issuance Scenario']
       summary: Retrieve a specific step in an issuance scenario
       operationId: getIssuanceScenarioStep
       responses:
@@ -241,7 +241,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     put:
-      tags: [ "Issuance Scenario" ]
+      tags: ['Issuance Scenario']
       summary: Overwrite a step in an issuance scenario
       operationId: updateIssuanceScenarioStep
       requestBody:
@@ -268,7 +268,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     delete:
-      tags: [ "Issuance Scenario" ]
+      tags: ['Issuance Scenario']
       summary: Delete a step in an issuance scenario
       operationId: deleteIssuanceScenarioStep
       responses:
@@ -298,7 +298,7 @@ paths:
         schema:
           type: string
     get:
-      tags: [ "Issuance Scenario" ]
+      tags: ['Issuance Scenario']
       summary: List actions in a step
       operationId: listStepActions
       responses:
@@ -319,7 +319,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     post:
-      tags: [ "Issuance Scenario" ]
+      tags: ['Issuance Scenario']
       summary: Create an action in a step
       operationId: createStepAction
       requestBody:
@@ -363,7 +363,7 @@ paths:
         schema:
           type: string
     get:
-      tags: [ "Issuance Scenario" ]
+      tags: ['Issuance Scenario']
       summary: Retrieve a single action
       operationId: getStepAction
       responses:
@@ -384,7 +384,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     put:
-      tags: [ "Issuance Scenario" ]
+      tags: ['Issuance Scenario']
       summary: Overwrite an action
       operationId: updateStepAction
       requestBody:
@@ -411,7 +411,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     delete:
-      tags: [ "Issuance Scenario" ]
+      tags: ['Issuance Scenario']
       summary: Delete an action
       operationId: deleteStepAction
       responses:
@@ -483,7 +483,7 @@ paths:
         schema:
           type: string
     get:
-      tags: [ "Presentation Scenario" ]
+      tags: ['Presentation Scenario']
       summary: Retrieve a single presentation scenario
       operationId: getPresentationScenario
       responses:
@@ -504,7 +504,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     put:
-      tags: [ "Presentation Scenario" ]
+      tags: ['Presentation Scenario']
       summary: Update a presentation scenario (overwrite)
       operationId: updatePresentationScenario
       requestBody:
@@ -531,7 +531,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     delete:
-      tags: [ "Presentation Scenario" ]
+      tags: ['Presentation Scenario']
       summary: Delete a presentation scenario
       operationId: deletePresentationScenario
       responses:
@@ -557,7 +557,7 @@ paths:
           type: string
     get:
       tags:
-        - "Presentation Scenario"
+        - 'Presentation Scenario'
       summary: List steps in a presentation scenario
       operationId: listPresentationScenarioSteps
       responses:
@@ -578,7 +578,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     post:
-      tags: [ "Presentation Scenario" ]
+      tags: ['Presentation Scenario']
       summary: Add a step to a presentation scenario
       operationId: createPresentationScenarioStep
       requestBody:
@@ -617,7 +617,7 @@ paths:
         schema:
           type: string
     get:
-      tags: [ "Presentation Scenario" ]
+      tags: ['Presentation Scenario']
       summary: Retrieve a specific step in a presentation scenario
       operationId: getPresentationScenarioStep
       responses:
@@ -638,7 +638,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     put:
-      tags: [ "Presentation Scenario" ]
+      tags: ['Presentation Scenario']
       summary: Overwrite a step in a presentation scenario
       operationId: updatePresentationScenarioStep
       requestBody:
@@ -665,7 +665,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     delete:
-      tags: [ "Presentation Scenario" ]
+      tags: ['Presentation Scenario']
       summary: Delete a step in a presentation scenario
       operationId: deletePresentationScenarioStep
       responses:
@@ -695,7 +695,7 @@ paths:
         schema:
           type: string
     get:
-      tags: [ "Presentation Scenario" ]
+      tags: ['Presentation Scenario']
       summary: List actions in a step
       operationId: listPresentationScenarioStepActions
       responses:
@@ -716,7 +716,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     post:
-      tags: [ "Presentation Scenario" ]
+      tags: ['Presentation Scenario']
       summary: Create an action in a step
       operationId: createPresentationScenarioStepAction
       requestBody:
@@ -760,7 +760,7 @@ paths:
         schema:
           type: string
     get:
-      tags: [ "Presentation Scenario" ]
+      tags: ['Presentation Scenario']
       summary: Retrieve a single action
       operationId: getPresentationScenarioStepAction
       responses:
@@ -781,7 +781,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     put:
-      tags: [ "Presentation Scenario" ]
+      tags: ['Presentation Scenario']
       summary: Overwrite an action
       operationId: updatePresentationScenarioStepAction
       requestBody:
@@ -808,7 +808,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
     delete:
-      tags: [ "Presentation Scenario" ]
+      tags: ['Presentation Scenario']
       summary: Delete an action
       operationId: deletePresentationScenarioStepAction
       responses:
@@ -1525,6 +1525,12 @@ paths:
         - Showcases
       summary: List all showcases
       operationId: listShowcases
+      parameters:
+        - name: expand
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/ShowcaseExpands'
       responses:
         '200':
           description: OK
@@ -1578,6 +1584,12 @@ paths:
     get:
       tags:
         - Showcases
+      parameters:
+        - name: expand
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/ShowcaseExpands'
       summary: Get a specific showcase
       operationId: getShowcase
       responses:
@@ -1667,10 +1679,6 @@ components:
       type: object
       required:
         - id
-        - mediaType
-        - content
-        - createdAt
-        - updatedAt
       properties:
         id:
           type: string
@@ -1780,6 +1788,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/StepAction'
+        assetId:
+          type: string
+          description: The asset id
         asset:
           $ref: '#/components/schemas/Asset'
         createdAt:
@@ -2046,12 +2057,6 @@ components:
       type: object
       required:
         - id
-        - name
-        - slug
-        - role
-        - description
-        - createdAt
-        - updatedAt
       properties:
         id:
           type: string
@@ -2135,14 +2140,6 @@ components:
       type: object
       required:
         - id
-        - name
-        - slug
-        - type
-        - description
-        - steps
-        - personas
-        - createdAt
-        - updatedAt
       properties:
         id:
           type: string
@@ -2186,6 +2183,8 @@ components:
           description: Date and time the scenario was last updated
           format: date-time
           example: 2025-03-06T11:30:16.573Z
+        bannerImage:
+          $ref: '#/components/schemas/Asset'
     ScenarioRequest:
       type: object
       required:
@@ -2230,7 +2229,7 @@ components:
       type: object
       properties:
         issuanceScenario:
-            $ref: '#/components/schemas/IssuanceScenario'
+          $ref: '#/components/schemas/IssuanceScenario'
     IssuanceScenario:
       type: object
       allOf:
@@ -2252,7 +2251,7 @@ components:
           properties:
             issuer:
               type: string
-              example: "313e4567-e89b-12d3-a456-426614174469"
+              example: '313e4567-e89b-12d3-a456-426614174469'
       description: Scenario specialization for credential issuance
 
     PresentationScenariosResponse:
@@ -2287,7 +2286,7 @@ components:
           properties:
             relyingParty:
               type: string
-              example: "313e4567-e89b-12d3-a456-426614174469"
+              example: '313e4567-e89b-12d3-a456-426614174469'
 
     IdentifierType:
       type: string
@@ -2347,6 +2346,9 @@ components:
           type: string
           description: Organization the issuer belongs to
           example: Acme Corporation
+        logoId:
+          type: string
+          description: The asset id
         logo:
           $ref: '#/components/schemas/Asset'
         credentialDefinitions:
@@ -2361,12 +2363,12 @@ components:
           type: string
           description: Date and time the issuer was created
           format: date-time
-          example: "2025-03-06T11:30:16.573Z"
+          example: '2025-03-06T11:30:16.573Z'
         updatedAt:
           type: string
           description: Date and time the issuer was last updated
           format: date-time
-          example: "2025-03-06T11:30:16.573Z"
+          example: '2025-03-06T11:30:16.573Z'
     IssuerRequest:
       type: object
       required:
@@ -2451,6 +2453,9 @@ components:
           type: string
           description: Organization the relying party belongs to
           example: Acme Corporation
+        logoId:
+          type: string
+          description: The asset id
         logo:
           $ref: '#/components/schemas/Asset'
         credentialDefinitions:
@@ -2461,12 +2466,12 @@ components:
           type: string
           description: Date and time the relying party was created
           format: date-time
-          example: "2025-03-06T11:30:16.573Z"
+          example: '2025-03-06T11:30:16.573Z'
         updatedAt:
           type: string
           description: Date and time the relying party was last updated
           format: date-time
-          example: "2025-03-06T11:30:16.573Z"
+          example: '2025-03-06T11:30:16.573Z'
     RelyingPartyRequest:
       type: object
       required:
@@ -2531,15 +2536,6 @@ components:
       type: object
       required:
         - id
-        - name
-        - version
-        - type
-        - credentialSchema
-        - icon
-        # TODO enable back in SHOWCASE-81
-        # - representations
-        - createdAt
-        - updatedAt
       properties:
         id:
           type: string
@@ -2573,6 +2569,9 @@ components:
           oneOf:
             - $ref: '#/components/schemas/RevocationInfo'
             - $ref: '#/components/schemas/AnonCredRevocation'
+        iconId:
+          type: string
+          description: The asset id
         icon:
           $ref: '#/components/schemas/Asset'
         createdAt:
@@ -2641,7 +2640,7 @@ components:
       properties:
         credentialDefinitions:
           type: array
-          description: "List of credential definitions"
+          description: 'List of credential definitions'
           items:
             $ref: '#/components/schemas/CredentialDefinition'
     CredentialDefinitionResponse:
@@ -2801,7 +2800,7 @@ components:
         id:
           type: string
           description: Unique identifier for the credential schema
-          example:  123e4567-e89b-12d3-a456-426614174123
+          example: 123e4567-e89b-12d3-a456-426614174123
         name:
           type: string
           description: Name of the credential schema
@@ -2864,7 +2863,7 @@ components:
       properties:
         credentialSchemas:
           type: array
-          description: "List of credential schemas"
+          description: 'List of credential schemas'
           items:
             $ref: '#/components/schemas/CredentialSchema'
     CredentialSchemaResponse:
@@ -2914,23 +2913,23 @@ components:
           type: array
           description: List of scenarios in this showcase
           items:
-            $ref: '#/components/schemas/Scenario'
+              $ref: '#/components/schemas/Scenario'
         credentialDefinitions:
           type: array
           description: List of credential definitions used in this showcase
           items:
-            $ref: '#/components/schemas/CredentialDefinition'
+              $ref: '#/components/schemas/CredentialDefinition'
         personas:
           type: object
           description: List of personas involved in this showcase
           items:
-            $ref: '#/components/schemas/Persona'
+             $ref: '#/components/schemas/Persona'
         bannerImage:
           $ref: '#/components/schemas/Asset'
         completionMessage:
           type: string
           description: Message to display when the showcase is completed
-          example: "You have successfully completed the showcase"
+          example: 'You have successfully completed the showcase'
         createdAt:
           type: string
           description: Date and time the showcase was created
@@ -2946,7 +2945,7 @@ components:
       properties:
         showcases:
           type: array
-          description: "List of showcases"
+          description: 'List of showcases'
           items:
             $ref: '#/components/schemas/Showcase'
     ShowcaseResponse:
@@ -3001,14 +3000,14 @@ components:
           example: 123e4567-e89b-12d3-a456-426614174469
         completionMessage:
           type: string
-          example: "You have successfully completed the showcase"
+          example: 'You have successfully completed the showcase'
 
     ShowcaseStatus:
       type: string
       enum:
-          - PENDING
-          - ACTIVE
-          - ARCHIVED
+        - PENDING
+        - ACTIVE
+        - ARCHIVED
       description: Types of supported credentials
       example: PENDING
 
@@ -3019,6 +3018,19 @@ components:
         - PRESENTATION
       description: Types of supported scenarios
       example: ISSUANCE
+    ShowcaseExpands:
+      type: array
+      description: Which entities to expand
+      items:
+        $ref: '#/components/schemas/ShowcaseExpand'
+    ShowcaseExpand:
+      type: string
+      description: Which entity to expand
+      enum:
+        - SCENARIOS
+        - CREDENTIAL_DEFINITIONS
+        - PERSONAS
+        - ASSET_CONTENT
 
   responses:
     'BadRequest':

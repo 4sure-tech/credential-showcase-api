@@ -29,6 +29,7 @@ import {
   NewPersona,
   NewShowcase,
   Persona,
+  ShowcaseExpand,
   ShowcaseStatus,
   StepActionType,
   StepType,
@@ -254,11 +255,18 @@ describe('Database showcase repository tests', (): void => {
     expect(savedShowcase.scenarios.length).toEqual(2)
     expect(savedShowcase.credentialDefinitions.length).toEqual(2)
     expect(savedShowcase.personas.length).toEqual(2)
-    expect(savedShowcase.bannerImage!.id).toBeDefined()
-    expect(savedShowcase.bannerImage!.mediaType).toEqual(asset.mediaType)
-    expect(savedShowcase.bannerImage!.fileName).toEqual(asset.fileName)
-    expect(savedShowcase.bannerImage!.description).toEqual(asset.description)
-    expect(savedShowcase.bannerImage!.content).toStrictEqual(asset.content)
+
+    // Check banner image
+    expect(savedShowcase.bannerImage).toBeDefined()
+    if (!savedShowcase.bannerImage || typeof savedShowcase.bannerImage !== 'object') {
+      throw Error('expected fromDb.bannerImage to be an asset object')
+    }
+
+    expect(savedShowcase.bannerImage.id).toBeDefined()
+    expect(savedShowcase.bannerImage.mediaType).toEqual(asset.mediaType)
+    expect(savedShowcase.bannerImage.fileName).toEqual(asset.fileName)
+    expect(savedShowcase.bannerImage.description).toEqual(asset.description)
+    expect(savedShowcase.bannerImage.content).toStrictEqual(asset.content)
   })
 
   it('Should throw error when saving showcase with no personas', async (): Promise<void> => {
@@ -364,7 +372,7 @@ describe('Database showcase repository tests', (): void => {
     await expect(repository.create(showcase)).rejects.toThrowError(`No scenario found for id: ${unknownScenarioId}`)
   })
 
-  it('Should get showcase by id from database', async (): Promise<void> => {
+  it('Should get showcase by id from database with no expands', async (): Promise<void> => {
     const showcase: NewShowcase = {
       name: 'example_name',
       description: 'example_description',
@@ -378,7 +386,45 @@ describe('Database showcase repository tests', (): void => {
     const savedShowcase = await repository.create(showcase)
     expect(savedShowcase).toBeDefined()
 
-    const fromDb = await repository.findById(savedShowcase.id)
+    // Get showcase with no expands
+    const fromDb = await repository.findById(savedShowcase.id, [])
+
+    expect(fromDb).toBeDefined()
+    expect(fromDb.name).toEqual(showcase.name)
+    expect(fromDb.description).toEqual(showcase.description)
+    expect(fromDb.status).toEqual(showcase.status)
+    expect(fromDb.hidden).toEqual(showcase.hidden)
+    expect(fromDb.scenarios.length).toBeGreaterThan(0)
+    expect(fromDb.scenarios[0]).toBe(issuanceScenario1.id)
+    expect(fromDb.credentialDefinitions.length).toBeGreaterThan(0)
+    expect(fromDb.credentialDefinitions[0]).toBe(credentialDefinition1.id)
+    expect(fromDb.personas.length).toBeGreaterThan(0)
+    expect(fromDb.personas[0]).toBe(persona1.id)
+    expect(fromDb.bannerImage).toBeNull() // bannerImage is null when not expanded
+  })
+
+  it('Should get showcase by id from database with all expands including asset content', async (): Promise<void> => {
+    const showcase: NewShowcase = {
+      name: 'example_name',
+      description: 'example_description',
+      status: ShowcaseStatus.ACTIVE,
+      hidden: false,
+      scenarios: [issuanceScenario1.id, issuanceScenario2.id],
+      credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
+      personas: [persona1.id, persona2.id],
+      bannerImage: asset.id,
+    }
+
+    const savedShowcase = await repository.create(showcase)
+    expect(savedShowcase).toBeDefined()
+
+    // Get showcase with all expands including asset content
+    const fromDb = await repository.findById(savedShowcase.id, [
+      ShowcaseExpand.SCENARIOS,
+      ShowcaseExpand.CREDENTIAL_DEFINITIONS,
+      ShowcaseExpand.PERSONAS,
+      ShowcaseExpand.ASSET_CONTENT,
+    ])
 
     expect(fromDb).toBeDefined()
     expect(fromDb.name).toEqual(showcase.name)
@@ -388,9 +434,75 @@ describe('Database showcase repository tests', (): void => {
     expect(fromDb.scenarios.length).toEqual(2)
     expect(fromDb.credentialDefinitions.length).toEqual(2)
     expect(fromDb.personas.length).toEqual(2)
+
+    // Check that bannerImage is an object with content
+    expect(fromDb.bannerImage).toBeDefined()
+    if (!fromDb.bannerImage || typeof fromDb.bannerImage !== 'object') {
+      throw Error('expected fromDb.bannerImage to be an asset object')
+    }
+    expect(fromDb.bannerImage.id).toBeDefined()
+    expect(fromDb.bannerImage.mediaType).toEqual(asset.mediaType)
+    expect(fromDb.bannerImage.fileName).toEqual(asset.fileName)
+    expect(fromDb.bannerImage.description).toEqual(asset.description)
+    expect(fromDb.bannerImage.content).toBeDefined()
+    expect(Buffer.isBuffer(fromDb.bannerImage.content)).toBeTruthy()
   })
 
-  it('Should get all showcases from database', async (): Promise<void> => {
+  it('Should get showcase by id with relations expanded but without asset content', async (): Promise<void> => {
+    const showcase: NewShowcase = {
+      name: 'example_name',
+      description: 'example_description',
+      status: ShowcaseStatus.ACTIVE,
+      hidden: false,
+      scenarios: [issuanceScenario1.id, issuanceScenario2.id],
+      credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
+      personas: [persona1.id, persona2.id],
+      bannerImage: asset.id,
+    }
+
+    const savedShowcase = await repository.create(showcase)
+    expect(savedShowcase).toBeDefined()
+
+    // Get showcase with relations expanded but without asset content
+    const fromDb = await repository.findById(savedShowcase.id, [
+      ShowcaseExpand.SCENARIOS,
+      ShowcaseExpand.CREDENTIAL_DEFINITIONS,
+      ShowcaseExpand.PERSONAS,
+    ])
+
+    expect(fromDb).toBeDefined()
+    expect(fromDb.name).toEqual(showcase.name)
+    expect(fromDb.description).toEqual(showcase.description)
+    expect(fromDb.status).toEqual(showcase.status)
+    expect(fromDb.hidden).toEqual(showcase.hidden)
+    expect(fromDb.scenarios.length).toEqual(2)
+    expect(fromDb.credentialDefinitions.length).toEqual(2)
+    expect(fromDb.personas.length).toEqual(2)
+
+    // Check assets are not included or are string IDs
+    expect(fromDb.bannerImage).toBeDefined()
+
+    // Asset references should be string IDs when ASSET_CONTENT is not expanded
+    expect(typeof fromDb.bannerImage).toBe('string')
+    expect(fromDb.bannerImage).toBe(asset.id)
+
+    // Check that persona image references don't have content
+    for (const persona of fromDb.personas) {
+      expect(typeof persona.headshotImage).toBe('string')
+      expect(typeof persona.bodyImage).toBe('string')
+    }
+
+    // Check that scenario assets don't have content
+    for (const scenario of fromDb.scenarios) {
+      for (const step of scenario.steps) {
+        if (step.asset && typeof step.asset === 'object') {
+          expect(step.asset.content).not.toBeDefined()
+        }
+      }
+    }
+  })
+
+  it('Should get all showcases from database with no expands', async (): Promise<void> => {
     const showcase: NewShowcase = {
       name: 'example_name',
       description: 'example_description',
@@ -407,10 +519,151 @@ describe('Database showcase repository tests', (): void => {
     const savedShowcase2 = await repository.create(showcase)
     expect(savedShowcase2).toBeDefined()
 
-    const fromDb = await repository.findAll()
+    const fromDb = await repository.findAll([])
 
     expect(fromDb).toBeDefined()
     expect(fromDb.length).toEqual(2)
+    fromDb.forEach((showcase) => {
+      expect(showcase.scenarios).toEqual([])
+      expect(showcase.credentialDefinitions).toEqual([])
+      expect(showcase.personas).toEqual([])
+      expect(showcase.bannerImage).toBeNull()
+    })
+  })
+
+  it('Should get all showcases from database with all expands including asset content', async (): Promise<void> => {
+    const showcase: NewShowcase = {
+      name: 'example_name',
+      description: 'example_description',
+      status: ShowcaseStatus.ACTIVE,
+      hidden: false,
+      scenarios: [issuanceScenario1.id, issuanceScenario2.id],
+      credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
+      personas: [persona1.id, persona2.id],
+      bannerImage: asset.id,
+    }
+
+    const savedShowcase1 = await repository.create(showcase)
+    expect(savedShowcase1).toBeDefined()
+
+    const savedShowcase2 = await repository.create(showcase)
+    expect(savedShowcase2).toBeDefined()
+
+    const fromDb = await repository.findAll([
+      ShowcaseExpand.SCENARIOS,
+      ShowcaseExpand.CREDENTIAL_DEFINITIONS,
+      ShowcaseExpand.PERSONAS,
+      ShowcaseExpand.ASSET_CONTENT,
+    ])
+
+    expect(fromDb).toBeDefined()
+    expect(fromDb.length).toEqual(2)
+    fromDb.forEach((showcase) => {
+      expect(showcase.scenarios.length).toEqual(2)
+      expect(showcase.credentialDefinitions.length).toEqual(2)
+      expect(showcase.personas.length).toEqual(2)
+
+      // Check that bannerImage has content
+      if (typeof showcase.bannerImage === 'object' && showcase.bannerImage !== null) {
+        expect(showcase.bannerImage.content).toBeDefined()
+        expect(Buffer.isBuffer(showcase.bannerImage.content)).toBeTruthy()
+      }
+    })
+  })
+
+  it('Should get all showcases from database with relations expanded but without asset content', async (): Promise<void> => {
+    const showcase: NewShowcase = {
+      name: 'example_name',
+      description: 'example_description',
+      status: ShowcaseStatus.ACTIVE,
+      hidden: false,
+      scenarios: [issuanceScenario1.id, issuanceScenario2.id],
+      credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
+      personas: [persona1.id, persona2.id],
+      bannerImage: asset.id,
+    }
+
+    const savedShowcase1 = await repository.create(showcase)
+    expect(savedShowcase1).toBeDefined()
+
+    const savedShowcase2 = await repository.create(showcase)
+    expect(savedShowcase2).toBeDefined()
+
+    const fromDb = await repository.findAll([ShowcaseExpand.SCENARIOS, ShowcaseExpand.CREDENTIAL_DEFINITIONS, ShowcaseExpand.PERSONAS])
+
+    expect(fromDb).toBeDefined()
+    expect(fromDb.length).toEqual(2)
+    fromDb.forEach((showcase) => {
+      expect(showcase.scenarios.length).toEqual(2)
+      expect(showcase.credentialDefinitions.length).toEqual(2)
+      expect(showcase.personas.length).toEqual(2)
+
+      // Check assets are string IDs or objects without content
+      if (showcase.bannerImage) {
+        if (typeof showcase.bannerImage === 'string') {
+          expect(showcase.bannerImage).toBe(asset.id)
+        } else if (typeof showcase.bannerImage === 'object') {
+          expect(showcase.bannerImage.id).toBeDefined()
+          expect(showcase.bannerImage.content).not.toBeDefined()
+        }
+      }
+
+      // Check persona assets
+      for (const persona of showcase.personas) {
+        if (persona.headshotImage && typeof persona.headshotImage === 'object') {
+          expect(persona.headshotImage.content).not.toBeDefined()
+        }
+        if (persona.bodyImage && typeof persona.bodyImage === 'object') {
+          expect(persona.bodyImage.content).not.toBeDefined()
+        }
+      }
+    })
+  })
+
+  it('Should get all showcases from database with all expands', async (): Promise<void> => {
+    const showcase: NewShowcase = {
+      name: 'example_name',
+      description: 'example_description',
+      status: ShowcaseStatus.ACTIVE,
+      hidden: false,
+      scenarios: [issuanceScenario1.id, issuanceScenario2.id],
+      credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
+      personas: [persona1.id, persona2.id],
+    }
+
+    const savedShowcase1 = await repository.create(showcase)
+    expect(savedShowcase1).toBeDefined()
+
+    const savedShowcase2 = await repository.create(showcase)
+    expect(savedShowcase2).toBeDefined()
+
+    const fromDb = await repository.findAll([ShowcaseExpand.SCENARIOS, ShowcaseExpand.CREDENTIAL_DEFINITIONS, ShowcaseExpand.PERSONAS])
+
+    expect(fromDb).toBeDefined()
+    expect(fromDb.length).toEqual(2)
+    fromDb.forEach((showcase) => {
+      expect(showcase.scenarios.length).toEqual(2)
+      expect(showcase.credentialDefinitions.length).toEqual(2)
+      expect(showcase.personas.length).toEqual(2)
+    })
+  })
+
+  it('Should find id by slug', async (): Promise<void> => {
+    const showcase: NewShowcase = {
+      name: 'example_name',
+      description: 'example_description',
+      status: ShowcaseStatus.ACTIVE,
+      hidden: false,
+      scenarios: [issuanceScenario1.id, issuanceScenario2.id],
+      credentialDefinitions: [credentialDefinition1.id, credentialDefinition2.id],
+      personas: [persona1.id, persona2.id],
+    }
+
+    const savedShowcase = await repository.create(showcase)
+    expect(savedShowcase).toBeDefined()
+
+    const id = await repository.findIdBySlug('example-name')
+    expect(id).toEqual(savedShowcase.id)
   })
 
   it('Should delete showcase from database', async (): Promise<void> => {

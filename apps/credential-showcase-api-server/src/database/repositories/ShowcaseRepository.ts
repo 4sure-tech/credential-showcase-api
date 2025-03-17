@@ -1,4 +1,4 @@
-import { inArray, eq } from 'drizzle-orm'
+import { eq, inArray } from 'drizzle-orm'
 import { Service } from 'typedi'
 import { BadRequestError } from 'routing-controllers'
 import DatabaseService from '../../services/DatabaseService'
@@ -11,14 +11,28 @@ import { generateSlug } from '../../utils/slug'
 import { NotFoundError } from '../../errors'
 import {
   credentialDefinitions,
-  showcasesToCredentialDefinitions,
-  showcases,
-  scenarios,
   personas,
+  scenarios,
+  showcases,
+  showcasesToCredentialDefinitions,
   showcasesToPersonas,
   showcasesToScenarios,
 } from '../schema'
-import { Showcase, NewShowcase, RepositoryDefinition } from '../../types'
+import {
+  CredentialDefinition,
+  CredentialSchema,
+  Issuer,
+  NewShowcase,
+  Persona,
+  RelyingParty,
+  RepositoryDefinition,
+  Scenario,
+  Showcase,
+  ShowcaseExpand,
+  Step,
+} from '../../types'
+
+type ShowcaseRow = typeof showcases.$inferSelect
 
 @Service()
 class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> {
@@ -30,6 +44,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
     private readonly assetRepository: AssetRepository,
   ) {}
 
+  // TODO should we return the asset objects, or just the IDs?
   async create(showcase: NewShowcase): Promise<Showcase> {
     if (showcase.personas.length === 0) {
       return Promise.reject(new BadRequestError('At least one persona is required'))
@@ -212,13 +227,13 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
           steps: sortSteps(scenario.steps),
           ...(scenario.relyingParty && {
             relyingParty: {
-              ...(scenario.relyingParty as any), // TODO check this typing issue at a later point in time
+              ...(scenario.relyingParty as object),
               credentialDefinitions: scenario.relyingParty!.cds.map((credentialDefinition) => credentialDefinition.cd),
             },
           }),
           ...(scenario.issuer && {
             issuer: {
-              ...(scenario.issuer as any), // TODO check this typing issue at a later point in time
+              ...(scenario.issuer as any),
               credentialDefinitions: scenario.issuer!.cds.map((credentialDefinition) => credentialDefinition.cd),
               credentialSchemas: scenario.issuer!.css.map((credentialSchema) => credentialSchema.cs),
             },
@@ -240,6 +255,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
     await (await this.databaseService.getConnection()).delete(showcases).where(eq(showcases.id, id))
   }
 
+  // TODO should we return the asset objects, or just the IDs?
   async update(id: string, showcase: NewShowcase): Promise<Showcase> {
     await this.findById(id)
     if (showcase.personas.length === 0) {
@@ -431,13 +447,13 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
           steps: sortSteps(scenario.steps),
           ...(scenario.relyingParty && {
             relyingParty: {
-              ...(scenario.relyingParty as any), // TODO check this typing issue at a later point in time
+              ...(scenario.relyingParty as object),
               credentialDefinitions: scenario.relyingParty!.cds.map((credentialDefinition) => credentialDefinition.cd),
             },
           }),
           ...(scenario.issuer && {
             issuer: {
-              ...(scenario.issuer as any), // TODO check this typing issue at a later point in time
+              ...(scenario.issuer as any),
               credentialDefinitions: scenario.issuer!.cds.map((credentialDefinition) => credentialDefinition.cd),
               credentialSchemas: scenario.issuer!.css.map((credentialSchema) => credentialSchema.cs),
             },
@@ -454,169 +470,140 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
     })
   }
 
-  async findById(id: string): Promise<Showcase> {
-    const prepared = (await this.databaseService.getConnection()).query.showcases
-      .findFirst({
-        where: eq(showcases.id, id),
-        with: {
-          credentialDefinitions: {
-            with: {
-              credentialDefinition: {
-                with: {
-                  icon: true,
-                  cs: {
-                    with: {
-                      attributes: true,
-                    },
-                  },
-                  representations: true,
-                  revocation: true,
-                },
-              },
-            },
-          },
-          scenarios: {
-            with: {
-              scenario: {
-                with: {
-                  steps: {
-                    with: {
-                      actions: {
-                        with: {
-                          proofRequest: true,
-                        },
-                      },
-                      asset: true,
-                    },
-                  },
-                  issuer: {
-                    with: {
-                      cds: {
-                        with: {
-                          cd: {
-                            with: {
-                              icon: true,
-                              cs: {
-                                with: {
-                                  attributes: true,
-                                },
-                              },
-                              representations: true,
-                              revocation: true,
-                            },
-                          },
-                        },
-                      },
-                      css: {
-                        with: {
-                          cs: {
-                            with: {
-                              attributes: true,
-                            },
-                          },
-                        },
-                      },
-                      logo: true,
-                    },
-                  },
-                  relyingParty: {
-                    with: {
-                      cds: {
-                        with: {
-                          cd: {
-                            with: {
-                              icon: true,
-                              cs: {
-                                with: {
-                                  attributes: true,
-                                },
-                              },
-                              representations: true,
-                              revocation: true,
-                            },
-                          },
-                        },
-                      },
-                      logo: true,
-                    },
-                  },
-                  personas: {
-                    with: {
-                      persona: {
-                        with: {
-                          headshotImage: true,
-                          bodyImage: true,
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-          personas: {
-            with: {
-              persona: {
-                with: {
-                  headshotImage: true,
-                  bodyImage: true,
-                },
-              },
-            },
-          },
-          bannerImage: true,
-        },
-      })
-      .prepare('statement_name')
+  async findById(id: string, expand?: ShowcaseExpand[]): Promise<Showcase> {
+    const expandSet = new Set(expand || [])
+    let queryConfig = this.buildQueryConfigForId(id, expandSet)
 
-    const result = await prepared.execute()
+    const connection = await this.databaseService.getConnection()
+    const result = await connection.query.showcases.findFirst(queryConfig)
 
     if (!result) {
       return Promise.reject(new NotFoundError(`No showcase found for id: ${id}`))
     }
 
-    return {
+    // Create a typed showcase result
+    const showcase: Showcase = {
       ...result,
-      scenarios: result.scenarios.map((scenario) => ({
-        ...(scenario.scenario as any),
-        steps: sortSteps(scenario.scenario.steps),
-        ...(scenario.scenario.relyingParty && {
-          relyingParty: {
-            ...(scenario.scenario.relyingParty as any), // TODO check this typing issue at a later point in time
-            credentialDefinitions: scenario.scenario.relyingParty!.cds.map((credentialDefinition) => credentialDefinition.cd),
-          },
-        }),
-        ...(scenario.scenario.issuer && {
-          issuer: {
-            ...(scenario.scenario.issuer as any), // TODO check this typing issue at a later point in time
-            credentialDefinitions: scenario.scenario.issuer!.cds.map((credentialDefinition) => credentialDefinition.cd),
-            credentialSchemas: scenario.scenario.issuer!.css.map((credentialSchema: any) => credentialSchema.cs),
-          },
-        }),
-        personas: scenario.scenario.personas.map((item) => item.persona),
-      })),
-      credentialDefinitions: result.credentialDefinitions.map((item: any) => ({
-        ...item.credentialDefinition,
-        credentialSchema: item.credentialDefinition.cs,
-      })),
-      personas: result.personas.map((item) => item.persona),
+      scenarios: [],
+      credentialDefinitions: [],
+      personas: [],
+    }
+
+    this.populateScenarios(result, expandSet, showcase)
+    this.populateCredentialDefs(result, expandSet, showcase)
+    this.populatePersonas(result, expandSet, showcase)
+
+    return showcase
+  }
+
+  private populatePersonas(result: ShowcaseRow, expandSet: Set<ShowcaseExpand>, showcase: Showcase) {
+    if ('personas' in result && Array.isArray(result.personas)) {
+      if (expandSet.has(ShowcaseExpand.PERSONAS)) {
+        showcase.personas = result.personas.filter((personaJoin) => personaJoin.persona).map((personaJoin) => personaJoin.persona as Persona)
+      } else {
+        showcase.personas = result.personas.map((showcasesToPersona) => showcasesToPersona.persona)
+      }
     }
   }
 
-  async findAll(): Promise<Showcase[]> {
-    const connection = await this.databaseService.getConnection()
-    const showcases = await connection.query.showcases.findMany({
-      with: { bannerImage: true },
-    })
-    const showcaseIds = showcases.map((s: any) => s.id)
+  private populateCredentialDefs(result: ShowcaseRow, expandSet: Set<ShowcaseExpand>, showcase: Showcase) {
+    if ('credentialDefinitions' in result && Array.isArray(result.credentialDefinitions)) {
+      if (expandSet.has(ShowcaseExpand.CREDENTIAL_DEFINITIONS)) {
+        const credentialDefinitionsArray: CredentialDefinition[] = []
 
-    const [credDefData, scenariosData, personasData] = await Promise.all([
-      connection.query.showcasesToCredentialDefinitions.findMany({
-        where: inArray(showcasesToCredentialDefinitions.showcase, showcaseIds),
+        for (const cdJoin of result.credentialDefinitions) {
+          if (!cdJoin.credentialDefinition) continue
+
+          const cdObj = cdJoin.credentialDefinition
+
+          credentialDefinitionsArray.push({
+            ...cdObj,
+            credentialSchema: cdObj.cs,
+          } as CredentialDefinition)
+        }
+
+        showcase.credentialDefinitions = credentialDefinitionsArray
+      } else {
+        showcase.credentialDefinitions = result.credentialDefinitions.map(
+          (showcaseToCredentialDefinition) => showcaseToCredentialDefinition.credentialDefinition,
+        )
+      }
+    }
+  }
+
+  private populateScenarios(result: ShowcaseRow, expandSet: Set<ShowcaseExpand>, showcase: Showcase) {
+    if ('scenarios' in result && Array.isArray(result.scenarios)) {
+      if (expandSet.has(ShowcaseExpand.SCENARIOS)) {
+        showcase.scenarios = result.scenarios
+          .filter((scenarioJoin) => scenarioJoin.scenario)
+          .map((scenarioJoin) => {
+            const scenarioObj = scenarioJoin.scenario
+
+            // Process steps if they exist
+            const processedSteps = scenarioObj.steps ? (sortSteps(scenarioObj.steps) as Step[]) : []
+
+            // Process relying party if it exists
+            const processedRelyingParty = scenarioObj.relyingParty
+              ? ({
+                  ...scenarioObj.relyingParty,
+                  credentialDefinitions: scenarioObj.relyingParty.cds.map((cd: { cd: CredentialDefinition }) => cd.cd),
+                } as RelyingParty)
+              : undefined
+
+            // Process issuer if it exists
+            const processedIssuer = scenarioObj.issuer
+              ? ({
+                  ...scenarioObj.issuer,
+                  credentialDefinitions: scenarioObj.issuer.cds.map((cd: { cd: CredentialDefinition }) => cd.cd),
+                  credentialSchemas: scenarioObj.issuer.css.map((cs: { cs: CredentialSchema }) => cs.cs),
+                } as Issuer)
+              : undefined
+
+            // Process personas if they exist
+            const processedPersonas = scenarioObj.personas ? scenarioObj.personas.map((p: { persona: Persona }) => p.persona) : []
+
+            // Create the final scenario object with proper typing
+            const finalScenario: Scenario = {
+              ...scenarioObj,
+              steps: processedSteps,
+              personas: processedPersonas,
+            }
+
+            // Add relying party and issuer conditionally
+            if (processedRelyingParty && 'relyingParty' in finalScenario) {
+              finalScenario.relyingParty = processedRelyingParty
+            }
+
+            if (processedIssuer && 'issuer' in finalScenario) {
+              finalScenario.issuer = processedIssuer
+            }
+
+            return finalScenario
+          })
+      } else {
+        showcase.scenarios = result.scenarios.map((showcasesToScenario) => showcasesToScenario.scenario)
+      }
+    }
+  }
+
+  private buildQueryConfigForId(id: string, expandSet: Set<'SCENARIOS' | 'CREDENTIAL_DEFINITIONS' | 'PERSONAS' | 'ASSET_CONTENT'>) {
+    // Define our query structure based on what should be included
+    let queryConfig: any = {
+      where: eq(showcases.id, id),
+      with: {},
+    }
+
+    if (expandSet.has(ShowcaseExpand.ASSET_CONTENT)) {
+      queryConfig.with.bannerImage = true
+    }
+
+    // Add credentialDefinitions if needed
+    if (expandSet.has(ShowcaseExpand.CREDENTIAL_DEFINITIONS)) {
+      queryConfig.with.credentialDefinitions = {
         with: {
           credentialDefinition: {
             with: {
-              icon: true,
+              ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT) && { icon: true }),
               cs: {
                 with: {
                   attributes: true,
@@ -627,9 +614,19 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
             },
           },
         },
-      }),
-      connection.query.showcasesToScenarios.findMany({
-        where: inArray(showcasesToScenarios.showcase, showcaseIds),
+      }
+    } else {
+      // Include only the credentialDefinitions join table without expanding the credentialDefinition entity
+      queryConfig.with.credentialDefinitions = {
+        columns: {
+          credentialDefinition: true,
+        },
+      }
+    }
+
+    // Add scenarios if needed
+    if (expandSet.has(ShowcaseExpand.SCENARIOS)) {
+      queryConfig.with.scenarios = {
         with: {
           scenario: {
             with: {
@@ -640,7 +637,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                       proofRequest: true,
                     },
                   },
-                  asset: true,
+                  ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT) ? { asset: true } : {}),
                 },
               },
               issuer: {
@@ -649,7 +646,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                     with: {
                       cd: {
                         with: {
-                          icon: true,
+                          ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT) && { icon: true }),
                           cs: {
                             with: {
                               attributes: true,
@@ -670,7 +667,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                       },
                     },
                   },
-                  logo: true,
+                  ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT) ? { logo: true } : {}),
                 },
               },
               relyingParty: {
@@ -679,7 +676,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                     with: {
                       cd: {
                         with: {
-                          icon: true,
+                          ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT) && { icon: true }),
                           cs: {
                             with: {
                               attributes: true,
@@ -691,15 +688,19 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                       },
                     },
                   },
-                  logo: true,
+                  ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT) ? { logo: true } : {}),
                 },
               },
               personas: {
                 with: {
                   persona: {
                     with: {
-                      headshotImage: true,
-                      bodyImage: true,
+                      ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT)
+                        ? {
+                            headshotImage: true,
+                            bodyImage: true,
+                          }
+                        : {}),
                     },
                   },
                 },
@@ -707,80 +708,219 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
             },
           },
         },
-      }),
-      connection.query.showcasesToPersonas.findMany({
-        where: inArray(showcasesToPersonas.showcase, showcaseIds),
+      }
+    } else {
+      // Include only the scenarios join table without expanding the scenario entity
+      queryConfig.with.scenarios = {
+        columns: {
+          scenario: true,
+        },
+      }
+    }
+
+    // Add personas if needed
+    if (expandSet.has(ShowcaseExpand.PERSONAS)) {
+      queryConfig.with.personas = {
         with: {
           persona: {
             with: {
-              headshotImage: true,
-              bodyImage: true,
+              ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT)
+                ? {
+                    headshotImage: true,
+                    bodyImage: true,
+                  }
+                : {}),
             },
           },
         },
-      }),
-    ])
-
-    // Group join records by showcase id
-    const credDefMap = new Map<string, any[]>()
-    for (const item of credDefData) {
-      const key = item.showcase
-      if (!credDefMap.has(key)) {
-        credDefMap.set(key, [])
       }
-      credDefMap.get(key)!.push(item)
+    } else {
+      // Include only the personas join table without expanding the persona entity
+      queryConfig.with.personas = {
+        columns: {
+          persona: true,
+        },
+      }
+    }
+    return queryConfig
+  }
+
+  async findAll(expand?: ShowcaseExpand[]): Promise<Showcase[]> {
+    const expandSet = new Set(expand || [])
+
+    // Define our query structure based on what should be included
+    let queryConfig: any = {
+      with: {},
     }
 
-    const scenariosMap = new Map<string, any[]>()
-    for (const item of scenariosData) {
-      const key = item.showcase
-      if (!scenariosMap.has(key)) {
-        scenariosMap.set(key, [])
-      }
-      scenariosMap.get(key)!.push(item)
+    if (expandSet.has(ShowcaseExpand.ASSET_CONTENT)) {
+      queryConfig.with.bannerImage = true
     }
 
-    const personasMap = new Map<string, any[]>()
-    for (const item of personasData) {
-      const key = item.showcase
-      if (!personasMap.has(key)) {
-        personasMap.set(key, [])
+    // Add credentialDefinitions to query config
+    if (expandSet.has(ShowcaseExpand.CREDENTIAL_DEFINITIONS)) {
+      queryConfig.with.credentialDefinitions = {
+        with: {
+          credentialDefinition: {
+            with: {
+              ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT) && { icon: true }),
+              cs: {
+                with: {
+                  attributes: true,
+                },
+              },
+              representations: true,
+              revocation: true,
+            },
+          },
+        },
       }
-      personasMap.get(key)!.push(item)
+    } else {
+      queryConfig.with.credentialDefinitions = {
+        columns: {
+          credentialDefinition: true,
+        },
+      }
     }
 
-    return showcases.map((showcase: any) => {
-      return {
-        ...showcase,
-        scenarios: (scenariosMap.get(showcase.id) || []).map((s: any) => {
-          const scenarioData = { ...s.scenario }
-          scenarioData.steps = sortSteps(s.scenario.steps)
-          if (s.scenario.relyingParty) {
-            scenarioData.relyingParty = {
-              ...s.scenario.relyingParty,
-              credentialDefinitions: s.scenario.relyingParty.cds.map((item: any) => item.cd),
-            }
-          }
-          if (s.scenario.issuer) {
-            scenarioData.issuer = {
-              ...s.scenario.issuer,
-              credentialDefinitions: s.scenario.issuer.cds.map((item: any) => item.cd),
-              credentialSchemas: s.scenario.issuer.css.map((item: any) => item.cs),
-            }
-          }
-          // TODO check this typing issue at a later point in time
-          scenarioData.personas = s.scenario.personas.map((p: any) => p.persona)
-          return scenarioData
-        }),
-        credentialDefinitions: (credDefMap.get(showcase.id) || []).map((item: any) => {
-          return {
-            ...item.credentialDefinition,
-            credentialSchema: item.credentialDefinition.cs,
-          }
-          // TODO check this typing issue at a later point in time
-        }),
-        personas: (personasMap.get(showcase.id) || []).map((item: any) => item.persona),
+    // Add scenarios to query config
+    if (expandSet.has(ShowcaseExpand.SCENARIOS)) {
+      queryConfig.with.scenarios = {
+        with: {
+          scenario: {
+            with: {
+              steps: {
+                with: {
+                  actions: {
+                    with: {
+                      proofRequest: true,
+                    },
+                  },
+                  ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT) ? { asset: true } : {}),
+                },
+              },
+              issuer: {
+                with: {
+                  cds: {
+                    with: {
+                      cd: {
+                        with: {
+                          ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT) && { icon: true }),
+                          cs: {
+                            with: {
+                              attributes: true,
+                            },
+                          },
+                          representations: true,
+                          revocation: true,
+                        },
+                      },
+                    },
+                  },
+                  css: {
+                    with: {
+                      cs: {
+                        with: {
+                          attributes: true,
+                        },
+                      },
+                    },
+                  },
+                  ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT) ? { logo: true } : {}),
+                },
+              },
+              relyingParty: {
+                with: {
+                  cds: {
+                    with: {
+                      cd: {
+                        with: {
+                          ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT) && { icon: true }),
+                          cs: {
+                            with: {
+                              attributes: true,
+                            },
+                          },
+                          representations: true,
+                          revocation: true,
+                        },
+                      },
+                    },
+                  },
+                  ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT) ? { logo: true } : {}),
+                },
+              },
+              personas: {
+                with: {
+                  persona: {
+                    with: {
+                      ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT)
+                        ? {
+                            headshotImage: true,
+                            bodyImage: true,
+                          }
+                        : {}),
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
       }
+    } else {
+      queryConfig.with.scenarios = {
+        columns: {
+          scenario: true,
+        },
+      }
+    }
+
+    // Add personas to query config
+    if (expandSet.has(ShowcaseExpand.PERSONAS)) {
+      queryConfig.with.personas = {
+        with: {
+          persona: {
+            with: {
+              ...(expandSet.has(ShowcaseExpand.ASSET_CONTENT)
+                ? {
+                    headshotImage: true,
+                    bodyImage: true,
+                  }
+                : {}),
+            },
+          },
+        },
+      }
+    } else {
+      queryConfig.with.personas = {
+        columns: {
+          persona: true,
+        },
+      }
+    }
+
+    const connection = await this.databaseService.getConnection()
+    const showcasesResult = await connection.query.showcases.findMany(queryConfig)
+
+    if (showcasesResult.length === 0) {
+      return []
+    }
+
+    return showcasesResult.map((result): Showcase => {
+      // Create a typed showcase result
+      const showcase: Showcase = {
+        ...result,
+        scenarios: [],
+        credentialDefinitions: [],
+        personas: [],
+      }
+
+      this.populateScenarios(result, expandSet, showcase)
+      this.populateCredentialDefs(result, expandSet, showcase)
+      this.populatePersonas(result, expandSet, showcase)
+
+      return showcase
     })
   }
 

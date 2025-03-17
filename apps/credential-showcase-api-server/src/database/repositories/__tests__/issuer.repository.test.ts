@@ -122,12 +122,13 @@ describe('Database issuer repository tests', (): void => {
     expect(savedIssuer.description).toEqual(issuer.description)
     expect(savedIssuer.organization).toEqual(issuer.organization)
     expect(savedIssuer.credentialDefinitions.length).toEqual(2)
-    expect(savedIssuer.logo).not.toBeNull()
-    expect(savedIssuer.logo!.id).toBeDefined()
-    expect(savedIssuer.logo!.mediaType).toEqual(asset.mediaType)
-    expect(savedIssuer.logo!.fileName).toEqual(asset.fileName)
-    expect(savedIssuer.logo!.description).toEqual(asset.description)
-    expect(savedIssuer.logo!.content).toStrictEqual(asset.content)
+    const logoAsset = savedIssuer.logo as Asset
+    expect(logoAsset).not.toBeNull()
+    expect(logoAsset!.id).toBeDefined()
+    expect(logoAsset!.mediaType).toEqual(asset.mediaType)
+    expect(logoAsset!.fileName).toEqual(asset.fileName)
+    expect(logoAsset!.description).toEqual(asset.description)
+    expect(logoAsset!.content).toStrictEqual(asset.content)
   })
 
   it('Should throw error when saving issuer with invalid logo id', async (): Promise<void> => {
@@ -210,12 +211,13 @@ describe('Database issuer repository tests', (): void => {
     expect(fromDb.description).toEqual(issuer.description)
     expect(fromDb.organization).toEqual(issuer.organization)
     expect(fromDb.credentialDefinitions.length).toEqual(2)
-    expect(fromDb.logo).not.toBeNull()
-    expect(fromDb.logo!.id).toBeDefined()
-    expect(fromDb.logo!.mediaType).toEqual(asset.mediaType)
-    expect(fromDb.logo!.fileName).toEqual(asset.fileName)
-    expect(fromDb.logo!.description).toEqual(asset.description)
-    expect(fromDb.logo!.content).toStrictEqual(asset.content)
+    const logoAsset = fromDb.logo as Asset
+    expect(logoAsset).not.toBeNull()
+    expect(logoAsset!.id).toBeDefined()
+    expect(logoAsset!.mediaType).toEqual(asset.mediaType)
+    expect(logoAsset!.fileName).toEqual(asset.fileName)
+    expect(logoAsset!.description).toEqual(asset.description)
+    expect(logoAsset!.content).toStrictEqual(asset.content)
   })
 
   it('Should get all issuers from database', async (): Promise<void> => {
@@ -277,7 +279,7 @@ describe('Database issuer repository tests', (): void => {
       name: newName,
       credentialDefinitions: [credentialDefinition1.id],
       credentialSchemas: [credentialSchema.id],
-      logo: savedIssuer.logo?.id,
+      logo: (savedIssuer.logo as Asset)?.id,
     })
 
     expect(updatedIssuer).toBeDefined()
@@ -286,12 +288,13 @@ describe('Database issuer repository tests', (): void => {
     expect(updatedIssuer.description).toEqual(issuer.description)
     expect(updatedIssuer.organization).toEqual(issuer.organization)
     expect(updatedIssuer.credentialDefinitions.length).toEqual(1)
-    expect(updatedIssuer.logo).not.toBeNull()
-    expect(updatedIssuer.logo!.id).toBeDefined()
-    expect(updatedIssuer.logo!.mediaType).toEqual(asset.mediaType)
-    expect(updatedIssuer.logo!.fileName).toEqual(asset.fileName)
-    expect(updatedIssuer.logo!.description).toEqual(asset.description)
-    expect(updatedIssuer.logo!.content).toStrictEqual(asset.content)
+    const logoAsset = updatedIssuer.logo as Asset
+    expect(logoAsset).not.toBeNull()
+    expect(logoAsset!.id).toBeDefined()
+    expect(logoAsset!.mediaType).toEqual(asset.mediaType)
+    expect(logoAsset!.fileName).toEqual(asset.fileName)
+    expect(logoAsset!.description).toEqual(asset.description)
+    expect(logoAsset!.content).toStrictEqual(asset.content)
   })
 
   it('Should throw error when updating issuer with invalid logo id', async (): Promise<void> => {

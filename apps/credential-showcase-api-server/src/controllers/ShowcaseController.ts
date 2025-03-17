@@ -1,16 +1,18 @@
-import { BadRequestError, Body, Delete, Get, HttpCode, JsonController, OnUndefined, Param, Post, Put } from 'routing-controllers'
+import { BadRequestError, Body, Delete, Get, HttpCode, JsonController, OnUndefined, Param, Post, Put, QueryParam } from 'routing-controllers'
 import { Service } from 'typedi'
 import {
-  ShowcaseResponse,
-  ShowcaseResponseFromJSONTyped,
+  instanceOfShowcaseRequest,
+  ShowcaseExpand,
   ShowcaseRequest,
   ShowcaseRequestToJSONTyped,
+  ShowcaseResponse,
+  ShowcaseResponseFromJSONTyped,
   ShowcasesResponse,
   ShowcasesResponseFromJSONTyped,
-  instanceOfShowcaseRequest,
 } from 'credential-showcase-openapi'
-import ShowcaseService from '../services/ShowcaseService'
 import { showcaseDTOFrom } from '../utils/mappers'
+import { normalizeExpandParams } from '../utils/normalize'
+import { ShowcaseService } from '../services/ShowcaseService'
 
 @JsonController('/showcases')
 @Service()
@@ -18,9 +20,9 @@ class ShowcaseController {
   constructor(private showcaseService: ShowcaseService) {}
 
   @Get('/')
-  public async getAll(): Promise<ShowcasesResponse> {
+  public async getAll(@QueryParam('expand') expand?: ShowcaseExpand[]): Promise<ShowcasesResponse> {
     try {
-      const result = await this.showcaseService.getShowcases()
+      const result = await this.showcaseService.getShowcases({ expand: normalizeExpandParams(expand) })
       const showcases = result.map((showcase) => showcaseDTOFrom(showcase))
       return ShowcasesResponseFromJSONTyped({ showcases }, false)
     } catch (e) {
@@ -32,10 +34,10 @@ class ShowcaseController {
   }
 
   @Get('/:slug')
-  public async getOne(@Param('slug') slug: string): Promise<ShowcaseResponse> {
-    const id = await this.showcaseService.getIdBySlug(slug)
+  public async getOne(@Param('slug') slug: string, @QueryParam('expand') expand?: ShowcaseExpand[]): Promise<ShowcaseResponse> {
+    const id = await this.showcaseService.getIdBySlug({ slug })
     try {
-      const result = await this.showcaseService.getShowcase(id)
+      const result = await this.showcaseService.getShowcase({ id, expand: normalizeExpandParams(expand) })
       return ShowcaseResponseFromJSONTyped({ showcase: showcaseDTOFrom(result) }, false)
     } catch (e) {
       if (e.httpCode !== 404) {
@@ -52,7 +54,7 @@ class ShowcaseController {
       if (!instanceOfShowcaseRequest(showcaseRequest)) {
         return Promise.reject(new BadRequestError())
       }
-      const result = await this.showcaseService.createShowcase(ShowcaseRequestToJSONTyped(showcaseRequest))
+      const result = await this.showcaseService.createShowcase({ showcase: ShowcaseRequestToJSONTyped(showcaseRequest) })
       return ShowcaseResponseFromJSONTyped({ showcase: showcaseDTOFrom(result) }, false)
     } catch (e) {
       if (e.httpCode !== 404) {
@@ -64,12 +66,13 @@ class ShowcaseController {
 
   @Put('/:slug')
   public async put(@Param('slug') slug: string, @Body() showcaseRequest: ShowcaseRequest): Promise<ShowcaseResponse> {
-    const id = await this.showcaseService.getIdBySlug(slug)
+    const id = await this.showcaseService.getIdBySlug({ slug })
     try {
       if (!instanceOfShowcaseRequest(showcaseRequest)) {
         return Promise.reject(new BadRequestError())
       }
-      const result = await this.showcaseService.updateShowcase(id, ShowcaseRequestToJSONTyped(showcaseRequest))
+      const result = await this.showcaseService.updateShowcase({ id, showcase: ShowcaseRequestToJSONTyped(showcaseRequest) })
+
       return ShowcaseResponseFromJSONTyped({ showcase: showcaseDTOFrom(result) }, false)
     } catch (e) {
       if (e.httpCode !== 404) {
@@ -82,9 +85,9 @@ class ShowcaseController {
   @OnUndefined(204)
   @Delete('/:slug')
   public async delete(@Param('slug') slug: string): Promise<void> {
-    const id = await this.showcaseService.getIdBySlug(slug)
+    const id = await this.showcaseService.getIdBySlug({ slug })
     try {
-      return this.showcaseService.deleteShowcase(id)
+      return this.showcaseService.deleteShowcase({ id })
     } catch (e) {
       if (e.httpCode !== 404) {
         console.error(`Delete showcase id=${id} failed:`, e)

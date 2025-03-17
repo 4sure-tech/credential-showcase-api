@@ -2566,6 +2566,11 @@ packages:
     engines: {node: 20 || >=22}
     hasBin: true
 
+  rimraf@6.0.1:
+    resolution: {integrity: sha512-9dkvaxAsk/xNXSJzMgFqqMCuFgt2+KsOFek3TMLfo8NCPfWpBmqwyNn5Y+NX56QUYfCtsyhF3ayiboEoUmJk/A==}
+    engines: {node: 20 || >=22}
+    hasBin: true
+
   routing-controllers@0.11.1:
     resolution: {integrity: sha512-IGHHR+SpLsmDLUpYmGCwAwg1d6bobugNLlBfljnWnXEwQJhx1FGHOc93aQrErixkT3GiNxkgkVlZeFBXYcZ0LA==}
     peerDependencies:

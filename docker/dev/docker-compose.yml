@@ -26,9 +26,9 @@ services:
       - ALLOW_HEADERS=${ALLOW_HEADERS}
       - ALLOW_CREDENTIALS=${ALLOW_CREDENTIALS}
     depends_on:
-      - postgres  # Ensure Postgres starts first
+      - postgres # Ensure Postgres starts first
     ports:
-      - "${API_PORT}:3000" # remove when enabling proxy
+      - '${API_PORT}:3000' # remove when enabling proxy
 
   credential-showcase-traction-adapter:
     build:
@@ -48,7 +48,7 @@ services:
       - APP_NAME=${APP_NAME}
       - LOG_LEVEL=${LOG_LEVEL}
     depends_on:
-      - rabbitmq  # Ensure RabbitMQ starts first
+      - rabbitmq # Ensure RabbitMQ starts first
 
   postgres:
     image: postgres:16
@@ -60,17 +60,17 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_NAME}
     ports:
-      - "${DB_EXPOSED_PORT}:5432" # Expose Postgres port, default 5432
+      - '${DB_EXPOSED_PORT}:5432' # Expose Postgres port, default 5432
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "${DB_USER}"]
+      test: ['CMD', 'pg_isready', '-U', '${DB_USER}']
       interval: 10s
       timeout: 5s
       retries: 5
 
   rabbitmq:
-    image: rabbitmq:4-management  # Using RabbitMQ 4.x with management plugin
+    image: rabbitmq:4-management # Using RabbitMQ 4.x with management plugin
     restart: unless-stopped
     networks:
       - messagebroker_net
@@ -78,11 +78,11 @@ services:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
     ports:
-      - "${RABBITMQ_EXPOSED_PORT:-5672}:5672"
-      - "${RABBITMQ_MGMT_EXPOSED_PORT:-15672}:15672"
+      - '${RABBITMQ_EXPOSED_PORT:-5672}:5672'
+      - '${RABBITMQ_MGMT_EXPOSED_PORT:-15672}:15672'
 
 volumes:
-  postgres_data:  # Named volume for Postgres data persistence
+  postgres_data: # Named volume for Postgres data persistence
 
 networks:
   api_net:
@@ -92,8 +92,8 @@ networks:
   messagebroker_net:
     driver: bridge
     name: messagebroker_net
-    internal: false         # set to false to be able to expose for debugging
+    internal: false # set to false to be able to expose for debugging
   db_net:
     driver: bridge
     name: db_net
-    internal: false         # set to false to be able to expose for debugging
+    internal: false # set to false to be able to expose for debugging

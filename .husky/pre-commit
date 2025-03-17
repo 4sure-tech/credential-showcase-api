@@ -1,1 +1,22 @@
+# Check if prettier would make changes
+if ! pnpm prettier --check; then
+  echo "Error: Prettier check failed. Please format your code before committing."
+  echo "You can run 'pnpm prettier' to fix formatting issues."
+  exit 1
+fi
+
+# Stash unstaged and untracked changes, keeping staged files intact
+stash_ref=$(git stash push --keep-index --include-untracked -m "pre-commit-$(date +%s)")
+echo "Saved unstaged files to stash, ref: $stash_ref"
+
+# Run prettier formatting
 pnpm prettier
+
+# Stage only prettier modified files
+git add -u
+
+# Restore unstaged changes from stash, if any
+if [ "$stash_ref" != "No local changes to save" ]; then
+  echo "Restoring stash"
+  git stash pop >/dev/null 2>&1
+fi
