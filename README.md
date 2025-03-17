@@ -20,4 +20,4 @@ Contains the TypeScript models generated from the OpenAPI specification. These m
 
 # Build, Push and Deploy
 
-Using helm charts and github actions. To the galaxy!!!!
+Using helm charts and github actions. Beyond the galaxy!!!!
