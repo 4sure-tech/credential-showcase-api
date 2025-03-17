@@ -1,0 +1,234 @@
+name: Build, Push and Deploy 
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+        - "apps/credential-showcase-api-server/**"
+        - "packages/credential-showcase-traction-adapter/**"
+        - "docker/dev/**"
+        - "charts/**"
+
+jobs:
+  build_api_server:
+    name: "Build Credential Showcase API Server"
+    runs-on: ubuntu-latest
+    # if: ${{ always() && fromJSON(needs.ready.outputs.build) == true }}
+    #needs:
+    #  - test
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon Public ECR
+        run: |
+          aws ecr-public get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin public.ecr.aws
+
+      - name: Build and Push Docker Image
+        id: builder
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: docker/dev/credential-showcase-api-server/Dockerfile
+          push: true
+          tags: |
+            public.ecr.aws/k8o4d9r5/bcshowcase/credential-showcase-api-server:latest
+            public.ecr.aws/k8o4d9r5/bcshowcase/credential-showcase-api-server:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+    outputs:
+      image_tag: ${{ github.sha }}
+
+  build_traction_adapter:
+    name: "Build Credential Showcase Traction Adapter"
+    runs-on: ubuntu-latest
+    # if: ${{ always() && fromJSON(needs.ready.outputs.build) == true }}
+    #needs:
+    #  - test
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon Public ECR
+        run: |
+          aws ecr-public get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin public.ecr.aws
+
+      - name: Build and Push Docker Image
+        id: builder
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: docker/dev/credential-showcase-traction-adapter/Dockerfile
+          push: true
+          tags: |
+            public.ecr.aws/k8o4d9r5/bcshowcase/credential-showcase-traction-adapter:latest
+            public.ecr.aws/k8o4d9r5/bcshowcase/credential-showcase-traction-adapter:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+    outputs:
+      image_tag: ${{ github.sha }}
+
+
+  image-scan:
+    name: Image Scan - ${{ inputs.package_name }}
+    needs: build_api_server, build_traction_adapter
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Scan API Server Docker Image
+        uses: ./.github/actions/trivy-scan
+        with:
+          scan-type: 'image'
+          scan-ref: 'public.ecr.aws/k8o4d9r5/bcshowcase/credential-showcase-api-server:${{ github.sha }}'
+          scan-title: 'Docker Image Scan Results for credential-showcase-api-server'
+      - name: Scan Traction Adapter Docker Image
+        uses: ./.github/actions/trivy-scan
+        with:
+          scan-type: 'image'
+          scan-ref: 'public.ecr.aws/k8o4d9r5/bcshowcase/credential-showcase-traction-adapter:${{ github.sha }}'
+          scan-title: 'Docker Image Scan Results for credential-showcase-traction-adapter'
+  
+  deploy:
+    name: Deploy
+    environment: development
+    runs-on: ubuntu-latest
+    needs:
+      - build_api_server
+      - build_traction_adapter
+    # if: ${{ always() && (fromJSON(needs.ready.outputs.deploy) == true) && !(contains(needs.*.result, 'failure')) }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Deploy using SSH to EC2 instance
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            # Run Helm commands on the EC2 instance
+            helm upgrade --install credential-showcase -f helm-k8s/credential-showcase/charts/credential-showcase/values.yaml \
+              --set api_server.image.tag=${{ github.sha }} \ --set traction_adapter.image.tag=${{ github.sha }} \
+              helm-k8s/credential-showcase/charts/credential-showcase/ --wait
+            
+            # Create Certificate
+            cat <<EOF | kubectl apply -f -
+            apiVersion: cert-manager.io/v1
+            kind: Certificate
+            metadata:
+              name: showcase-tls
+            spec:
+              secretName: showcase-tls
+              issuerRef:
+                name: letsencrypt-prod
+                kind: ClusterIssuer
+              dnsNames:
+                - bcshowcase-api.dev.nborbit.ca
+                - bcshowcase-traction.dev.nborbit.ca
+            EOF
+            
+            # Create Traefik IngressRoute
+            cat <<EOF | kubectl apply -f -
+            apiVersion: traefik.containo.us/v1alpha1
+            kind: IngressRoute
+            metadata:
+              name: api-server-route
+              namespace: kube-system
+            spec:
+              entryPoints:
+                - websecure
+              routes:
+                - match: Host(\`bcshowcase-api.dev.nborbit.ca\`)
+                  kind: Rule
+                  services:
+                    - name: credential-showcase-credential-showcase-api-server
+                      port: 3000
+              tls:
+                secretName: showcase-tls
+            EOF
+
+            ##---------------------------------------------##
+            
+            # Create Traefik IngressRoute
+            cat <<EOF | kubectl apply -f -
+            apiVersion: traefik.containo.us/v1alpha1
+            kind: IngressRoute
+            metadata:
+              name: traction-adapter-route
+              namespace: kube-system
+            spec:
+              entryPoints:
+                - websecure
+              routes:
+                - match: Host(\`bcshowcase-traction.dev.nborbit.ca\`)
+                  kind: Rule
+                  services:
+                    - name: credential-showcase-credential-showcase-traction-adapter
+                      port: 3757
+              tls:
+                secretName: showcase-tls
+            EOF
+      
+      - name: Restart Deployments
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            kubectl rollout restart deployment credential-showcase-api-server
+            kubectl rollout restart deployment credential-showcase-traction-adapter
+
+
+  deploymenturls:
+    name: Deployment URLs comment
+    runs-on: ubuntu-latest
+    needs:
+      - deploy
+    # if: ${{ (fromJSON(needs.ready.outputs.deploy) == true) && !(contains(needs.*.result, 'failure')) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Find Comment
+        uses: peter-evans/find-comment@v3
+        id: fc
+        with:
+          issue-number: ${{ github.event.number }}
+          comment-author: "github-actions[bot]"
+          body-includes: Deployment URLs ready for review.
+
+      - name: Create comment
+        if: steps.fc.outputs.comment-id == ''
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.number }}
+          body: |
+            | Deployment | Resource | Location |
+            | --- | --- | --- |
+            | API Server | | bcshowcase-api.dev.nborbit.ca/ |
+            | Traction Adapter | | bcshowcase-traction.dev.nborbit.ca/ |
+
+            Deployment URLs ready for review.

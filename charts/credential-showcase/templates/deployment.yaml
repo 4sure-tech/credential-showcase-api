@@ -1,0 +1,108 @@
+{{- if .Values.api_server.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.api_server.name }}
+  namespace: {{ .Values.global.namespaceOverride | default .Release.Namespace }}
+spec:
+  replicas: {{ .Values.api_server.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-{{ .Values.api_server.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-{{ .Values.api_server.name }}
+    spec:
+      containers:
+      - name: {{ .Values.api_server.name }}
+        image: "{{ .Values.api_server.image.repository }}:{{ .Values.api_server.image.tag }}"
+        imagePullPolicy: {{ .Values.api_server.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.api_server.port }}
+        env:
+        # Define a list of environment variables to override
+        {{- $overrideEnvs := list "DB_HOST" "DB_PORT" "DB_NAME" "DB_USERNAME" "DB_PASSWORD" }}
+        # First add the environment variables from values.yaml, excluding the ones we'll override
+        {{- range $key, $value := .Values.api_server.env }}
+        {{- if not (has $key $overrideEnvs) }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        {{- end }}
+        # Then add our overridden environment variables
+        - name: DB_HOST
+          value: "credential-showcase-postgresql"
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_NAME
+          value: {{ .Values.postgresql.auth.database | quote }}
+        - name: DB_USERNAME
+          value: {{ .Values.postgresql.auth.username | quote }}
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "credential-showcase.database.secret.name" . }}
+              key: {{ include "credential-showcase.database.userPasswordKey" . }}
+        # Add auth token environment variable
+        - name: AUTH_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "credential-showcase.authtoken.secret.name" . }}
+              key: token
+      serviceAccountName: {{ if .Values.api_server.serviceAccount.create }}{{ if .Values.api_server.serviceAccount.name }}{{ .Values.api_server.serviceAccount.name }}{{ else }}{{ $.Release.Name }}-{{ .Values.api_server.name }}{{ end }}{{ end }}
+---
+{{- end }}
+{{- if .Values.traction_adapter.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.traction_adapter.name }}
+  namespace: {{ .Values.global.namespaceOverride | default .Release.Namespace }}
+spec:
+  replicas: {{ .Values.traction_adapter.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-{{ .Values.traction_adapter.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-{{ .Values.traction_adapter.name }}
+      {{- with .Values.traction_adapter.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- with .Values.traction_adapter.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: {{ .Values.traction_adapter.name }}
+        image: "{{ .Values.traction_adapter.image.repository }}:{{ .Values.traction_adapter.image.tag }}"
+        imagePullPolicy: {{ .Values.traction_adapter.image.pullPolicy }}
+        {{- with .Values.traction_adapter.containerSecurityContext }}
+        securityContext:
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
+        ports:
+        - containerPort: {{ .Values.traction_adapter.port }}
+        env:
+        {{- range $key, $value := .Values.traction_adapter.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        - name: RABBITMQ_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "credential-showcase.rabbitmq.secret.name" . }}
+              key: {{ include "credential-showcase.rabbitmq.passwordKey" . }}
+        - name: RABBITMQ_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-rabbitmq
+              key: username
+        resources:
+          {{- toYaml .Values.traction_adapter.resources | nindent 12 }}
+      serviceAccountName: {{ if .Values.traction_adapter.serviceAccount.create }}{{ if .Values.traction_adapter.serviceAccount.name }}{{ .Values.traction_adapter.serviceAccount.name }}{{ else }}{{ $.Release.Name }}-{{ .Values.traction_adapter.name }}{{ end }}{{ end }}
+{{- end }}

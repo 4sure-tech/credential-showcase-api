@@ -1,0 +1,51 @@
+# name: Uninstall PR resources
+# on:
+#   pull_request:
+#     branches:
+#       - main
+#     paths:
+#       - "apps/credential-showcase-api-server/**"
+#       - "packages/credential-showcase-traction-adapter/**"
+#       - "docker/dev/**"
+#       - "charts/**"
+#     types:
+#       - closed
+
+# jobs:
+#   uninstall:
+#     name: Uninstall PR
+#     environment: development
+#     runs-on: ubuntu-22.04
+#     if: github.repository_owner == '4sure-tech' #'bcgov'
+#     steps:
+#       - name: Authenticate and set context
+#         uses: redhat-actions/oc-login@v1
+#         with:
+#           openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
+#           openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
+#           certificate_authority_data: ${{ secrets.OPENSHIFT_CA_CRT }}
+#           namespace: ${{ secrets.OPENSHIFT_NAMESPACE }}
+
+#       - name: Uninstall Credential Showcase resources via Helm
+#         continue-on-error: true
+#         run: |
+#           helm uninstall pr-${{ github.event.number }}-credential-showcase
+
+#       - name: Remove Credential Showcase Openshift Objects
+#         continue-on-error: true
+#         run: |
+#           oc delete secret,pvc --selector "app.kubernetes.io/instance"=pr-${{ github.event.number }}-credential-showcase
+
+#   # clean-ghcr:
+#   #   runs-on: ubuntu-22.04
+#   #   if: ${{ false }}
+#   #   name: Delete closed PR images
+#   #   steps:
+#   #     - name: Delete Images
+#   #       uses: snok/container-retention-policy@v3.0.0
+#   #       with:
+#   #         account: 4sure-tech #bcgov
+#   #         image-names: credential-showcase-api-server, credential-showcase-traction-adapter
+#   #         image-tags: pr-${{ github.event.number }}
+#   #         cut-off: 1second
+#   #         token: ${{ secrets.GITHUB_TOKEN }}

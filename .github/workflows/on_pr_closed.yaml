@@ -1,0 +1,57 @@
+name: Uninstall PR resources
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - "apps/credential-showcase-api-server/**"
+      - "packages/credential-showcase-traction-adapter/**"
+      - "docker/dev/**"
+      - "charts/**"
+    types:
+      - closed
+
+jobs:
+  uninstall:
+    name: Uninstall PR Environment
+    environment: development
+    runs-on: ubuntu-latest
+    if: github.repository_owner == '4sure-tech' #'bcgov'
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Uninstall via SSH to EC2 instance
+      - name: Uninstall from EC2 via SSH
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            # Uninstall PR-specific Helm release
+            helm uninstall pr-${{ github.event.number }}-credential-showcase
+            
+            # Clean up any leftover Kubernetes resources
+            kubectl delete secret,pvc,ingress,service,deployment,statefulset,configmap \
+              --selector "app.kubernetes.io/instance=pr-${{ github.event.number }}-credential-showcase"
+            
+            # Remove PR-specific IngressRoutes and Certificate
+            kubectl delete ingressroute pr-${{ github.event.number }}-api-server-route -n kube-system
+            kubectl delete ingressroute pr-${{ github.event.number }}-traction-adapter-route -n kube-system
+            kubectl delete certificate pr-${{ github.event.number }}-showcase-tls
+
+  # clean-ghcr:
+  #   runs-on: ubuntu-latest
+  #   if: ${{ false }}
+  #   name: Delete closed PR images
+  #   steps:
+  #     - name: Delete Images
+  #       uses: snok/container-retention-policy@v3.0.0
+  #       with:
+  #         account: 4sure-tech #bcgov
+  #         image-names: credential-showcase-api-server, credential-showcase-traction-adapter
+  #         image-tags: pr-${{ github.event.number }}
+  #         cut-off: 1second
+  #         token: ${{ secrets.GITHUB_TOKEN }}
