@@ -1,36 +1,28 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "tasks": {
+  "globalDependencies": ["tsconfig.json"],
+  "pipeline": {
     "build": {
-      "outputs": ["dist/**"],
-      "dependsOn": ["^build"]
-    },
-    "db:migrate": {
-      "dependsOn": ["^db:migrate"]
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", "build/**", "lib/**", ".next/**", "public/dist/**"],
+      "cache": true
     },
     "credential-showcase-openapi#build": {
-      "outputs": ["dist/**", "src/models/**"]
+      "outputs": ["src/**", "dist/**"]
     },
     "credential-showcase-ts-model#build": {
-      "outputs": ["dist/**"]
+      "outputs": ["src/**", "dist/**"]
     },
     "credential-showcase-ts-sdk#build": {
-      "outputs": ["dist/**"]
-    },
-    "credential-showcase-traction-adapter#build": {
-      "outputs": ["dist/**"]
-    },
-    "credential-showcase-api-server#build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**"],
-      "env": ["DB_URL"]
-    },
-    "check-types": {
-      "dependsOn": ["^check-types"]
+      "outputs": ["src/**", "dist/**"]
     },
     "dev": {
-      "persistent": true,
-      "cache": false
+      "cache": false,
+      "persistent": true
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": []
     }
   }
 }

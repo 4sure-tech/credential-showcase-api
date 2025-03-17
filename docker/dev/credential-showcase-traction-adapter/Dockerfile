@@ -27,7 +27,13 @@ RUN mvn -version
 
 RUN pnpm store prune && pnpm install -g rimraf typescript tslib turbo
 RUN pnpm install --no-frozen-lockfile
-RUN pnpm build
+
+# RUN pnpm build --filter=credential-showcase-traction-adapter
+RUN pnpm build --filter=credential-showcase-openapi && \
+    pnpm build --filter=credential-showcase-ts-model && \
+    pnpm build --filter=credential-showcase-ts-sdk && \
+    pnpm build --filter=credential-showcase-traction-adapter
+
 RUN pnpm deploy /deploy --filter credential-showcase-traction-adapter --prod --no-optional
 
 # Runtime stage
