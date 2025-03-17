@@ -226,8 +226,8 @@ jobs:
           username: ${{ secrets.VPS_USERNAME }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            kubectl rollout restart deployment pr-${{ github.event.number }}-credential-showcase-credential-showcase-api-server
-            kubectl rollout restart deployment pr-${{ github.event.number }}-credential-showcase-credential-showcase-traction-adapter
+            sudo kubectl rollout restart deployment pr-${{ github.event.number }}-credential-showcase-credential-showcase-api-server
+            sudo kubectl rollout restart deployment pr-${{ github.event.number }}-credential-showcase-credential-showcase-traction-adapter
 
 
   deploymenturls:
