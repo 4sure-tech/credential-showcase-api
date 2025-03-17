@@ -93,6 +93,18 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      
+      # Copy charts to EC2 server first
+      - name: Copy charts to EC2
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: "charts/"
+          target: "/home/ubuntu/pipeline"
+          overwrite: true
+          strip_components: 0
 
       # Deploy using SSH to EC2 instance
       - name: Deploy to EC2 via SSH
@@ -102,9 +114,8 @@ jobs:
           username: ${{ secrets.VPS_USERNAME }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            # Run Helm commands on the EC2 instance
-            cd /home/ubuntu/helm-k8s/credential-showcase-api
-            helm upgrade --install credential-showcase -f ./charts/credential-showcase/values.yaml --set api_server.image.tag=${{ github.sha }} --set traction_adapter.image.tag=${{ github.sha }} ./charts/credential-showcase --wait
+            cd /home/ubuntu/pipeline/charts/credential-showcase
+            helm dependency update && helm upgrade --install credential-showcase -f ./values.yaml --set api_server.image.tag=${{ github.sha }} --set traction_adapter.image.tag=${{ github.sha }} . --wait
             
             # Create Certificate
             cat <<EOF | sudo kubectl apply -f -
@@ -163,6 +174,8 @@ jobs:
               tls:
                 secretName: showcase-tls
             EOF
+            
+            rm -rf /home/ubuntu/pipeline/charts
       
       - name: Restart Deployments
         uses: appleboy/ssh-action@v0.1.10

@@ -96,12 +96,9 @@ spec:
           valueFrom:
             secretKeyRef:
               name: {{ include "credential-showcase.rabbitmq.secret.name" . }}
-              key: {{ include "credential-showcase.rabbitmq.passwordKey" . }}
+              key: rabbitmq-password
         - name: RABBITMQ_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Release.Name }}-rabbitmq
-              key: username
+          value: {{ .Values.rabbitmq.auth.username | default "guest" | quote }}
         resources:
           {{- toYaml .Values.traction_adapter.resources | nindent 12 }}
       serviceAccountName: {{ if .Values.traction_adapter.serviceAccount.create }}{{ if .Values.traction_adapter.serviceAccount.name }}{{ .Values.traction_adapter.serviceAccount.name }}{{ else }}{{ $.Release.Name }}-{{ .Values.traction_adapter.name }}{{ end }}{{ end }}

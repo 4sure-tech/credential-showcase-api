@@ -54,7 +54,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Returns a secret if it already exists in Kubernetes, otherwise creates
 it randomly.
 */}}
-{{- define "getOrGeneratePass" }}
+{{- define "getOrGeneratePass" -}}
 {{- $len := (default 16 .Length) | int -}}
 {{- $obj := (lookup "v1" .Kind .Namespace .Name).data -}}
 {{- if $obj }}
@@ -67,14 +67,10 @@ it randomly.
 {{- end }}
 
 {{/*
-Create a default fully qualified postgresql name.
+Define database secret name
 */}}
 {{- define "credential-showcase.database.secret.name" -}}
-{{- if .Values.postgresql.auth.existingSecret -}}
-{{- .Values.postgresql.auth.existingSecret -}}
-{{- else -}}
-{{ .Release.Name }}-postgresql
-{{- end -}}
+{{- printf "%s-postgresql" .Release.Name -}}
 {{- end -}}
 
 {{/*
@@ -110,54 +106,21 @@ Create a default fully qualified rabbitmq name.
 Get the rabbitmq password key.
 */}}
 {{- define "credential-showcase.rabbitmq.passwordKey" -}}
-{{- .Values.rabbitmq.auth.secretKeys.passwordKey | default "rabbitmq-password" -}}
-{{- end -}}
-
-{{/*
-PostgreSQL password
-*/}}
-{{- define "postgresql.password" -}}
-{{- $secretName := printf "%s-postgresql" .Release.Name -}}
-{{- $secretKey := "password" -}}
-{{- $secret := (lookup "v1" "Secret" .Release.Namespace $secretName) -}}
-{{- if $secret -}}
-    {{/* Secret exists, use existing password */}}
-    {{- index $secret.data $secretKey -}}
+{{- if .Values.rabbitmq.auth.secretKeys.passwordKey -}}
+{{- printf "%s" .Values.rabbitmq.auth.secretKeys.passwordKey -}}
 {{- else -}}
-    {{/* Secret doesn't exist, generate new password */}}
-    {{- randAlphaNum 16 | b64enc -}}
+rabbitmq-password
 {{- end -}}
 {{- end -}}
 
 {{/*
-PostgreSQL admin password
+Get the rabbitmq erlang cookie key.
 */}}
-{{- define "postgresql.adminPassword" -}}
-{{- $secretName := printf "%s-postgresql" .Release.Name -}}
-{{- $secretKey := "postgres-password" -}}
-{{- $secret := (lookup "v1" "Secret" .Release.Namespace $secretName) -}}
-{{- if $secret -}}
-    {{/* Secret exists, use existing password */}}
-    {{- index $secret.data $secretKey -}}
+{{- define "credential-showcase.rabbitmq.erlangCookieKey" -}}
+{{- if .Values.rabbitmq.auth.secretKeys.erlangCookieKey -}}
+{{- printf "%s" .Values.rabbitmq.auth.secretKeys.erlangCookieKey -}}
 {{- else -}}
-    {{/* Secret doesn't exist, generate new password */}}
-    {{- randAlphaNum 16 | b64enc -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-RabbitMQ password
-*/}}
-{{- define "rabbitmq.password" -}}
-{{- $secretName := printf "%s-rabbitmq" .Release.Name -}}
-{{- $secretKey := "rabbitmq-password" -}}
-{{- $secret := (lookup "v1" "Secret" .Release.Namespace $secretName) -}}
-{{- if $secret -}}
-    {{/* Secret exists, use existing password */}}
-    {{- index $secret.data $secretKey -}}
-{{- else -}}
-    {{/* Secret doesn't exist, generate new password */}}
-    {{- randAlphaNum 16 | b64enc -}}
+rabbitmq-erlang-cookie
 {{- end -}}
 {{- end -}}
 

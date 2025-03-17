@@ -1,14 +1,19 @@
 name: Uninstall PR resources
 on:
+  # Add manual trigger with PR number input
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to uninstall'
+        required: true
+        type: string
+  
+  # Keep automatic trigger on PR close
   pull_request:
     branches:
       - main
       - develop
-    paths:
-      - "apps/credential-showcase-api-server/**"
-      - "packages/credential-showcase-traction-adapter/**"
-      - "docker/dev/**"
-      - "charts/**"
+    # Remove paths filter for cleanup - we want to clean up regardless of which files changed
     types:
       - closed
 
@@ -22,6 +27,16 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      # Set PR number based on event type
+      - name: Set PR number
+        id: pr_number
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "PR_NUM=${{ github.event.inputs.pr_number }}" >> $GITHUB_ENV
+          else
+            echo "PR_NUM=${{ github.event.number }}" >> $GITHUB_ENV
+          fi
+
       # Uninstall via SSH to EC2 instance
       - name: Uninstall from EC2 via SSH
         uses: appleboy/ssh-action@v0.1.10
@@ -31,16 +46,16 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             # Uninstall PR-specific Helm release
-            helm uninstall pr-${{ github.event.number }}-credential-showcase
+            helm uninstall pr-${{ env.PR_NUM }}-credential-showcase || echo "Release not found"
             
             # Clean up any leftover Kubernetes resources
             kubectl delete secret,pvc,ingress,service,deployment,statefulset,configmap \
-              --selector "app.kubernetes.io/instance=pr-${{ github.event.number }}-credential-showcase"
+              --selector "app.kubernetes.io/instance=pr-${{ env.PR_NUM }}-credential-showcase" || echo "No resources to delete"
             
             # Remove PR-specific IngressRoutes and Certificate
-            kubectl delete ingressroute pr-${{ github.event.number }}-api-server-route -n kube-system
-            kubectl delete ingressroute pr-${{ github.event.number }}-traction-adapter-route -n kube-system
-            kubectl delete certificate pr-${{ github.event.number }}-showcase-tls
+            kubectl delete ingressroute pr-${{ env.PR_NUM }}-api-server-route -n kube-system || echo "API IngressRoute not found"
+            kubectl delete ingressroute pr-${{ env.PR_NUM }}-traction-adapter-route -n kube-system || echo "Traction IngressRoute not found"
+            kubectl delete certificate pr-${{ env.PR_NUM }}-showcase-tls || echo "Certificate not found"
 
   # clean-ghcr:
   #   runs-on: ubuntu-latest

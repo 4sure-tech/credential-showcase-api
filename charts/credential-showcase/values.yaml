@@ -177,7 +177,7 @@ postgresql:
   auth:
     username: "showcase-user"
     database: "showcase-db"
-    existingSecret: "credential-showcase-postgresql"
+    existingSecret: "{{ .Release.Name }}-postgresql"
     secretKeys:
       adminPasswordKey: "postgres-password"
       userPasswordKey: "password"
@@ -200,9 +200,11 @@ rabbitmq:
   enabled: true
   auth:
     username: "guest"
-    existingSecret: "credential-showcase-rabbitmq"
+    # existingSecret: "{{ .Release.Name }}-rabbitmq"
+    password: ""
     secretKeys:
       passwordKey: "rabbitmq-password"
+      erlangCookieKey: "rabbitmq-erlang-cookie"
   plugins: "rabbitmq_management"
   extraConfiguration: |
     management.listener.port = 15672
@@ -212,9 +214,9 @@ rabbitmq:
       amqp: 5672
       management: 15672
   livenessProbe:
-    initialDelaySeconds: 120
+    enabled: false
   readinessProbe:
-    initialDelaySeconds: 60
+    enabled: false
   persistence:
     enabled: true
     size: 1Gi
@@ -229,12 +231,6 @@ rabbitmq:
     enabled: false
   podSecurityContext:
     enabled: false
-  # metrics:
-  #   enabled: false
-  # plugins: "rabbitmq_management rabbitmq_prometheus"
-  # extraPlugins: ""
-  # clustering:
-  #   enabled: false
   replicaCount: 1
   pdb:
     create: true

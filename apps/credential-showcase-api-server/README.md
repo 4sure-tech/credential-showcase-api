@@ -24,6 +24,7 @@ pnpm migration:generate
 ```
 
 ## Installation
+This install just the necessary dependencies for the api server.
 
 ```shell
 pnpm install credential-showcase-api-server
