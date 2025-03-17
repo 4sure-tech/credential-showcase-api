@@ -8,7 +8,7 @@
   "scripts": {
     "prepare": "husky",
     "preinstall": "npx only-allow pnpm",
-    "generate:models": "pnpm -r --if-present --stream run generate-models",
+    "generate:models": "pnpm -r --if-present --stream run generate:models",
     "build": "turbo run build",
     "build:clean": "pnpm -r --if-present --stream run build:clean",
     "prettier": "prettier --write \"{packages,apps,__tests__,!dist}/**/*.{ts,js,json,md}\"",
