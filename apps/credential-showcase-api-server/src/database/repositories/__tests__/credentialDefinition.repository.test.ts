@@ -322,6 +322,53 @@ describe('Database credential definition repository tests', (): void => {
     // expect(updatedCredentialDefinition.revocation!.description).toEqual(credentialDefinition.revocation!.description)
   })
 
+  it('Should update credential definition in database passing in an undefined icon', async (): Promise<void> => {
+    const credentialDefinition: NewCredentialDefinition = {
+      name: 'example_name',
+      version: 'example_version',
+      identifierType: IdentifierType.DID,
+      identifier: 'did:sov:XUeUZauFLeBNofY3NhaZCB',
+      icon: asset.id,
+      type: CredentialType.ANONCRED,
+      credentialSchema: credentialSchema.id,
+      // representations: [
+      //     { // TODO SHOWCASE-81 OCARepresentation
+      //
+      //     },
+      //     { // TODO SHOWCASE-81 OCARepresentation
+      //
+      //     }
+      // ],
+      //revocation: {
+      // TODO SHOWCASE-80 AnonCredRevocation
+      //title: 'example_revocation_title',
+      //     description: 'example_revocation_description',
+      // },
+    }
+
+    const savedCredentialDefinition = await credentialDefinitionRepository.create(credentialDefinition)
+    expect(savedCredentialDefinition).toBeDefined()
+
+    const newName = 'new_name'
+    const updatedCredentialDefinition = await credentialDefinitionRepository.update(savedCredentialDefinition.id, {
+      ...credentialDefinition,
+      icon: undefined,
+      credentialSchema: credentialSchema.id,
+      name: newName,
+    })
+
+    expect(updatedCredentialDefinition).toBeDefined()
+    expect(updatedCredentialDefinition.name).toEqual(newName)
+    expect(updatedCredentialDefinition.version).toEqual(credentialDefinition.version)
+    expect(updatedCredentialDefinition.icon).toBeUndefined()
+    // TODO SHOWCASE-81 representations
+    //expect(updatedCredentialDefinition.representations.length).toEqual(2)
+    // TODO SHOWCASE-80 AnonCredRevocation
+    // expect(updatedCredentialDefinition.revocation).not.toBeNull()
+    // expect(updatedCredentialDefinition.revocation!.title).toEqual(credentialDefinition.revocation!.title)
+    // expect(updatedCredentialDefinition.revocation!.description).toEqual(credentialDefinition.revocation!.description)
+  })
+
   it('Should throw error when updating credential definition with invalid icon id', async (): Promise<void> => {
     const unknownIconId = 'a197e5b2-e4e5-4788-83b1-ecaa0e99ed3a'
     const credentialDefinition: NewCredentialDefinition = {
