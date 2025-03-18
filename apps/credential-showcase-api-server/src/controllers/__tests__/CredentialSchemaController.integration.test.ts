@@ -3,7 +3,7 @@ import { createExpressServer, useContainer } from 'routing-controllers'
 import { Container } from 'typedi'
 import { CredentialSchemaController } from '../CredentialSchemaController'
 import { Application } from 'express'
-import { CredentialAttributeType, CredentialSchemaRequest } from 'credential-showcase-openapi'
+import { CredentialAttributeType, CredentialSchemaRequest, IdentifierType, Source } from 'credential-showcase-openapi'
 import supertest = require('supertest')
 import { PGlite } from '@electric-sql/pglite'
 import { drizzle } from 'drizzle-orm/pglite'
@@ -44,8 +44,9 @@ describe('CredentialSchemaController Integration Tests', () => {
       .send({
         name: 'Test Schema',
         version: '1.0',
-        identifierType: 'DID',
+        identifierType: IdentifierType.Did,
         identifier: 'did:test:456',
+        source: Source.Created,
         attributes: [{ name: 'attr1', value: 'value1', type: CredentialAttributeType.String }],
       } satisfies CredentialSchemaRequest)
       .expect(201)
@@ -62,8 +63,9 @@ describe('CredentialSchemaController Integration Tests', () => {
       .send({
         name: 'Updated Schema',
         version: '1.0',
-        identifierType: 'DID',
+        identifierType: IdentifierType.Did,
         identifier: 'did:test:456',
+        source: Source.Imported,
         attributes: [{ name: 'attr1', value: 'value1', type: CredentialAttributeType.String }],
       } satisfies CredentialSchemaRequest)
       .expect(200)

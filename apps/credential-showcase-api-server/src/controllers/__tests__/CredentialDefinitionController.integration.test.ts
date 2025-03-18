@@ -7,8 +7,8 @@ import CredentialDefinitionRepository from '../../database/repositories/Credenti
 import CredentialSchemaRepository from '../../database/repositories/CredentialSchemaRepository'
 import AssetRepository from '../../database/repositories/AssetRepository'
 import { Application } from 'express'
-import { CredentialAttributeType, IdentifierType, NewCredentialSchema } from '../../types'
-import { CredentialDefinitionRequest } from 'credential-showcase-openapi'
+import { CredentialAttributeType, NewCredentialSchema, IdentifierType as DomainIdentifierType } from '../../types'
+import { CredentialDefinitionRequest, IdentifierType, CredentialType } from 'credential-showcase-openapi'
 import supertest = require('supertest')
 import { PGlite } from '@electric-sql/pglite'
 import { drizzle } from 'drizzle-orm/pglite'
@@ -60,7 +60,7 @@ describe('CredentialDefinitionController Integration Tests', () => {
     const newCredentialSchema: NewCredentialSchema = {
       name: 'example_name',
       version: 'example_version',
-      identifierType: IdentifierType.DID,
+      identifierType: DomainIdentifierType.DID,
       identifier: 'did:sov:XUeUZauFLeBNofY3NhaZCB',
       attributes: [
         {
@@ -83,11 +83,11 @@ describe('CredentialDefinitionController Integration Tests', () => {
       .send({
         name: 'Test Credential',
         version: '1.0',
-        identifierType: 'DID',
+        identifierType: IdentifierType.Did,
         identifier: 'did:test:456',
         credentialSchema: credentialSchema.id,
         icon: asset.id,
-        type: 'ANONCRED',
+        type: CredentialType.Anoncred,
         representations: [],
       } satisfies CredentialDefinitionRequest)
       .expect(201)
@@ -107,7 +107,7 @@ describe('CredentialDefinitionController Integration Tests', () => {
         version: '1.0',
         credentialSchema: credentialSchema.id,
         icon: asset.id,
-        type: 'ANONCRED',
+        type: CredentialType.Anoncred,
         representations: [],
       } satisfies CredentialDefinitionRequest)
       .expect(200)

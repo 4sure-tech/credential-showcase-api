@@ -49,6 +49,7 @@ export const credentialSchemaDTOFrom = (credentialSchema: CredentialSchema): Cre
     ...credentialSchema,
     identifierType: credentialSchema.identifierType || undefined,
     identifier: credentialSchema.identifier || undefined,
+    source: credentialSchema.source || undefined,
   }
 }
 

@@ -5,11 +5,10 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "generate-models": "rimraf ./src && mvn clean generate-sources",
     "dev": "tsc --watch",
-    "prebuild": "mvn -U clean install",
     "build": "tsc",
-    "build:clean": "tsc --build --clean && tsc --build"
+    "build:clean": "tsc --build --clean && tsc --build",
+    "generate:models": "rimraf ./src && mvn clean generate-sources"
   },
   "files": [
     "dist/**/*",
