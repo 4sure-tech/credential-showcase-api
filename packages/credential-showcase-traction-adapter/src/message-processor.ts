@@ -1,6 +1,6 @@
 import { Connection, Receiver, ReceiverEvents, ReceiverOptions } from 'rhea-promise'
 import { environment } from './environment'
-import { CredentialDefinitionFromJSON, Issuer, IssuerFromJSONTyped, Showcase, ShowcaseFromJSONTyped } from 'credential-showcase-openapi'
+import { Issuer, IssuerFromJSONTyped } from 'credential-showcase-openapi'
 import { TractionService } from './services/traction-service'
 import { getTractionService } from './services/service-manager'
 import { Action, Topic } from './types'

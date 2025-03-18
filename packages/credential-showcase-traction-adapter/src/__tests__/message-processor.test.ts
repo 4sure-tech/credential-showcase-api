@@ -1,6 +1,6 @@
 import { RabbitMQContainer, StartedRabbitMQContainer } from '@testcontainers/rabbitmq'
 import { Connection, Sender, SenderOptions } from 'rhea-promise'
-import { CredentialDefinition } from 'credential-showcase-openapi'
+import { CredentialAttributeType, CredentialDefinition, CredentialType } from 'credential-showcase-openapi'
 import { v4 as uuidv4 } from 'uuid'
 import { MessageProcessor } from '../message-processor'
 import { Action, Topic } from '../types'
@@ -69,33 +69,42 @@ describe('MessageProcessor Integration Test', () => {
       id: 'test-id',
       name: 'Test Credential',
       version: '1.0',
-      type: 'ANONCRED',
-      attributes: [
-        {
-          id: 'attr1',
-          name: 'firstName',
-          type: 'STRING',
-          value: 'John',
-        },
-        {
-          id: 'attr2',
-          name: 'lastName',
-          type: 'STRING',
-          value: 'Doe',
-        },
-      ],
-      representations: [
-        {
-          id: 'rep1',
-          credDefId: 'cred-def-1',
-          schemaId: 'schema-1',
-        },
-      ],
+      type: CredentialType.Anoncred,
+      credentialSchema: {
+        id: 'schema-id',
+        name: 'Test Schema',
+        version: '1.0',
+        attributes: [
+          {
+            id: 'attr1',
+            name: 'firstName',
+            type: 'STRING' as CredentialAttributeType,
+            value: 'John',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          {
+            id: 'attr2',
+            name: 'lastName',
+            type: 'STRING' as CredentialAttributeType,
+            value: 'Doe',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        ],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      representations: [],
       icon: {
         id: 'icon1',
         mediaType: 'image/png',
         content: 'base64content',
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
+      createdAt: new Date(),
+      updatedAt: new Date(),
     }
 
     // Spy on console.debug to detect when the message is processed
@@ -143,20 +152,33 @@ describe('MessageProcessor Integration Test', () => {
       id: 'test-id',
       name: 'Test Credential',
       version: '1.0',
-      type: 'ANONCRED',
-      attributes: [
-        {
-          id: 'attr1',
-          name: 'firstName',
-          type: 'STRING',
-        },
-      ],
+      type: CredentialType.Anoncred,
+      credentialSchema: {
+        id: 'schema-id',
+        name: 'Test Schema',
+        version: '1.0',
+        attributes: [
+          {
+            id: 'attr1',
+            name: 'firstName',
+            type: 'STRING' as CredentialAttributeType,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        ],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
       representations: [],
       icon: {
         id: 'icon1',
         mediaType: 'image/png',
         content: 'base64content',
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
+      createdAt: new Date(),
+      updatedAt: new Date(),
     }
 
     // Spy on console.error to detect when the message is rejected
@@ -200,20 +222,33 @@ describe('MessageProcessor Integration Test', () => {
       id: 'test-id',
       name: 'Test Credential',
       version: '1.0',
-      type: 'ANONCRED',
-      attributes: [
-        {
-          id: 'attr1',
-          name: 'firstName',
-          type: 'STRING',
-        },
-      ],
+      type: CredentialType.Anoncred,
+      credentialSchema: {
+        id: 'schema-id',
+        name: 'Test Schema',
+        version: '1.0',
+        attributes: [
+          {
+            id: 'attr1',
+            name: 'firstName',
+            type: 'STRING' as CredentialAttributeType,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        ],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
       representations: [],
       icon: {
         id: 'icon1',
         mediaType: 'image/png',
         content: 'base64content',
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
+      createdAt: new Date(),
+      updatedAt: new Date(),
     }
 
     // Spy on console.error to detect when the message is rejected
@@ -295,20 +330,33 @@ describe('MessageProcessor Integration Test', () => {
       id: 'test-id',
       name: 'Test Credential',
       version: '1.0',
-      type: 'ANONCRED',
-      attributes: [
-        {
-          id: 'attr1',
-          name: 'firstName',
-          type: 'STRING',
-        },
-      ],
+      type: CredentialType.Anoncred,
+      credentialSchema: {
+        id: 'schema-id',
+        name: 'Test Schema',
+        version: '1.0',
+        attributes: [
+          {
+            id: 'attr1',
+            name: 'firstName',
+            type: 'STRING' as CredentialAttributeType,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        ],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
       representations: [],
       icon: {
         id: 'icon1',
         mediaType: 'image/png',
         content: 'base64content',
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
+      createdAt: new Date(),
+      updatedAt: new Date(),
     }
 
     // Spy on console.error to detect when the message is rejected

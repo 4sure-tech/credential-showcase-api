@@ -2,7 +2,6 @@ import crypto from 'crypto'
 import { Buffer } from 'buffer'
 import bs58 from 'bs58'
 import { environment } from '../environment'
-import { error } from 'rhea-promise/typings/lib/log'
 
 // TODO move to common package to dedup
 
@@ -56,7 +55,7 @@ export function generateKey(size: number = env.KEY_SIZE): string {
  */
 function getKeyFromEnv(): Buffer {
   if (!env.ENCRYPTION_KEY) {
-    throw error('No encryption key found in the environment variables.')
+    throw Error('No encryption key found in the environment variables.')
   }
 
   return decodeKey(env.ENCRYPTION_KEY)
@@ -136,9 +135,7 @@ export function decryptBuffer(encryptedData: Buffer, nonce: Buffer): Buffer {
   decipher.setAuthTag(authTag)
 
   // Decrypt data
-  const decrypted = Buffer.concat([decipher.update(ciphertext), decipher.final()])
-
-  return decrypted
+  return Buffer.concat([decipher.update(ciphertext), decipher.final()])
 }
 
 /**

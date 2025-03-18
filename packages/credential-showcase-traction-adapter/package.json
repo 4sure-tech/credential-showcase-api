@@ -24,7 +24,8 @@
   "devDependencies": {
     "@testcontainers/rabbitmq": "^10.18.0",
     "@types/express": "^5.0.0",
-    "testcontainers": "^10.18.0"
+    "testcontainers": "^10.18.0",
+    "uuid": "^11.1.0"
   },
   "files": [
     "dist/**/*",

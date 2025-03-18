@@ -37,8 +37,8 @@ export class TractionService {
   ) {
     // Create a shared configuration for this tenant
     this.configOptions = {
-      basePath,
-      ...(accessToken && { apiKey: this.tokenCallback(accessToken) }), // Probably an error in the generated code, it's mapping apiKey not accessToken
+      basePath: this.basePath,
+      ...(this.accessToken && { apiKey: this.tokenCallback(this.accessToken) }), // Probably an error in the generated code, it's mapping apiKey not accessToken
     }
     this.config = new Configuration(this.configOptions)
 

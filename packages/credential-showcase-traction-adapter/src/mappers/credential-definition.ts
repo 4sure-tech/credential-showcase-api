@@ -1,4 +1,4 @@
-import { CredentialAttribute, CredentialDefinition, CredentialSchema } from 'credential-showcase-openapi'
+import { CredentialDefinition, CredentialSchema } from 'credential-showcase-openapi'
 import {
   AnonCredsSchema,
   CredDefPostOptions,
@@ -101,6 +101,7 @@ export function getCredDefResultToCredDefResult(result: GetCredDefResult): CredD
     // jobId is left undefined as it doesn't exist in GetCredDefResult
   }
 }
+/*
 
 function getRequiredAttribute(attributes: Array<CredentialAttribute>, name: string): string {
   const attr = attributes.find((att) => att.type === 'STRING' && att.name === name)
@@ -109,3 +110,4 @@ function getRequiredAttribute(attributes: Array<CredentialAttribute>, name: stri
   }
   return attr.value
 }
+*/
