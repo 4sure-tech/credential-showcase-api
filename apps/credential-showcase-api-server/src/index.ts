@@ -19,7 +19,6 @@ useContainer(Container)
 
 async function bootstrap() {
   try {
-
     // Create and configure Express server
     const app = createExpressServer({
       controllers: [
@@ -35,7 +34,7 @@ async function bootstrap() {
       ],
       middlewares: [ExpressErrorHandler],
       defaultErrorHandler: false,
-      cors: corsOptions
+      cors: corsOptions,
     })
     // Start the server
     const port = Number(process.env.PORT)

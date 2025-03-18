@@ -1,6 +1,5 @@
 import type { CorsOptions } from 'cors'
 
-
 export const corsOptions: CorsOptions = {
   origin: (requestOrigin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
     const allowedOrigins = process.env.ALLOW_ORIGINS?.split(',') ?? ['*']
