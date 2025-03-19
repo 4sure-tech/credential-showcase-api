@@ -29,6 +29,13 @@
       "when": 1742382038683,
       "tag": "0003_credential-showcase-api",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1742394651688,
+      "tag": "0004_credential-showcase-api",
+      "breakpoints": true
     }
   ]
 }

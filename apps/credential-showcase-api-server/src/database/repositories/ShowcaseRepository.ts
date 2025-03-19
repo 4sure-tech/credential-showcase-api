@@ -90,6 +90,8 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                 },
               },
               asset: true,
+              iconDark: true,
+              iconLight: true,
             },
           },
           relyingParty: {
@@ -309,6 +311,8 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                 },
               },
               asset: true,
+              iconDark: true,
+              iconLight: true,
             },
           },
           relyingParty: {
@@ -487,6 +491,8 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                         },
                       },
                       asset: true,
+                      iconDark: true,
+                      iconLight: true,
                     },
                   },
                   issuer: {
@@ -641,6 +647,8 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                     },
                   },
                   asset: true,
+                  iconDark: true,
+                  iconLight: true,
                 },
               },
               issuer: {
