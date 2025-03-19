@@ -1,27 +1,24 @@
+# Build stage
 FROM node:20-bookworm AS builder
 SHELL ["/bin/bash", "-c"]
 ENV SHELL=bash
 ENV PNPM_HOME=/usr/local/share/pnpm
 ENV PATH=$PNPM_HOME:$PATH
-
-# Install pnpm
 RUN npm -g install pnpm && pnpm setup && source /root/.bashrc && pnpm self-update && pnpm setup && pnpm config set store-dir "/usr/local/share/pnpm/store/v10" --global
 
+# Install Maven and other dependencies
 RUN apt-get update && \
     apt-get install -y maven build-essential python3 make g++ openjdk-17-jdk && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 RUN pnpm install -g drizzle-kit
 WORKDIR /build
-
 COPY . /build
-
 RUN rm -rf $(pnpm store path) && pnpm install -g rimraf typescript tslib
-RUN pnpm install --ignore-scripts
-RUN cd packages/credential-showcase-openapi && mvn clean generate-sources
-RUN pnpm build --filter credential-showcase-openapi
-RUN pnpm build --filter credential-showcase-api-server
-RUN pnpm deploy /deploy --filter credential-showcase-api-server --prod --no-optional --ignore-scripts
+RUN pnpm install
+RUN cd packages/credential-showcase-openapi && mvn -U clean install && cd ../..
+RUN pnpm build
+RUN pnpm deploy /deploy --filter credential-showcase-api-server --prod --no-optional
 
 # Runtime stage
 FROM node:20-bookworm-slim
