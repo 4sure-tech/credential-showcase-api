@@ -27,6 +27,6 @@ export const credentialRepresentationRelations = relations(credentialRepresentat
   }),
   stepAction: one(stepActions, {
     fields: [credentialRepresentations.stepAction],
-    references: [stepActions.id]
-  })
+    references: [stepActions.id],
+  }),
 }))
