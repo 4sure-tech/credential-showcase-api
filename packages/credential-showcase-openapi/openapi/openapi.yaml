@@ -1284,6 +1284,34 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /assets/{assetId}/file:
+    parameters:
+      - name: assetId
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Assets
+      summary: Retrieve a specific asset as file
+      operationId: getAssetAsFile
+      responses:
+        '200':
+          description: OK
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
   /roles/issuers:
     get:
@@ -1765,6 +1793,10 @@ components:
           type: string
           description: Detailed description of the step
           example: Verify the user's identity
+        screenId:
+          type: string
+          description: Screen attached to step
+          example: PICK_PERSONA
         order:
           type: integer
           description: Order of the step in the scenario
@@ -1781,6 +1813,10 @@ components:
           items:
             $ref: '#/components/schemas/StepAction'
         asset:
+          $ref: '#/components/schemas/Asset'
+        iconLight:
+          $ref: '#/components/schemas/Asset'
+        iconDark:
           $ref: '#/components/schemas/Asset'
         createdAt:
           type: string
@@ -1809,6 +1845,10 @@ components:
           type: string
           description: Detailed description of the step
           example: Verify the user's identity
+        screenId:
+          type: string
+          description: Screen attached to step
+          example: PICK_PERSONA
         order:
           type: integer
           description: Order of the step in the scenario
@@ -1829,6 +1869,14 @@ components:
         asset:
           type: string
           description: Asset referenced by this step
+          example: 456e4567-e89b-12d3-a456-426614174000
+        iconLight:
+          type: string
+          description: Light icon referenced by this step
+          example: 456e4567-e89b-12d3-a456-426614174000
+        iconDark:
+          type: string
+          description: Dark icon referenced by this step
           example: 456e4567-e89b-12d3-a456-426614174000
     StepsResponse:
       properties:

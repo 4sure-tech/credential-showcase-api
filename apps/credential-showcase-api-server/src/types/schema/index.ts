@@ -164,14 +164,19 @@ export type NewPresentationScenario = Omit<typeof scenarios.$inferInsert, 'issue
   hidden: boolean
 }
 
-export type Step = Omit<typeof steps.$inferSelect, 'asset'> & {
+export type Step = Omit<typeof steps.$inferSelect, 'asset' | 'iconDark' | 'iconLight'> & {
   actions: AriesOOBAction[]
   asset?: Asset | null
+  iconDark?: Asset | null
+  iconLight?: Asset | null
 }
 export type NewStep = Omit<typeof steps.$inferInsert, 'scenario'> & {
   asset?: string | null
+  iconDark?: string | null
+  iconLight?: string | null
   actions: NewAriesOOBAction[]
   subScenario?: string | null
+  screenId?: string | null
 }
 
 export type AriesOOBAction = Omit<typeof stepActions.$inferSelect, 'proofRequest'> & {

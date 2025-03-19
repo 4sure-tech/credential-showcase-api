@@ -1,5 +1,6 @@
-import { BadRequestError, Body, Delete, Get, HttpCode, JsonController, OnUndefined, Param, Post, Put } from 'routing-controllers'
+import { BadRequestError, Body, Delete, Get, HttpCode, JsonController, OnUndefined, Param, Post, Put, Res } from 'routing-controllers'
 import { Service } from 'typedi'
+import { Response } from 'express'
 import {
   AssetResponse,
   AssetResponseFromJSONTyped,
@@ -43,7 +44,7 @@ class AssetController {
 
   @HttpCode(201)
   @Post('/')
-  public async post(@Body() assetRequest: AssetRequest): Promise<AssetResponse> {
+  public async post(@Body({ options: { limit: '250mb' } }) assetRequest: AssetRequest): Promise<AssetResponse> {
     try {
       if (!instanceOfAssetRequest(assetRequest)) {
         return Promise.reject(new BadRequestError())
@@ -57,7 +58,7 @@ class AssetController {
   }
 
   @Put('/:id')
-  public async put(@Param('id') id: string, @Body() assetRequest: AssetRequest): Promise<AssetResponse> {
+  public async put(@Param('id') id: string, @Body({ options: { limit: '250mb' } }) assetRequest: AssetRequest): Promise<AssetResponse> {
     try {
       if (!instanceOfAssetRequest(assetRequest)) {
         return Promise.reject(new BadRequestError())
@@ -80,6 +81,20 @@ class AssetController {
     } catch (e) {
       if (e.httpCode !== 404) {
         console.error(`delete id=${id} failed:`, e)
+      }
+      return Promise.reject(e)
+    }
+  }
+
+  @Get('/:id/file')
+  public async getAssetAsFile(@Param('id') id: string, @Res() res: Response): Promise<Response> {
+    try {
+      const result = await this.assetService.getAsset(id)
+      res.setHeader('Content-Type', result.mediaType)
+      return res.send(Buffer.from(result.content.toString(), 'base64'))
+    } catch (e) {
+      if (e.httpCode !== 404) {
+        console.error(`getAssetAsFile id=${id} failed:`, e)
       }
       return Promise.reject(e)
     }
