@@ -5,6 +5,8 @@ import { v4 as uuidv4 } from 'uuid'
 import { MessageProcessor } from '../message-processor'
 import { Action, Topic } from '../types'
 import { getTractionService } from '../services/service-manager'
+import { environment } from '../environment'
+import { encryptBuffer } from '../util/CypherUtil'
 
 // Create a spy on getTractionService to monitor calls
 jest.spyOn(require('../services/service-manager'), 'getTractionService')
@@ -23,11 +25,12 @@ describe('MessageProcessor Integration Test', () => {
     container = await new RabbitMQContainer('rabbitmq:4').start()
 
     // Setup environment variables for the processor
-    process.env.AMQ_HOST = container.getHost()
-    process.env.AMQ_PORT = container.getMappedPort(5672).toString()
-    process.env.AMQ_USER = 'guest'
-    process.env.AMQ_PASSWORD = 'guest'
-    process.env.DEFAULT_API_BASE_PATH = 'http://localhost:8080'
+    process.env.AMQ_HOST = environment.messageBroker.AMQ_HOST = container.getHost()
+    environment.messageBroker.AMQ_PORT = container.getMappedPort(5672)
+    process.env.AMQ_PORT = environment.messageBroker.AMQ_PORT.toString()
+    process.env.AMQ_USER = environment.messageBroker.AMQ_USER = 'guest'
+    process.env.AMQ_PASSWORD = environment.messageBroker.AMQ_PASSWORD = 'guest'
+    process.env.DEFAULT_API_BASE_PATH = environment.traction.DEFAULT_API_BASE_PATH = 'http://localhost:8080'
 
     // Establish an AMQP connection for sending test messages
     connection = new Connection({
@@ -112,7 +115,8 @@ describe('MessageProcessor Integration Test', () => {
 
     // Send a message with the credential definition
     const messageId = uuidv4()
-    void (await sender.send({
+    const { encrypted, nonce } = encryptBuffer(Buffer.from('test-token', 'utf8'))
+    void sender.send({
       message_id: messageId,
       body: JSON.stringify(credDef),
       application_properties: {
@@ -120,9 +124,10 @@ describe('MessageProcessor Integration Test', () => {
         tenantId: 'test-tenant',
         apiUrlBase: 'http://localhost:8080',
         walletId: 'test-wallet',
-        accessTokenEnc: 'test-token',
+        accessTokenEnc: encrypted,
+        accessTokenNonceEnc: nonce,
       },
-    }))
+    })
 
     // Wait for the message to be processed
     await new Promise<void>((resolve) => {

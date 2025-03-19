@@ -1,4 +1,4 @@
-import { BadRequestError, Body, Delete, Get, HttpCode, JsonController, OnUndefined, Param, Post, Put } from 'routing-controllers'
+import { BadRequestError, Body, Delete, Get, HeaderParam, HttpCode, JsonController, OnUndefined, Param, Post, Put } from 'routing-controllers'
 import { Service } from 'typedi'
 import {
   instanceOfShowcaseRequest,
@@ -55,14 +55,14 @@ class ShowcaseController {
 
   @HttpCode(201)
   @Post('/')
-  public async post(@Body() showcaseRequest: ShowcaseRequest): Promise<ShowcaseResponse> {
+  public async post(@HeaderParam('authorization') authHeader: string, @Body() showcaseRequest: ShowcaseRequest): Promise<ShowcaseResponse> {
     try {
       if (!instanceOfShowcaseRequest(showcaseRequest)) {
         return Promise.reject(new BadRequestError())
       }
       const result = await this.showcaseService.createShowcase(ShowcaseRequestToJSONTyped(showcaseRequest))
       if (showcaseRequest.status === ShowcaseStatus.Active) {
-        void (await this.publishFromShowcase(showcaseDTOFrom(result)))
+        void (await this.publishFromShowcase(showcaseDTOFrom(result), authHeader))
       }
       return ShowcaseResponseFromJSONTyped({ showcase: showcaseDTOFrom(result) }, false)
     } catch (e) {
@@ -82,7 +82,7 @@ class ShowcaseController {
       }
       const result = await this.showcaseService.updateShowcase(id, ShowcaseRequestToJSONTyped(showcaseRequest))
       if (showcaseRequest.status === ShowcaseStatus.Active) {
-        void (await this.publishFromShowcase(showcaseDTOFrom(result)))
+        void (await this.publishFromShowcase(showcaseDTOFrom(result), authHeader))
       }
       return ShowcaseResponseFromJSONTyped({ showcase: showcaseDTOFrom(result) }, false)
     } catch (e) {
@@ -93,7 +93,7 @@ class ShowcaseController {
     }
   }
 
-  private async publishFromShowcase(showcase: Showcase) {
+  private async publishFromShowcase(showcase: Showcase, authHeader: string) {
     console.log(`Publishing showcase ${showcase.name} to Traction`)
 
     // Get issuers from scenarios
@@ -144,7 +144,7 @@ class ShowcaseController {
         .filter((schema, index, self) => index === self.findIndex((s) => s.id === schema.id))
 
       // Publish the issuer
-      void (await this.adapterClientApi.publishIssuer(newIssuer)) // TODO create reduced type
+      void (await this.adapterClientApi.publishIssuer(newIssuer, authHeader)) // TODO create reduced type
     }
   }
 

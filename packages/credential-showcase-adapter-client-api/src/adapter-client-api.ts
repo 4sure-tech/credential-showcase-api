@@ -2,6 +2,7 @@ import { Service } from 'typedi'
 import { Connection, Sender } from 'rhea-promise'
 import { environment } from './environment'
 import { Issuer } from 'credential-showcase-openapi'
+import { encryptBuffer } from './util/CypherUtil'
 
 @Service()
 export class AdapterClientApi {
@@ -35,13 +36,15 @@ export class AdapterClientApi {
     this.isConnected = true
   }
 
-  private async send(action: string, payload: object): Promise<void> {
+  private async send(action: string, payload: object, authHeader?: string): Promise<void> {
     try {
       await this.isReady
 
+      const { accessTokenEnc, accessTokenNonce } = this.encryptAuthHeader(authHeader)
+
       const delivery = this.sender.send({
         body: JSON.stringify(payload),
-        application_properties: { action },
+        application_properties: { action, accessTokenEnc, accessTokenNonce },
       })
 
       if (delivery.remote_state && 'error' in delivery.remote_state) {
@@ -56,8 +59,8 @@ export class AdapterClientApi {
     }
   }
 
-  public async publishIssuer(issuer: Issuer): Promise<void> {
-    return this.send('publish-issuer', issuer)
+  public async publishIssuer(issuer: Issuer, authHeader: string): Promise<void> {
+    return this.send('publish-issuer', issuer, authHeader)
   }
 
   public async close(): Promise<void> {
@@ -65,5 +68,24 @@ export class AdapterClientApi {
     if (this.sender) await this.sender.close()
     await this.connection.close()
     this.isConnected = false
+  }
+
+  private encryptAuthHeader(authHeader?: string): { accessTokenEnc: Buffer; accessTokenNonce: Buffer } {
+    if (!authHeader) {
+      return { accessTokenEnc: Buffer.alloc(0), accessTokenNonce: Buffer.alloc(0) }
+    }
+
+    const token = authHeader.replace('Bearer ', '')
+
+    if (!token) {
+      return { accessTokenEnc: Buffer.alloc(0), accessTokenNonce: Buffer.alloc(0) }
+    }
+
+    const result = encryptBuffer(Buffer.from(token, 'utf8'))
+
+    return {
+      accessTokenEnc: result.encrypted,
+      accessTokenNonce: result.nonce,
+    }
   }
 }

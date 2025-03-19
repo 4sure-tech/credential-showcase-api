@@ -75,7 +75,7 @@ export class MessageProcessor {
         return
       }
 
-      const service = getTractionService(headers.tenantId, headers.apiUrlBase, headers.walletId, headers.accessTokenEnc)
+      const service = getTractionService(headers.tenantId, headers.apiUrlBase, headers.walletId, headers.accessTokenEnc, headers.accessTokenNonce)
 
       try {
         const jsonData = JSON.parse(message.body as string)

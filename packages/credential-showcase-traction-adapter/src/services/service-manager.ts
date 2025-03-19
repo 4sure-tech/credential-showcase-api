@@ -58,10 +58,16 @@ class ServiceManager {
 // Singleton instance
 const serviceRegistry = new ServiceManager()
 
-export function getTractionService(tenantId: string, apiUrlBase?: string, walletId?: string, accessTokenEnc?: Buffer): TractionService {
+export function getTractionService(
+  tenantId: string,
+  apiUrlBase?: string,
+  walletId?: string,
+  accessTokenEnc?: Buffer,
+  accessTokenNonce?: Buffer,
+): TractionService {
   if (!tenantId) {
     throw new Error('tenantId is required')
   }
 
-  return serviceRegistry.getTractionService(tenantId, apiUrlBase, walletId, accessTokenEnc)
+  return serviceRegistry.getTractionService(tenantId, apiUrlBase, walletId, accessTokenEnc, accessTokenNonce)
 }
