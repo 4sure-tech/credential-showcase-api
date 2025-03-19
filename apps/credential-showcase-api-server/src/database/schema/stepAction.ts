@@ -3,6 +3,7 @@ import { pgTable, uuid, timestamp, text, index } from 'drizzle-orm/pg-core'
 import { steps } from './step'
 import { ariesProofRequests } from './ariesProofRequest'
 import { StepActionType } from '../../types'
+import { credentialRepresentations } from './credentialRepresentation'
 
 export const stepActions = pgTable(
   'stepAction',
@@ -11,6 +12,7 @@ export const stepActions = pgTable(
     actionType: text('action_type').notNull().$type<StepActionType>(),
     title: text().notNull(),
     text: text().notNull(),
+    credentialRepresentation: uuid('credential_representation_id').references(() => credentialRepresentations.id),
     step: uuid()
       .references(() => steps.id, { onDelete: 'cascade' })
       .notNull(),
@@ -29,4 +31,8 @@ export const stepActionRelations = relations(stepActions, ({ one }) => ({
     references: [steps.id],
   }),
   proofRequest: one(ariesProofRequests),
+  credentialRepresentation: one(credentialRepresentations, {
+    fields: [stepActions.credentialRepresentation],
+    references: [credentialRepresentations.id],
+  }),
 }))
