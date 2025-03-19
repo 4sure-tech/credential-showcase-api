@@ -1,0 +1,61 @@
+name: Uninstall PR resources
+on:
+  # Add manual trigger with PR number input
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to uninstall'
+        required: true
+        type: string
+  pull_request:
+    branches:
+ #     - main
+      - develop
+    types:
+      - closed
+
+jobs:
+  uninstall:
+    name: Uninstall PR Environment
+    environment: development
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'getmoin' #'bcgov'
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Set PR number based on event type
+      - name: Set PR number
+        id: pr_number
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "PR_NUM=${{ github.event.inputs.pr_number }}" >> $GITHUB_ENV
+          else
+            echo "PR_NUM=${{ github.event.number }}" >> $GITHUB_ENV
+          fi
+
+      # Uninstall via SSH to EC2 instance
+      - name: Uninstall from EC2 via SSH
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            helm uninstall pr-${{ env.PR_NUM }}-credential-showcase || echo "Release not found"
+            
+            sudo kubectl delete secret,pvc,ingress,service,deployment,statefulset,configmap,certificate \
+              --selector "app.kubernetes.io/instance=pr-${{ env.PR_NUM }}-credential-showcase" || echo "No resources to delete"
+  # clean-ghcr:
+  #   runs-on: ubuntu-latest
+  #   if: ${{ false }}
+  #   name: Delete closed PR images
+  #   steps:
+  #     - name: Delete Images
+  #       uses: snok/container-retention-policy@v3.0.0
+  #       with:
+  #         account: 4sure-tech #bcgov
+  #         image-names: credential-showcase-api-server, credential-showcase-traction-adapter
+  #         image-tags: pr-${{ github.event.number }}
+  #         cut-off: 1second
+  #         token: ${{ secrets.GITHUB_TOKEN }}
