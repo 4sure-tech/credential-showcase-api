@@ -23,6 +23,8 @@ Migrations can be generated using the following command
 pnpm migration:generate
 ```
 
+## Installation
+
 ```shell
 pnpm install credential-showcase-api-server
 ```
