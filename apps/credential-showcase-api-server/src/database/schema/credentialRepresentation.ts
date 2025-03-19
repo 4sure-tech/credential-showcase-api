@@ -1,6 +1,7 @@
 import { index, pgTable, timestamp, uuid } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 import { credentialDefinitions } from './credentialDefinition'
+import { stepActions } from './stepAction'
 
 export const credentialRepresentations = pgTable(
   'credentialRepresentation',
@@ -9,6 +10,7 @@ export const credentialRepresentations = pgTable(
     credentialDefinition: uuid('credential_definition')
       .references(() => credentialDefinitions.id, { onDelete: 'cascade' })
       .notNull(),
+    stepAction: uuid('step_action_id').references(() => stepActions.id),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at')
       .defaultNow()
@@ -23,4 +25,8 @@ export const credentialRepresentationRelations = relations(credentialRepresentat
     fields: [credentialRepresentations.credentialDefinition],
     references: [credentialDefinitions.id],
   }),
+  stepAction: one(stepActions, {
+    fields: [credentialRepresentations.stepAction],
+    references: [stepActions.id]
+  })
 }))
