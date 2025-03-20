@@ -1814,10 +1814,6 @@ components:
             $ref: '#/components/schemas/StepAction'
         asset:
           $ref: '#/components/schemas/Asset'
-        iconLight:
-          $ref: '#/components/schemas/Asset'
-        iconDark:
-          $ref: '#/components/schemas/Asset'
         createdAt:
           type: string
           description: Date and time the step was created
@@ -1869,14 +1865,6 @@ components:
         asset:
           type: string
           description: Asset referenced by this step
-          example: 456e4567-e89b-12d3-a456-426614174000
-        iconLight:
-          type: string
-          description: Light icon referenced by this step
-          example: 456e4567-e89b-12d3-a456-426614174000
-        iconDark:
-          type: string
-          description: Dark icon referenced by this step
           example: 456e4567-e89b-12d3-a456-426614174000
     StepsResponse:
       properties:

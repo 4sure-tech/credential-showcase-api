@@ -144,20 +144,6 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         ),
       })
 
-      const stepIconDarksResult = await tx.query.assets.findMany({
-        where: inArray(
-          assets.id,
-          stepsResult.map((step) => step.iconDark).filter((assetId) => assetId !== null),
-        ),
-      })
-
-      const stepIconLightsResult = await tx.query.assets.findMany({
-        where: inArray(
-          assets.id,
-          stepsResult.map((step) => step.iconLight).filter((assetId) => assetId !== null),
-        ),
-      })
-
       const scenarioSteps = stepsResult.map((stepResult) => ({
         ...stepResult,
         actions: stepActionsResult
@@ -167,8 +153,6 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
             proofRequest: proofRequestsResult.find((proofRequest) => proofRequest.stepAction === action.id),
           })),
         asset: stepAssetsResult.find((asset) => asset.id === stepResult.asset),
-        iconDark: stepIconDarksResult.find((asset) => asset.id === stepResult.iconDark),
-        iconLight: stepIconLightsResult.find((asset) => asset.id === stepResult.iconLight),
       }))
 
       return {
@@ -311,20 +295,6 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         ),
       })
 
-      const stepIconDarksResult = await tx.query.assets.findMany({
-        where: inArray(
-          assets.id,
-          stepsResult.map((step) => step.iconDark).filter((assetId) => assetId !== null),
-        ),
-      })
-
-      const stepIconLightsResult = await tx.query.assets.findMany({
-        where: inArray(
-          assets.id,
-          stepsResult.map((step) => step.iconLight).filter((assetId) => assetId !== null),
-        ),
-      })
-
       const scenarioSteps = stepsResult.map((stepResult) => ({
         ...stepResult,
         actions: stepActionsResult
@@ -334,8 +304,6 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
             proofRequest: proofRequestsResult.find((proofRequest) => proofRequest.stepAction === action.id),
           })),
         asset: stepAssetsResult.find((asset) => asset.id === stepResult.asset),
-        iconDark: stepIconDarksResult.find((asset) => asset.id === stepResult.iconDark),
-        iconLight: stepIconLightsResult.find((asset) => asset.id === stepResult.iconLight),
       }))
 
       return {
@@ -374,8 +342,6 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
               },
             },
             asset: true,
-            iconDark: true,
-            iconLight: true,
           },
         },
         relyingParty: {
@@ -482,8 +448,6 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
               },
             },
             asset: true,
-            iconDark: true,
-            iconLight: true,
           },
         },
         relyingParty: {
@@ -579,8 +543,6 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
     }
 
     const assetResult = step.asset ? await this.assetRepository.findById(step.asset) : null
-    const iconDarkResult = step.iconDark ? await this.assetRepository.findById(step.iconDark) : null
-    const iconLightResult = step.iconLight ? await this.assetRepository.findById(step.iconLight) : null
     return (await this.databaseService.getConnection()).transaction(async (tx): Promise<Step> => {
       const [stepResult] = await tx
         .insert(steps)
@@ -620,8 +582,6 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
           proofRequest: proofRequestsResult.find((proofRequest) => proofRequest.stepAction === action.id),
         })),
         asset: assetResult,
-        iconDark: iconDarkResult,
-        iconLight: iconLightResult,
       }
     })
   }
@@ -639,8 +599,6 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
     }
 
     const assetResult = step.asset ? await this.assetRepository.findById(step.asset) : null
-    const iconDarkResult = step.iconDark ? await this.assetRepository.findById(step.iconDark) : null
-    const iconLightResult = step.iconLight ? await this.assetRepository.findById(step.iconLight) : null
     return (await this.databaseService.getConnection()).transaction(async (tx): Promise<Step> => {
       const [stepResult] = await tx
         .update(steps)
@@ -683,8 +641,6 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
           proofRequest: proofRequestsResult.find((proofRequest) => proofRequest.stepAction === action.id),
         })),
         asset: assetResult,
-        iconDark: iconDarkResult,
-        iconLight: iconLightResult,
       }
     })
   }
@@ -701,8 +657,6 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
           },
         },
         asset: true,
-        iconDark: true,
-        iconLight: true,
       },
     })
 
@@ -721,8 +675,6 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
       where: eq(steps.scenario, scenarioId),
       with: {
         asset: true,
-        iconDark: true,
-        iconLight: true,
         actions: {
           with: {
             proofRequest: true,
