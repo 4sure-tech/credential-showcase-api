@@ -10,6 +10,7 @@ import {
   RelyingParty as RelyingPartyDTO,
   Showcase as ShowcaseDTO,
   Step as StepDTO,
+  StepActionFromJSONTyped,
 } from 'credential-showcase-openapi'
 import {
   Asset,
@@ -128,6 +129,7 @@ export const stepDTOFrom = (step: Step): StepDTO => {
     ...step,
     asset: step.asset ? assetDTOFrom(step.asset) : undefined,
     subScenario: step.subScenario || undefined,
+    actions: step.actions.map((sa) => StepActionFromJSONTyped(sa, false)),
   }
 }
 

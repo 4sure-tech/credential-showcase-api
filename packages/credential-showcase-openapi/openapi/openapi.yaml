@@ -1876,6 +1876,8 @@ components:
           type: string
           description: Descriptive text for the action
           example: Connect your wallet to continue
+        credentialRepresentation:
+          $ref: '#/components/schemas/CredentialRepresentation'
         createdAt:
           type: string
           description: Date and time the step action was created
@@ -1905,6 +1907,10 @@ components:
           type: string
           description: Descriptive text for the action
           example: Connect your wallet to continue
+        credentialRepresentation:
+          type: string
+          description: References the credential used in this step
+          example: 456e4567-e89b-12d3-a456-426614174000
         actionType:
           type: string
           example: HUMAN_TASK
