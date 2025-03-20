@@ -16,6 +16,7 @@ import * as schema from '../../../database/schema'
 import {
   Asset,
   CredentialAttributeType,
+  CredentialRepresentationType,
   CredentialType,
   IdentifierType,
   IssuanceScenario,
@@ -99,14 +100,18 @@ describe('Database scenario repository tests', (): void => {
       icon: asset.id,
       type: CredentialType.ANONCRED,
       credentialSchema: credentialSchema.id,
-      // representations: [
-      //     { // TODO SHOWCASE-81 OCARepresentation
-      //
-      //     },
-      //     { // TODO SHOWCASE-81 OCARepresentation
-      //
-      //     }
-      // ],
+      representations: [
+        {
+          credentialType: CredentialRepresentationType.OCA,
+          schema: credentialSchema.id,
+          ocaBundleUrl: 'https://www.example.org',
+        },
+        {
+          credentialType: CredentialRepresentationType.OCA,
+          schema: credentialSchema.id,
+          ocaBundleUrl: 'https://www.example1.com',
+        },
+      ],
       revocation: {
         // TODO SHOWCASE-80 AnonCredRevocation
         title: 'example_revocation_title',
