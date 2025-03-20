@@ -30,7 +30,7 @@ export const steps = pgTable(
     return {
       uniqueStepOrder: unique().on(table.order, table.scenario),
       scenarioIndex: index('idx_scenarios_steps').on(table.scenario),
-      assetIndex: index('idx_asset_steps').on(table.asset)
+      assetIndex: index('idx_asset_steps').on(table.asset),
     }
   },
 )
@@ -49,5 +49,5 @@ export const stepRelations = relations(steps, ({ one, many }) => ({
   asset: one(assets, {
     fields: [steps.asset],
     references: [assets.id],
-  })
+  }),
 }))

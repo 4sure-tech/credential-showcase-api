@@ -2744,7 +2744,7 @@ describe('Database scenario repository tests', (): void => {
           },
         },
       ],
-      asset: savedIssuanceScenario.steps[0].asset!.id
+      asset: savedIssuanceScenario.steps[0].asset!.id,
     }
     const updatedStepResult = await repository.updateStep(savedIssuanceScenario.id, savedIssuanceScenario.steps[0].id, updatedStep)
 
@@ -2838,7 +2838,7 @@ describe('Database scenario repository tests', (): void => {
     const updatedStep: NewStep = {
       ...savedIssuanceScenario.steps[0],
       actions: [],
-      asset: savedIssuanceScenario.steps[0].asset!.id
+      asset: savedIssuanceScenario.steps[0].asset!.id,
     }
 
     await expect(repository.updateStep(savedIssuanceScenario.id, savedIssuanceScenario.steps[0].id, updatedStep)).rejects.toThrowError(

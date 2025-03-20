@@ -152,7 +152,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
             ...action,
             proofRequest: proofRequestsResult.find((proofRequest) => proofRequest.stepAction === action.id),
           })),
-        asset: stepAssetsResult.find((asset) => asset.id === stepResult.asset)
+        asset: stepAssetsResult.find((asset) => asset.id === stepResult.asset),
       }))
 
       return {
@@ -303,7 +303,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
             ...action,
             proofRequest: proofRequestsResult.find((proofRequest) => proofRequest.stepAction === action.id),
           })),
-        asset: stepAssetsResult.find((asset) => asset.id === stepResult.asset)
+        asset: stepAssetsResult.find((asset) => asset.id === stepResult.asset),
       }))
 
       return {
@@ -341,7 +341,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
                 proofRequest: true,
               },
             },
-            asset: true
+            asset: true,
           },
         },
         relyingParty: {
@@ -447,7 +447,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
                 proofRequest: true,
               },
             },
-            asset: true
+            asset: true,
           },
         },
         relyingParty: {
@@ -581,7 +581,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
           ...action,
           proofRequest: proofRequestsResult.find((proofRequest) => proofRequest.stepAction === action.id),
         })),
-        asset: assetResult
+        asset: assetResult,
       }
     })
   }
@@ -640,7 +640,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
           ...action,
           proofRequest: proofRequestsResult.find((proofRequest) => proofRequest.stepAction === action.id),
         })),
-        asset: assetResult
+        asset: assetResult,
       }
     })
   }
@@ -656,7 +656,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
             proofRequest: true,
           },
         },
-        asset: true
+        asset: true,
       },
     })
 
