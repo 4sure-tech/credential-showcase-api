@@ -129,8 +129,6 @@ export const stepDTOFrom = (step: Step): StepDTO => {
     asset: step.asset ? assetDTOFrom(step.asset) : undefined,
     subScenario: step.subScenario || undefined,
     screenId: step.screenId || undefined,
-    iconDark: step.iconDark ? assetDTOFrom(step.iconDark) : undefined,
-    iconLight: step.iconLight ? assetDTOFrom(step.iconLight) : undefined,
   }
 }
 
