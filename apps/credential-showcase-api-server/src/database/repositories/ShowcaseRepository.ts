@@ -89,9 +89,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                   proofRequest: true,
                 },
               },
-              asset: true,
-              iconDark: true,
-              iconLight: true,
+              asset: true
             },
           },
           relyingParty: {
@@ -310,9 +308,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                   proofRequest: true,
                 },
               },
-              asset: true,
-              iconDark: true,
-              iconLight: true,
+              asset: true
             },
           },
           relyingParty: {
@@ -490,9 +486,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                           proofRequest: true,
                         },
                       },
-                      asset: true,
-                      iconDark: true,
-                      iconLight: true,
+                      asset: true
                     },
                   },
                   issuer: {
@@ -646,9 +640,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
                       proofRequest: true,
                     },
                   },
-                  asset: true,
-                  iconDark: true,
-                  iconLight: true,
+                  asset: true
                 },
               },
               issuer: {

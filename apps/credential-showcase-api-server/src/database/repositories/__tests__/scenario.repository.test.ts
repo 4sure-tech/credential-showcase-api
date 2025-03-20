@@ -164,8 +164,6 @@ describe('Database scenario repository tests', (): void => {
           order: 1,
           type: StepType.HUMAN_TASK,
           asset: asset.id,
-          iconDark: asset.id,
-          iconLight: asset.id,
           actions: [
             {
               title: 'example_title',
@@ -206,8 +204,6 @@ describe('Database scenario repository tests', (): void => {
           order: 2,
           type: StepType.HUMAN_TASK,
           asset: asset.id,
-          iconDark: asset.id,
-          iconLight: asset.id,
           actions: [
             {
               title: 'example_title',
@@ -287,16 +283,6 @@ describe('Database scenario repository tests', (): void => {
     expect(savedIssuanceScenario.steps[0].asset!.fileName).toEqual(asset.fileName)
     expect(savedIssuanceScenario.steps[0].asset!.description).toEqual(asset.description)
     expect(savedIssuanceScenario.steps[0].asset!.content).toStrictEqual(asset.content)
-    expect(savedIssuanceScenario.steps[0].iconDark).not.toBeNull()
-    expect(savedIssuanceScenario.steps[0].iconDark!.mediaType).toEqual(asset.mediaType)
-    expect(savedIssuanceScenario.steps[0].iconDark!.fileName).toEqual(asset.fileName)
-    expect(savedIssuanceScenario.steps[0].iconDark!.description).toEqual(asset.description)
-    expect(savedIssuanceScenario.steps[0].iconDark!.content).toStrictEqual(asset.content)
-    expect(savedIssuanceScenario.steps[0].iconLight).not.toBeNull()
-    expect(savedIssuanceScenario.steps[0].iconLight!.mediaType).toEqual(asset.mediaType)
-    expect(savedIssuanceScenario.steps[0].iconLight!.fileName).toEqual(asset.fileName)
-    expect(savedIssuanceScenario.steps[0].iconLight!.description).toEqual(asset.description)
-    expect(savedIssuanceScenario.steps[0].iconLight!.content).toStrictEqual(asset.content)
     expect((<IssuanceScenario>savedIssuanceScenario).issuer).not.toBeNull()
     expect((<IssuanceScenario>savedIssuanceScenario).issuer!.name).toEqual(issuer.name)
     expect((<IssuanceScenario>savedIssuanceScenario).issuer!.credentialDefinitions.length).toEqual(1)
@@ -2758,9 +2744,7 @@ describe('Database scenario repository tests', (): void => {
           },
         },
       ],
-      asset: savedIssuanceScenario.steps[0].asset!.id,
-      iconDark: null,
-      iconLight: null,
+      asset: savedIssuanceScenario.steps[0].asset!.id
     }
     const updatedStepResult = await repository.updateStep(savedIssuanceScenario.id, savedIssuanceScenario.steps[0].id, updatedStep)
 
@@ -2854,9 +2838,7 @@ describe('Database scenario repository tests', (): void => {
     const updatedStep: NewStep = {
       ...savedIssuanceScenario.steps[0],
       actions: [],
-      asset: savedIssuanceScenario.steps[0].asset!.id,
-      iconDark: null,
-      iconLight: null,
+      asset: savedIssuanceScenario.steps[0].asset!.id
     }
 
     await expect(repository.updateStep(savedIssuanceScenario.id, savedIssuanceScenario.steps[0].id, updatedStep)).rejects.toThrowError(
