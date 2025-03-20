@@ -12,7 +12,6 @@ import PresentationScenarioController from './controllers/PresentationScenarioCo
 import ShowcaseController from './controllers/ShowcaseController'
 import { CredentialDefinitionController } from './controllers/CredentialDefinitionController'
 import { CredentialSchemaController } from './controllers/CredentialSchemaController'
-import { corsOptions } from './utils/cors'
 
 const allowedOrigins = process.env.ALLOW_ORIGINS?.split(',') ?? ['*']
 const methods = process.env.ALLOW_METHODS?.split(',') ?? ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
