@@ -1,0 +1,104 @@
+{{- if .Values.api_server.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.api_server.name }}
+  namespace: {{ .Values.global.namespaceOverride | default .Release.Namespace }}
+spec:
+  replicas: {{ .Values.api_server.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-{{ .Values.api_server.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-{{ .Values.api_server.name }}
+    spec:
+      containers:
+      - name: {{ .Values.api_server.name }}
+        image: "{{ .Values.api_server.image.repository }}:{{ .Values.api_server.image.tag }}"
+        imagePullPolicy: {{ .Values.api_server.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.api_server.port }}
+        env:
+        - name: DB_HOST
+          value: {{ .Release.Name }}-postgresql
+        {{- range $key, $value := .Values.api_server.env }}
+        {{- if and (ne $key "DB_HOST") (kindIs "map" $value) }}
+        - name: {{ $key }}
+          valueFrom:
+            {{- toYaml $value | nindent 12 }}
+        {{- else if ne $key "DB_HOST" }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        {{- end }}
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "credential-showcase.database.secret.name" . }}
+              key: {{ include "credential-showcase.database.userPasswordKey" . }}
+        - name: AUTH_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "credential-showcase.authtoken.secret.name" . }}
+              key: token
+      serviceAccountName: {{ if .Values.api_server.serviceAccount.create }}{{ if .Values.api_server.serviceAccount.name }}{{ .Values.api_server.serviceAccount.name }}{{ else }}{{ $.Release.Name }}-{{ .Values.api_server.name }}{{ end }}{{ end }}
+---
+{{- end }}
+{{- if .Values.traction_adapter.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.traction_adapter.name }}
+  namespace: {{ .Values.global.namespaceOverride | default .Release.Namespace }}
+spec:
+  replicas: {{ .Values.traction_adapter.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-{{ .Values.traction_adapter.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-{{ .Values.traction_adapter.name }}
+      {{- with .Values.traction_adapter.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- with .Values.traction_adapter.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: {{ .Values.traction_adapter.name }}
+        image: "{{ .Values.traction_adapter.image.repository }}:{{ .Values.traction_adapter.image.tag }}"
+        imagePullPolicy: {{ .Values.traction_adapter.image.pullPolicy }}
+        {{- with .Values.traction_adapter.containerSecurityContext }}
+        securityContext:
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
+        ports:
+        - containerPort: {{ .Values.traction_adapter.port }}
+        env:
+        - name: RABBITMQ_HOST
+          value: {{ .Release.Name }}-rabbitmq
+        {{- range $key, $value := .Values.traction_adapter.env }}
+        {{- if and (ne $key "RABBITMQ_HOST") (kindIs "map" $value) }}
+        - name: {{ $key }}
+          valueFrom:
+            {{- toYaml $value | nindent 12 }}
+        {{- else if ne $key "RABBITMQ_HOST" }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        {{- end }}
+        - name: RABBITMQ_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "credential-showcase.rabbitmq.secret.name" . }}
+              key: {{ include "credential-showcase.rabbitmq.passwordKey" . }}
+        resources:
+          {{- toYaml .Values.traction_adapter.resources | nindent 12 }}
+      serviceAccountName: {{ if .Values.traction_adapter.serviceAccount.create }}{{ if .Values.traction_adapter.serviceAccount.name }}{{ .Values.traction_adapter.serviceAccount.name }}{{ else }}{{ $.Release.Name }}-{{ .Values.traction_adapter.name }}{{ end }}{{ end }}
+{{- end }}

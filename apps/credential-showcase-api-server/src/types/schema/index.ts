@@ -177,6 +177,7 @@ export type NewStep = Omit<typeof steps.$inferInsert, 'scenario'> & {
   asset?: string | null
   actions: NewAriesOOBAction[]
   subScenario?: string | null
+  screenId?: string | null
 }
 
 export type AriesOOBAction = Omit<typeof stepActions.$inferSelect, 'proofRequest'> & {

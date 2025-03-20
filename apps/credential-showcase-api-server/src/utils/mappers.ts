@@ -130,6 +130,7 @@ export const stepDTOFrom = (step: Step): StepDTO => {
     asset: step.asset ? assetDTOFrom(step.asset) : undefined,
     subScenario: step.subScenario || undefined,
     actions: step.actions.map((sa) => StepActionFromJSONTyped(sa, false)),
+    screenId: step.screenId || undefined
   }
 }
 

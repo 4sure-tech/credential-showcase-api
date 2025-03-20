@@ -1,3 +1,4 @@
+ALTER TABLE "step" ADD COLUMN "screenId" text;
 CREATE TYPE "public"."CredentialRepresentationType" AS ENUM('OCA', 'CREDENTIAL');--> statement-breakpoint
 ALTER TABLE "stepAction" ADD COLUMN "credential_representation_id" uuid;--> statement-breakpoint
 ALTER TABLE "stepAction" ADD CONSTRAINT "stepAction_credential_representation_id_fk" FOREIGN KEY ("credential_representation_id") REFERENCES "public"."credentialRepresentation"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
