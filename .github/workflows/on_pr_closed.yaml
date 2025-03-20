@@ -19,7 +19,7 @@ jobs:
     name: Uninstall PR Environment
     environment: development
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'getmoin' #'bcgov'
+    if: github.repository_owner == '4sure-tech' #'bcgov'
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
