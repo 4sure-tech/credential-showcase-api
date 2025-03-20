@@ -18,6 +18,7 @@ import {
   NewCredentialSchema,
   IdentifierType,
   CredentialSchema,
+  CredentialRepresentationType,
 } from '../../../types'
 
 describe('Database credential definition repository tests', (): void => {
@@ -81,14 +82,18 @@ describe('Database credential definition repository tests', (): void => {
       icon: asset.id,
       type: CredentialType.ANONCRED,
       credentialSchema: credentialSchema.id,
-      // representations: [
-      //     { // TODO SHOWCASE-81 OCARepresentation
-      //
-      //     },
-      //     { // TODO SHOWCASE-81 OCARepresentation
-      //
-      //     }
-      // ],
+      representations: [
+        {
+          credentialType: CredentialRepresentationType.OCA,
+          schema: credentialSchema.id,
+          ocaBundleUrl: 'https://www.example.org',
+        },
+        {
+          credentialType: CredentialRepresentationType.OCA,
+          schema: credentialSchema.id,
+          ocaBundleUrl: 'https://www.example1.com',
+        },
+      ],
       //revocation: {
       // TODO SHOWCASE-80 AnonCredRevocation
       //title: 'example_revocation_title',
@@ -108,8 +113,7 @@ describe('Database credential definition repository tests', (): void => {
     expect(savedCredentialDefinition.icon.description).toEqual(asset.description)
     expect(savedCredentialDefinition.icon.content).toStrictEqual(asset.content)
 
-    // TODO SHOWCASE-81 representations
-    //expect(savedCredentialDefinition.representations.length).toEqual(2)
+    expect(savedCredentialDefinition.representations.length).toEqual(2)
     // TODO SHOWCASE-80 AnonCredRevocation
     // expect(savedCredentialDefinition.revocation).not.toBeNull()
     // expect(savedCredentialDefinition.revocation!.title).toEqual(credentialDefinition.revocation!.title)
@@ -126,11 +130,13 @@ describe('Database credential definition repository tests', (): void => {
       icon: unknownIconId,
       type: CredentialType.ANONCRED,
       credentialSchema: credentialSchema.id,
-      // representations: [
-      //     { // TODO SHOWCASE-81 OCARepresentation
-      //
-      //     }
-      // ]
+      representations: [
+        {
+          credentialType: CredentialRepresentationType.OCA,
+          schema: credentialSchema.id,
+          ocaBundleUrl: 'https://www.example.com',
+        },
+      ],
     }
 
     await expect(credentialDefinitionRepository.create(credentialDefinition)).rejects.toThrowError(`No asset found for id: ${unknownIconId}`)
@@ -145,14 +151,18 @@ describe('Database credential definition repository tests', (): void => {
       icon: asset.id,
       type: CredentialType.ANONCRED,
       credentialSchema: credentialSchema.id,
-      // representations: [
-      //     { // TODO SHOWCASE-81 OCARepresentation
-      //
-      //     },
-      //     { // TODO SHOWCASE-81 OCARepresentation
-      //
-      //     }
-      // ],
+      representations: [
+        {
+          credentialType: CredentialRepresentationType.OCA,
+          schema: credentialSchema.id,
+          ocaBundleUrl: 'https://www.example.org',
+        },
+        {
+          credentialType: CredentialRepresentationType.OCA,
+          schema: credentialSchema.id,
+          ocaBundleUrl: 'https://www.example1.com',
+        },
+      ],
       //revocation: {
       // TODO SHOWCASE-80 AnonCredRevocation
       //title: 'example_revocation_title',
@@ -174,11 +184,7 @@ describe('Database credential definition repository tests', (): void => {
     expect(fromDb.icon.fileName).toEqual(asset.fileName)
     expect(fromDb.icon.description).toEqual(asset.description)
     expect(fromDb.icon.content).toStrictEqual(asset.content)
-    // TODO SHOWCASE-81 representations
-    //expect(fromDb.representations.length).toEqual(2)
-    // expect(fromDb.revocation).not.toBeNull()
-    //expect(fromDb.revocation!.title).toEqual(credentialDefinition.revocation!.title)
-    //expect(fromDb.revocation!.description).toEqual(credentialDefinition.revocation!.description)
+    expect(fromDb.representations.length).toEqual(2)
     // TODO SHOWCASE-80 AnonCredRevocation
     // expect(fromDb.revocation).not.toBeNull()
     // expect(fromDb.revocation!.title).toEqual(credentialDefinition.revocation!.title)
@@ -194,12 +200,13 @@ describe('Database credential definition repository tests', (): void => {
       credentialSchema: credentialSchema.id,
       icon: asset.id,
       type: CredentialType.ANONCRED,
-
-      // representations: [
-      //     { // TODO SHOWCASE-81 OCARepresentation
-      //
-      //     }
-      // ]
+      representations: [
+        {
+          credentialType: CredentialRepresentationType.OCA,
+          schema: credentialSchema.id,
+          ocaBundleUrl: 'https://www.example.org',
+        },
+      ],
     }
 
     const savedCredentialDefinition1 = await credentialDefinitionRepository.create(credentialDefinition)
@@ -222,11 +229,13 @@ describe('Database credential definition repository tests', (): void => {
       icon: asset.id,
       type: CredentialType.ANONCRED,
       credentialSchema: credentialSchema.id,
-      // representations: [
-      //     { // TODO SHOWCASE-81 OCARepresentation
-      //
-      //     }
-      // ]
+      representations: [
+        {
+          credentialType: CredentialRepresentationType.OCA,
+          schema: credentialSchema.id,
+          ocaBundleUrl: 'https://www.example.com',
+        },
+      ],
     }
 
     const savedCredentialDefinition = await credentialDefinitionRepository.create(credentialDefinition)
@@ -248,14 +257,18 @@ describe('Database credential definition repository tests', (): void => {
       icon: asset.id,
       type: CredentialType.ANONCRED,
       credentialSchema: credentialSchema.id,
-      // representations: [
-      //     { // TODO SHOWCASE-81 OCARepresentation
-      //
-      //     },
-      //     { // TODO SHOWCASE-81 OCARepresentation
-      //
-      //     }
-      // ],
+      representations: [
+        {
+          credentialType: CredentialRepresentationType.OCA,
+          schema: credentialSchema.id,
+          ocaBundleUrl: 'https://www.example.org',
+        },
+        {
+          credentialType: CredentialRepresentationType.OCA,
+          schema: credentialSchema.id,
+          ocaBundleUrl: 'https://www.example1.com',
+        },
+      ],
       //revocation: {
       // TODO SHOWCASE-80 AnonCredRevocation
       //title: 'example_revocation_title',
@@ -283,8 +296,7 @@ describe('Database credential definition repository tests', (): void => {
     expect(updatedCredentialDefinition.icon.fileName).toEqual(asset.fileName)
     expect(updatedCredentialDefinition.icon.description).toEqual(asset.description)
     expect(updatedCredentialDefinition.icon.content).toStrictEqual(asset.content)
-    // TODO SHOWCASE-81 representations
-    //expect(updatedCredentialDefinition.representations.length).toEqual(2)
+    expect(updatedCredentialDefinition.representations.length).toEqual(2)
     // TODO SHOWCASE-80 AnonCredRevocation
     // expect(updatedCredentialDefinition.revocation).not.toBeNull()
     // expect(updatedCredentialDefinition.revocation!.title).toEqual(credentialDefinition.revocation!.title)
@@ -301,14 +313,18 @@ describe('Database credential definition repository tests', (): void => {
       identifierType: IdentifierType.DID,
       identifier: 'did:sov:XUeUZauFLeBNofY3NhaZCB',
       credentialSchema: credentialSchema.id,
-      // representations: [
-      //     { // TODO SHOWCASE-81 OCARepresentation
-      //
-      //     },
-      //     { // TODO SHOWCASE-81 OCARepresentation
-      //
-      //     }
-      // ],
+      representations: [
+        {
+          credentialType: CredentialRepresentationType.OCA,
+          schema: credentialSchema.id,
+          ocaBundleUrl: 'https://www.example.org',
+        },
+        {
+          credentialType: CredentialRepresentationType.OCA,
+          schema: credentialSchema.id,
+          ocaBundleUrl: 'https://www.example1.com',
+        },
+      ],
       // revocation: { // TODO SHOWCASE-80 AnonCredRevocation
       //     title: 'example_revocation_title',
       //     description: 'example_revocation_description'

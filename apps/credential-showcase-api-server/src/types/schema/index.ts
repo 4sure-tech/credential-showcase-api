@@ -136,6 +136,11 @@ export enum ScenarioType {
   PRESENTATION = 'PRESENTATION',
 }
 
+export enum CredentialRepresentationType {
+  OCA = 'OCA',
+  CREDENTIAL = 'CREDENTIAL',
+}
+
 export type IssuanceScenario = Omit<typeof scenarios.$inferSelect, 'relyingParty' | 'issuer' | 'bannerImage'> & {
   personas: Persona[]
   steps: Step[]
