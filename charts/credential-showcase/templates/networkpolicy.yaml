@@ -1,0 +1,55 @@
+{{- if .Values.api_server.enabled }}
+{{- if .Values.api_server.networkPolicy.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.api_server.name }}
+  namespace: {{ .Values.global.namespaceOverride | default .Release.Namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ .Release.Name }}-{{ .Values.api_server.name }}
+  policyTypes:
+    - Ingress
+  ingress:
+    {{- if .Values.api_server.networkPolicy.ingress.enabled }}
+    - from:
+        {{- with .Values.api_server.networkPolicy.ingress.namespaceSelector }}
+        - namespaceSelector:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+        {{- with .Values.api_server.networkPolicy.ingress.podSelector }}
+        - podSelector:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+    {{- end }}
+{{- end }}
+---
+{{- end }}
+{{- if .Values.traction_adapter.enabled }}
+{{- if .Values.traction_adapter.networkPolicy.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.traction_adapter.name }}
+  namespace: {{ .Values.global.namespaceOverride | default .Release.Namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ .Release.Name }}-{{ .Values.traction_adapter.name }}
+  policyTypes:
+    - Ingress
+  ingress:
+    {{- if .Values.traction_adapter.networkPolicy.ingress.enabled }}
+    - from:
+        {{- with .Values.traction_adapter.networkPolicy.ingress.namespaceSelector }}
+        - namespaceSelector:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+        {{- with .Values.traction_adapter.networkPolicy.ingress.podSelector }}
+        - podSelector:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+    {{- end }}
+{{- end }}
+{{- end }} 
