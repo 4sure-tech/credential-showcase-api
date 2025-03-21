@@ -110,32 +110,40 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         )
         .returning()
 
-      const stepActionsResult = await tx
+      const newStepActions = stepsResult.flatMap((stepResult, index) =>
+          scenario.steps[index].actions?.map((action) => ({
+            ...action,
+            step: stepResult.id,
+          })),
+        ).filter(sa => !!sa)
+
+      const hasNewStepActions = newStepActions && newStepActions.length > 0
+
+      const stepActionsResult = hasNewStepActions && await tx
         .insert(stepActions)
-        .values(
-          stepsResult.flatMap((stepResult, index) =>
-            scenario.steps[index].actions.map((action) => ({
-              ...action,
-              step: stepResult.id,
-            })),
-          ),
-        )
+        .values(newStepActions)
         .returning()
 
-      const proofRequestsResult = await tx
+      const hasStepActionsResult = stepActionsResult && stepActionsResult.length > 0
+
+      const newAriesProofRequests = hasStepActionsResult && scenario.steps.flatMap((step, index) =>
+          step.actions?.map((action, actionIndex) => {
+            const stepAction = stepActionsResult[index * (step.actions?.length ?? 0) + actionIndex]
+            return {
+              ...action.proofRequest,
+              stepAction: stepAction?.id,
+            }
+          }),
+        ).filter(apr => !!apr)
+
+      const hasNewAriesProofRequests = newAriesProofRequests && newAriesProofRequests.length > 0
+
+      const proofRequestsResult = hasNewAriesProofRequests && await tx
         .insert(ariesProofRequests)
-        .values(
-          scenario.steps.flatMap((step, index) =>
-            step.actions.map((action, actionIndex) => {
-              const stepAction = stepActionsResult[index * step.actions.length + actionIndex]
-              return {
-                ...action.proofRequest,
-                stepAction: stepAction.id,
-              }
-            }),
-          ),
-        )
+        .values(newAriesProofRequests)
         .returning()
+
+      const hasProofRequestsResult = proofRequestsResult && proofRequestsResult.length > 0
 
       const stepAssetsResult = await tx.query.assets.findMany({
         where: inArray(
@@ -144,14 +152,15 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         ),
       })
 
+      // must be ternary, otherwise the type of the actions will be boolean | Step[]
       const scenarioSteps = stepsResult.map((stepResult) => ({
         ...stepResult,
-        actions: stepActionsResult
+        actions: hasStepActionsResult ? stepActionsResult
           .filter((stepActionResult) => stepActionResult.step === stepResult.id)
           .map((action) => ({
             ...action,
-            proofRequest: proofRequestsResult.find((proofRequest) => proofRequest.stepAction === action.id),
-          })),
+            proofRequest: hasProofRequestsResult ? proofRequestsResult.find((proofRequest) => proofRequest.stepAction === action.id) : undefined,
+          })) : undefined,
         asset: stepAssetsResult.find((asset) => asset.id === stepResult.asset),
       }))
 
@@ -261,32 +270,40 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         )
         .returning()
 
-      const stepActionsResult = await tx
+      const newStepActions = stepsResult.flatMap((stepResult, index) =>
+        scenario.steps[index].actions?.map((action) => ({
+          ...action,
+          step: stepResult.id,
+        })),
+      ).filter(sa => !!sa)
+
+      const hasNewStepActions = newStepActions && newStepActions.length > 0
+
+      const stepActionsResult = hasNewStepActions && await tx
         .insert(stepActions)
-        .values(
-          stepsResult.flatMap((stepResult, index) =>
-            scenario.steps[index].actions.map((action) => ({
-              ...action,
-              step: stepResult.id,
-            })),
-          ),
-        )
+        .values(newStepActions)
         .returning()
 
-      const proofRequestsResult = await tx
+      const hasStepActionsResult = stepActionsResult && stepActionsResult.length > 0
+
+      const newAriesProofRequests = hasStepActionsResult && scenario.steps.flatMap((step, index) =>
+        step.actions?.map((action, actionIndex) => {
+          const stepAction = stepActionsResult[index * (step.actions?.length ?? 0) + actionIndex]
+          return {
+            ...action.proofRequest,
+            stepAction: stepAction?.id,
+          }
+        }),
+      ).filter(apr => !!apr)
+
+      const hasNewAriesProofRequests = newAriesProofRequests && newAriesProofRequests.length > 0
+
+      const proofRequestsResult = hasNewAriesProofRequests && await tx
         .insert(ariesProofRequests)
-        .values(
-          scenario.steps.flatMap((step, index) =>
-            step.actions.map((action, actionIndex) => {
-              const stepAction = stepActionsResult[index * step.actions.length + actionIndex]
-              return {
-                ...action.proofRequest,
-                stepAction: stepAction.id,
-              }
-            }),
-          ),
-        )
+        .values(newAriesProofRequests)
         .returning()
+
+      const hasProofRequestsResult = proofRequestsResult && proofRequestsResult.length > 0
 
       const stepAssetsResult = await tx.query.assets.findMany({
         where: inArray(
@@ -297,12 +314,12 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
 
       const scenarioSteps = stepsResult.map((stepResult) => ({
         ...stepResult,
-        actions: stepActionsResult
+        actions: hasStepActionsResult ? stepActionsResult
           .filter((stepActionResult) => stepActionResult.step === stepResult.id)
           .map((action) => ({
             ...action,
-            proofRequest: proofRequestsResult.find((proofRequest) => proofRequest.stepAction === action.id),
-          })),
+            proofRequest: hasProofRequestsResult ? proofRequestsResult.find((proofRequest) => proofRequest.stepAction === action.id) : undefined,
+          })): undefined,
         asset: stepAssetsResult.find((asset) => asset.id === stepResult.asset),
       }))
 
@@ -538,10 +555,6 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
   async createStep(scenarioId: string, step: NewStep): Promise<Step> {
     await this.findById(scenarioId)
 
-    if (step.actions.length === 0) {
-      return Promise.reject(new BadRequestError('At least one action is required'))
-    }
-
     const assetResult = step.asset ? await this.assetRepository.findById(step.asset) : null
     return (await this.databaseService.getConnection()).transaction(async (tx): Promise<Step> => {
       const [stepResult] = await tx
@@ -552,7 +565,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         })
         .returning()
 
-      const actionsResult = await tx
+      const actionsResult = step.actions && step.actions.length > 0 && await tx
         .insert(stepActions)
         .values(
           step.actions.map((action: NewAriesOOBAction) => ({
@@ -562,7 +575,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         )
         .returning()
 
-      const proofRequestsResult = await tx
+      const proofRequestsResult = step.actions && step.actions.length > 0 && actionsResult && actionsResult.length > 0 && await tx
         .insert(ariesProofRequests)
         .values(
           step.actions.map((action, index) => {
@@ -577,10 +590,10 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
 
       return {
         ...stepResult,
-        actions: actionsResult.map((action) => ({
+        actions: actionsResult ? actionsResult.map((action) => ({
           ...action,
-          proofRequest: proofRequestsResult.find((proofRequest) => proofRequest.stepAction === action.id),
-        })),
+          proofRequest: proofRequestsResult ? proofRequestsResult.find((proofRequest) => proofRequest.stepAction === action.id) : undefined,
+        })) : undefined,
         asset: assetResult,
       }
     })
@@ -593,10 +606,6 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
 
   async updateStep(scenarioId: string, stepId: string, step: NewStep): Promise<Step> {
     await this.findById(scenarioId)
-
-    if (step.actions.length === 0) {
-      return Promise.reject(new BadRequestError('At least one action is required'))
-    }
 
     const assetResult = step.asset ? await this.assetRepository.findById(step.asset) : null
     return (await this.databaseService.getConnection()).transaction(async (tx): Promise<Step> => {
@@ -611,7 +620,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
 
       await tx.delete(stepActions).where(eq(stepActions.step, stepId))
 
-      const actionsResult = await tx
+      const actionsResult = step.actions && step.actions.length > 0 && await tx
         .insert(stepActions)
         .values(
           step.actions.map((action: NewAriesOOBAction) => ({
@@ -621,7 +630,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         )
         .returning()
 
-      const proofRequestsResult = await tx
+      const proofRequestsResult = step.actions && step.actions.length > 0 && actionsResult && actionsResult.length > 0 && await tx
         .insert(ariesProofRequests)
         .values(
           step.actions.map((action, index) => {
@@ -636,10 +645,10 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
 
       return {
         ...stepResult,
-        actions: actionsResult.map((action) => ({
+        actions: actionsResult ? actionsResult.map((action) => ({
           ...action,
-          proofRequest: proofRequestsResult.find((proofRequest) => proofRequest.stepAction === action.id),
-        })),
+          proofRequest: proofRequestsResult ? proofRequestsResult.find((proofRequest) => proofRequest.stepAction === action.id) : undefined,
+        })) : undefined,
         asset: assetResult,
       }
     })

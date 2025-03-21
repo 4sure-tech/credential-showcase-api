@@ -1,5 +1,7 @@
-ALTER TABLE "step" ADD COLUMN "screenId" text;
+ALTER TABLE "step" ADD COLUMN "screenId" text;--> statement-breakpoint
 CREATE TYPE "public"."CredentialRepresentationType" AS ENUM('OCA', 'CREDENTIAL');--> statement-breakpoint
+ALTER TABLE "ariesProofRequest" ALTER COLUMN "step_action" DROP NOT NULL;--> statement-breakpoint
+ALTER TABLE "stepAction" ALTER COLUMN "step" DROP NOT NULL;--> statement-breakpoint
 ALTER TABLE "stepAction" ADD COLUMN "credential_representation_id" uuid;--> statement-breakpoint
 ALTER TABLE "stepAction" ADD CONSTRAINT "stepAction_credential_representation_id_fk" FOREIGN KEY ("credential_representation_id") REFERENCES "public"."credentialRepresentation"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "credentialRepresentation" ADD COLUMN "credential_type" "CredentialRepresentationType" NOT NULL;--> statement-breakpoint

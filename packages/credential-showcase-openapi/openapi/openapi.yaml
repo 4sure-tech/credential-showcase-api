@@ -1777,7 +1777,6 @@ components:
         - description
         - order
         - type
-        - actions
         - createdAt
         - updatedAt
       properties:
@@ -1831,7 +1830,6 @@ components:
         - description
         - order
         - type
-        - actions
       properties:
         title:
           type: string

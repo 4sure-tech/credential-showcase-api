@@ -9,7 +9,6 @@ export const ariesProofRequests = pgTable('ariesProofRequest', {
   predicates: jsonb().$type<Record<string, AriesRequestCredentialPredicate>>().notNull(),
   stepAction: uuid('step_action')
     .references(() => stepActions.id, { onDelete: 'cascade' })
-    .notNull()
     .unique(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at')
