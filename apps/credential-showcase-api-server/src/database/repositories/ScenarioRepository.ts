@@ -110,38 +110,38 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         )
         .returning()
 
-      const newStepActions = stepsResult.flatMap((stepResult, index) =>
+      const newStepActions = stepsResult
+        .flatMap((stepResult, index) =>
           scenario.steps[index].actions?.map((action) => ({
             ...action,
             step: stepResult.id,
           })),
-        ).filter(sa => !!sa)
+        )
+        .filter((sa) => !!sa)
 
       const hasNewStepActions = newStepActions && newStepActions.length > 0
 
-      const stepActionsResult = hasNewStepActions && await tx
-        .insert(stepActions)
-        .values(newStepActions)
-        .returning()
+      const stepActionsResult = hasNewStepActions && (await tx.insert(stepActions).values(newStepActions).returning())
 
       const hasStepActionsResult = stepActionsResult && stepActionsResult.length > 0
 
-      const newAriesProofRequests = hasStepActionsResult && scenario.steps.flatMap((step, index) =>
-          step.actions?.map((action, actionIndex) => {
-            const stepAction = stepActionsResult[index * (step.actions?.length ?? 0) + actionIndex]
-            return {
-              ...action.proofRequest,
-              stepAction: stepAction?.id,
-            }
-          }),
-        ).filter(apr => !!apr)
+      const newAriesProofRequests =
+        hasStepActionsResult &&
+        scenario.steps
+          .flatMap((step, index) =>
+            step.actions?.map((action, actionIndex) => {
+              const stepAction = stepActionsResult[index * (step.actions?.length ?? 0) + actionIndex]
+              return {
+                ...action.proofRequest,
+                stepAction: stepAction?.id,
+              }
+            }),
+          )
+          .filter((apr) => !!apr)
 
       const hasNewAriesProofRequests = newAriesProofRequests && newAriesProofRequests.length > 0
 
-      const proofRequestsResult = hasNewAriesProofRequests && await tx
-        .insert(ariesProofRequests)
-        .values(newAriesProofRequests)
-        .returning()
+      const proofRequestsResult = hasNewAriesProofRequests && (await tx.insert(ariesProofRequests).values(newAriesProofRequests).returning())
 
       const hasProofRequestsResult = proofRequestsResult && proofRequestsResult.length > 0
 
@@ -155,12 +155,14 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
       // must be ternary, otherwise the type of the actions will be boolean | Step[]
       const scenarioSteps = stepsResult.map((stepResult) => ({
         ...stepResult,
-        actions: hasStepActionsResult ? stepActionsResult
-          .filter((stepActionResult) => stepActionResult.step === stepResult.id)
-          .map((action) => ({
-            ...action,
-            proofRequest: hasProofRequestsResult ? proofRequestsResult.find((proofRequest) => proofRequest.stepAction === action.id) : undefined,
-          })) : undefined,
+        actions: hasStepActionsResult
+          ? stepActionsResult
+              .filter((stepActionResult) => stepActionResult.step === stepResult.id)
+              .map((action) => ({
+                ...action,
+                proofRequest: hasProofRequestsResult ? proofRequestsResult.find((proofRequest) => proofRequest.stepAction === action.id) : undefined,
+              }))
+          : undefined,
         asset: stepAssetsResult.find((asset) => asset.id === stepResult.asset),
       }))
 
@@ -270,38 +272,38 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         )
         .returning()
 
-      const newStepActions = stepsResult.flatMap((stepResult, index) =>
-        scenario.steps[index].actions?.map((action) => ({
-          ...action,
-          step: stepResult.id,
-        })),
-      ).filter(sa => !!sa)
+      const newStepActions = stepsResult
+        .flatMap((stepResult, index) =>
+          scenario.steps[index].actions?.map((action) => ({
+            ...action,
+            step: stepResult.id,
+          })),
+        )
+        .filter((sa) => !!sa)
 
       const hasNewStepActions = newStepActions && newStepActions.length > 0
 
-      const stepActionsResult = hasNewStepActions && await tx
-        .insert(stepActions)
-        .values(newStepActions)
-        .returning()
+      const stepActionsResult = hasNewStepActions && (await tx.insert(stepActions).values(newStepActions).returning())
 
       const hasStepActionsResult = stepActionsResult && stepActionsResult.length > 0
 
-      const newAriesProofRequests = hasStepActionsResult && scenario.steps.flatMap((step, index) =>
-        step.actions?.map((action, actionIndex) => {
-          const stepAction = stepActionsResult[index * (step.actions?.length ?? 0) + actionIndex]
-          return {
-            ...action.proofRequest,
-            stepAction: stepAction?.id,
-          }
-        }),
-      ).filter(apr => !!apr)
+      const newAriesProofRequests =
+        hasStepActionsResult &&
+        scenario.steps
+          .flatMap((step, index) =>
+            step.actions?.map((action, actionIndex) => {
+              const stepAction = stepActionsResult[index * (step.actions?.length ?? 0) + actionIndex]
+              return {
+                ...action.proofRequest,
+                stepAction: stepAction?.id,
+              }
+            }),
+          )
+          .filter((apr) => !!apr)
 
       const hasNewAriesProofRequests = newAriesProofRequests && newAriesProofRequests.length > 0
 
-      const proofRequestsResult = hasNewAriesProofRequests && await tx
-        .insert(ariesProofRequests)
-        .values(newAriesProofRequests)
-        .returning()
+      const proofRequestsResult = hasNewAriesProofRequests && (await tx.insert(ariesProofRequests).values(newAriesProofRequests).returning())
 
       const hasProofRequestsResult = proofRequestsResult && proofRequestsResult.length > 0
 
@@ -314,12 +316,14 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
 
       const scenarioSteps = stepsResult.map((stepResult) => ({
         ...stepResult,
-        actions: hasStepActionsResult ? stepActionsResult
-          .filter((stepActionResult) => stepActionResult.step === stepResult.id)
-          .map((action) => ({
-            ...action,
-            proofRequest: hasProofRequestsResult ? proofRequestsResult.find((proofRequest) => proofRequest.stepAction === action.id) : undefined,
-          })): undefined,
+        actions: hasStepActionsResult
+          ? stepActionsResult
+              .filter((stepActionResult) => stepActionResult.step === stepResult.id)
+              .map((action) => ({
+                ...action,
+                proofRequest: hasProofRequestsResult ? proofRequestsResult.find((proofRequest) => proofRequest.stepAction === action.id) : undefined,
+              }))
+          : undefined,
         asset: stepAssetsResult.find((asset) => asset.id === stepResult.asset),
       }))
 
@@ -565,35 +569,45 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         })
         .returning()
 
-      const actionsResult = step.actions && step.actions.length > 0 && await tx
-        .insert(stepActions)
-        .values(
-          step.actions.map((action: NewAriesOOBAction) => ({
-            ...action,
-            step: stepResult.id,
-          })),
-        )
-        .returning()
+      const actionsResult =
+        step.actions &&
+        step.actions.length > 0 &&
+        (await tx
+          .insert(stepActions)
+          .values(
+            step.actions.map((action: NewAriesOOBAction) => ({
+              ...action,
+              step: stepResult.id,
+            })),
+          )
+          .returning())
 
-      const proofRequestsResult = step.actions && step.actions.length > 0 && actionsResult && actionsResult.length > 0 && await tx
-        .insert(ariesProofRequests)
-        .values(
-          step.actions.map((action, index) => {
-            const stepAction = actionsResult[index]
-            return {
-              ...action.proofRequest,
-              stepAction: stepAction.id,
-            }
-          }),
-        )
-        .returning()
+      const proofRequestsResult =
+        step.actions &&
+        step.actions.length > 0 &&
+        actionsResult &&
+        actionsResult.length > 0 &&
+        (await tx
+          .insert(ariesProofRequests)
+          .values(
+            step.actions.map((action, index) => {
+              const stepAction = actionsResult[index]
+              return {
+                ...action.proofRequest,
+                stepAction: stepAction.id,
+              }
+            }),
+          )
+          .returning())
 
       return {
         ...stepResult,
-        actions: actionsResult ? actionsResult.map((action) => ({
-          ...action,
-          proofRequest: proofRequestsResult ? proofRequestsResult.find((proofRequest) => proofRequest.stepAction === action.id) : undefined,
-        })) : undefined,
+        actions: actionsResult
+          ? actionsResult.map((action) => ({
+              ...action,
+              proofRequest: proofRequestsResult ? proofRequestsResult.find((proofRequest) => proofRequest.stepAction === action.id) : undefined,
+            }))
+          : undefined,
         asset: assetResult,
       }
     })
@@ -620,35 +634,45 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
 
       await tx.delete(stepActions).where(eq(stepActions.step, stepId))
 
-      const actionsResult = step.actions && step.actions.length > 0 && await tx
-        .insert(stepActions)
-        .values(
-          step.actions.map((action: NewAriesOOBAction) => ({
-            ...action,
-            step: stepResult.id,
-          })),
-        )
-        .returning()
+      const actionsResult =
+        step.actions &&
+        step.actions.length > 0 &&
+        (await tx
+          .insert(stepActions)
+          .values(
+            step.actions.map((action: NewAriesOOBAction) => ({
+              ...action,
+              step: stepResult.id,
+            })),
+          )
+          .returning())
 
-      const proofRequestsResult = step.actions && step.actions.length > 0 && actionsResult && actionsResult.length > 0 && await tx
-        .insert(ariesProofRequests)
-        .values(
-          step.actions.map((action, index) => {
-            const stepAction = actionsResult[index]
-            return {
-              ...action.proofRequest,
-              stepAction: stepAction.id,
-            }
-          }),
-        )
-        .returning()
+      const proofRequestsResult =
+        step.actions &&
+        step.actions.length > 0 &&
+        actionsResult &&
+        actionsResult.length > 0 &&
+        (await tx
+          .insert(ariesProofRequests)
+          .values(
+            step.actions.map((action, index) => {
+              const stepAction = actionsResult[index]
+              return {
+                ...action.proofRequest,
+                stepAction: stepAction.id,
+              }
+            }),
+          )
+          .returning())
 
       return {
         ...stepResult,
-        actions: actionsResult ? actionsResult.map((action) => ({
-          ...action,
-          proofRequest: proofRequestsResult ? proofRequestsResult.find((proofRequest) => proofRequest.stepAction === action.id) : undefined,
-        })) : undefined,
+        actions: actionsResult
+          ? actionsResult.map((action) => ({
+              ...action,
+              proofRequest: proofRequestsResult ? proofRequestsResult.find((proofRequest) => proofRequest.stepAction === action.id) : undefined,
+            }))
+          : undefined,
         asset: assetResult,
       }
     })

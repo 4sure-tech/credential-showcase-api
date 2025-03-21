@@ -13,8 +13,7 @@ export const stepActions = pgTable(
     title: text().notNull(),
     text: text().notNull(),
     credentialRepresentation: uuid('credential_representation_id').references(() => credentialRepresentations.id),
-    step: uuid()
-      .references(() => steps.id, { onDelete: 'cascade' }),
+    step: uuid().references(() => steps.id, { onDelete: 'cascade' }),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at')
       .defaultNow()

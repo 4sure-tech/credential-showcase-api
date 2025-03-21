@@ -491,7 +491,7 @@ describe('Database scenario repository tests', (): void => {
           order: 1,
           type: StepType.HUMAN_TASK,
           asset: asset.id,
-          actions: []
+          actions: [],
         },
         {
           title: 'example_title',
@@ -2525,25 +2525,25 @@ describe('Database scenario repository tests', (): void => {
     }
 
     await expect(repository.createStep(savedIssuanceScenario.id, step)).resolves.toEqual({
-      "asset": {
-        "content": expect.any(Buffer),
-        "createdAt": expect.any(Date),
-        "description": "some image",
-        "fileName": "image.png",
-        "id": expect.any(String),
-        "mediaType": "image/png",
-        "updatedAt": expect.any(Date)
+      asset: {
+        content: expect.any(Buffer),
+        createdAt: expect.any(Date),
+        description: 'some image',
+        fileName: 'image.png',
+        id: expect.any(String),
+        mediaType: 'image/png',
+        updatedAt: expect.any(Date),
       },
-      "createdAt": expect.any(Date),
-      "description": "example_description",
-      "id": expect.any(String),
-      "order": 2,
-      "scenario": expect.any(String),
-      "screenId": null,
-      "subScenario": null,
-      "title": "example_title",
-      "type": "HUMAN_TASK",
-      "updatedAt": expect.any(Date)
+      createdAt: expect.any(Date),
+      description: 'example_description',
+      id: expect.any(String),
+      order: 2,
+      scenario: expect.any(String),
+      screenId: null,
+      subScenario: null,
+      title: 'example_title',
+      type: 'HUMAN_TASK',
+      updatedAt: expect.any(Date),
     })
   })
 
@@ -3103,29 +3103,27 @@ describe('Database scenario repository tests', (): void => {
       asset: savedIssuanceScenario.steps[0].asset!.id,
     }
 
-    await expect(repository.updateStep(savedIssuanceScenario.id, savedIssuanceScenario.steps[0].id, updatedStep)).resolves.toEqual(
-      {
-        "asset": {
-          "content": expect.any(Buffer),
-          "createdAt": expect.any(Date),
-          "description": "some image",
-          "fileName": "image.png",
-          "id": expect.any(String),
-          "mediaType": "image/png",
-          "updatedAt": expect.any(Date)
-        },
-        "createdAt": expect.any(Date),
-        "description": "example_description",
-        "id": expect.any(String),
-        "order": 1,
-        "scenario": expect.any(String),
-        "screenId": null,
-        "subScenario": null,
-        "title": "example_title",
-        "type": "HUMAN_TASK",
-        "updatedAt": expect.any(Date)
-      }
-    )
+    await expect(repository.updateStep(savedIssuanceScenario.id, savedIssuanceScenario.steps[0].id, updatedStep)).resolves.toEqual({
+      asset: {
+        content: expect.any(Buffer),
+        createdAt: expect.any(Date),
+        description: 'some image',
+        fileName: 'image.png',
+        id: expect.any(String),
+        mediaType: 'image/png',
+        updatedAt: expect.any(Date),
+      },
+      createdAt: expect.any(Date),
+      description: 'example_description',
+      id: expect.any(String),
+      order: 1,
+      scenario: expect.any(String),
+      screenId: null,
+      subScenario: null,
+      title: 'example_title',
+      type: 'HUMAN_TASK',
+      updatedAt: expect.any(Date),
+    })
   })
 
   it('Should add to scenario step action to database', async (): Promise<void> => {
