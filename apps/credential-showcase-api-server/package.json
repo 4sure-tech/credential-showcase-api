@@ -6,7 +6,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "start": "ts-node src/index.ts",
-    "dev": "ts-node-dev src/index.ts",
+    "dev": "ts-node-dev --transpile-only src/index.ts",
     "build": "tsc",
     "build:clean": "tsc --build --clean && tsc --build",
     "migration:generate": "npx drizzle-kit generate --config=drizzle.config.ts --name=credential-showcase-api"

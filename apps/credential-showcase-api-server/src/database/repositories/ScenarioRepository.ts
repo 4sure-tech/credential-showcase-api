@@ -419,17 +419,17 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
       ...(result.issuer && {
         issuer: {
           ...(result.issuer as any), // TODO check this typing issue at a later point in time
-          credentialDefinitions: result.issuer!.cds.map((credentialDefinition) => credentialDefinition.cd),
+          credentialDefinitions: result.issuer!.cds.map((credentialDefinition: any) => credentialDefinition.cd),
           credentialSchemas: result.issuer!.css.map((credentialSchema: any) => credentialSchema.cs),
         },
       }),
       ...(result.relyingParty && {
         relyingParty: {
           ...(result.relyingParty as any), // TODO check this typing issue at a later point in time
-          credentialDefinitions: result.relyingParty!.cds.map((credentialDefinition) => credentialDefinition.cd),
+          credentialDefinitions: result.relyingParty!.cds.map((credentialDefinition: any) => credentialDefinition.cd),
         },
       }),
-      personas: result.personas.map((item) => item.persona),
+      personas: result.personas.map((item: any) => item.persona),
     }
   }
 

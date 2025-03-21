@@ -10,13 +10,11 @@ import IssuerController from './controllers/IssuerController'
 import IssuanceScenarioController from './controllers/IssuanceScenarioController'
 import PresentationScenarioController from './controllers/PresentationScenarioController'
 import ShowcaseController from './controllers/ShowcaseController'
-import { corsDisabled, corsOptions } from './utils/cors'
 import { CredentialDefinitionController } from './controllers/CredentialDefinitionController'
 import { CredentialSchemaController } from './controllers/CredentialSchemaController'
+import { corsOptions } from './utils/cors'
 
 require('dotenv-flow').config()
-
-// Ensure routing-controllers uses typedi for DI
 useContainer(Container)
 
 async function bootstrap() {
@@ -36,9 +34,8 @@ async function bootstrap() {
       ],
       middlewares: [ExpressErrorHandler],
       defaultErrorHandler: false,
-      cors: corsDisabled ? false : corsOptions,
+      cors: corsOptions,
     })
-
     // Start the server
     const port = Number(process.env.PORT)
 
@@ -52,4 +49,4 @@ async function bootstrap() {
 }
 
 // Start the application
-bootstrap()
+void bootstrap()
