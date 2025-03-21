@@ -1284,6 +1284,34 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /assets/{assetId}/file:
+    parameters:
+      - name: assetId
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Assets
+      summary: Retrieve a specific asset as file
+      operationId: getAssetAsFile
+      responses:
+        '200':
+          description: OK
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
   /roles/issuers:
     get:
@@ -1785,6 +1813,10 @@ components:
           type: string
           description: Detailed description of the step
           example: Verify the user's identity
+        screenId:
+          type: string
+          description: Screen attached to step
+          example: PICK_PERSONA
         order:
           type: integer
           description: Order of the step in the scenario
@@ -1829,6 +1861,10 @@ components:
           type: string
           description: Detailed description of the step
           example: Verify the user's identity
+        screenId:
+          type: string
+          description: Screen attached to step
+          example: PICK_PERSONA
         order:
           type: integer
           description: Order of the step in the scenario
@@ -2555,7 +2591,6 @@ components:
         - version
         - type
         - credentialSchema
-        - icon
         # TODO enable back in SHOWCASE-81
         # - representations
         - createdAt
@@ -2611,7 +2646,6 @@ components:
         - name
         - version
         - type
-        - icon
         - credentialSchema
         # TODO enable back in SHOWCASE-81
         # - representations

@@ -63,7 +63,7 @@ export const credentialDefinitionDTOFrom = (credentialDefinition: CredentialDefi
     credentialSchema: credentialSchemaDTOFrom(credentialDefinition.credentialSchema),
     representations: credentialDefinition.representations,
     revocation: credentialDefinition.revocation || undefined,
-    icon: assetDTOFrom(credentialDefinition.icon),
+    icon: credentialDefinition.icon ? assetDTOFrom(credentialDefinition?.icon) : undefined,
   }
 }
 
@@ -130,6 +130,7 @@ export const stepDTOFrom = (step: Step): StepDTO => {
     ...step,
     asset: step.asset ? assetDTOFrom(step.asset) : undefined,
     subScenario: step.subScenario || undefined,
+    screenId: step.screenId || undefined,
   }
 }
 

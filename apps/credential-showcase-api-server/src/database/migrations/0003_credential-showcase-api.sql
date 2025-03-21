@@ -1,3 +1,5 @@
+ALTER TABLE "step" ADD COLUMN "screenId" text;--> statement-breakpoint
+ALTER TABLE "credentialDefinition" ALTER COLUMN "icon" DROP NOT NULL;--> statement-breakpoint
 CREATE TABLE "user" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"identifier_type" "IdentifierType",
