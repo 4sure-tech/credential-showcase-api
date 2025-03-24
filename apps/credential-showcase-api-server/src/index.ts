@@ -12,31 +12,13 @@ import PresentationScenarioController from './controllers/PresentationScenarioCo
 import ShowcaseController from './controllers/ShowcaseController'
 import { CredentialDefinitionController } from './controllers/CredentialDefinitionController'
 import { CredentialSchemaController } from './controllers/CredentialSchemaController'
-
-const allowedOrigins = process.env.ALLOW_ORIGINS?.split(',') ?? ['*']
-const methods = process.env.ALLOW_METHODS?.split(',') ?? ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
-const allowedHeaders = process.env.ALLOW_HEADERS?.split(',') ?? ['Content-Type', 'Authorization', 'X-Requested-With']
-const credentials = process.env.ALLOW_CREDENTIALS === 'true'
+import { corsOptions } from './utils/cors'
 
 require('dotenv-flow').config()
 useContainer(Container)
 
 async function bootstrap() {
   try {
-    const corsOptions = {
-      origin: (requestOrigin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-        if (!requestOrigin) return callback(null, true)
-        if (allowedOrigins.indexOf(requestOrigin) === -1) {
-          const msg = 'The CORS policy for this site does not allow access from the specified Origin.'
-          return callback(new Error(msg), false)
-        }
-        return callback(null, true)
-      },
-      methods,
-      allowedHeaders,
-      credentials,
-    }
-
     // Create and configure Express server
     const app = createExpressServer({
       controllers: [
