@@ -16,6 +16,7 @@ import * as schema from '../../../database/schema'
 import {
   Asset,
   CredentialAttributeType,
+  CredentialDefinition,
   CredentialType,
   IdentifierType,
   IssuanceScenario,
@@ -48,6 +49,7 @@ describe('Database scenario repository tests', (): void => {
   let asset: Asset
   let persona1: Persona
   let persona2: Persona
+  let credentialDefinition: CredentialDefinition
 
   beforeEach(async (): Promise<void> => {
     client = new PGlite()
@@ -113,7 +115,7 @@ describe('Database scenario repository tests', (): void => {
         description: 'example_revocation_description',
       },
     }
-    const credentialDefinition = await credentialDefinitionRepository.create(newCredentialDefinition)
+    credentialDefinition = await credentialDefinitionRepository.create(newCredentialDefinition)
     const newIssuer: NewIssuer = {
       name: 'example_name',
       type: IssuerType.ARIES,
@@ -164,6 +166,7 @@ describe('Database scenario repository tests', (): void => {
           order: 1,
           type: StepType.HUMAN_TASK,
           asset: asset.id,
+          credentialDefinition: credentialDefinition.id,
           actions: [
             {
               title: 'example_title',
@@ -256,6 +259,8 @@ describe('Database scenario repository tests', (): void => {
     expect(savedIssuanceScenario.steps[0].title).toEqual(issuanceScenario.steps[0].title)
     expect(savedIssuanceScenario.steps[0].order).toEqual(issuanceScenario.steps[0].order)
     expect(savedIssuanceScenario.steps[0].type).toEqual(issuanceScenario.steps[0].type)
+    expect(savedIssuanceScenario.steps[0].credentialDefinition).toBeDefined()
+    expect(savedIssuanceScenario.steps[0].credentialDefinition).toEqual(credentialDefinition.id)
     expect(savedIssuanceScenario.steps[0].actions.length).toEqual(1)
     expect(savedIssuanceScenario.steps[0].actions[0].id).toBeDefined()
     expect(savedIssuanceScenario.steps[0].actions[0].title).toEqual(issuanceScenario.steps[0].actions[0].title)
@@ -283,6 +288,7 @@ describe('Database scenario repository tests', (): void => {
     expect(savedIssuanceScenario.steps[0].asset!.fileName).toEqual(asset.fileName)
     expect(savedIssuanceScenario.steps[0].asset!.description).toEqual(asset.description)
     expect(savedIssuanceScenario.steps[0].asset!.content).toStrictEqual(asset.content)
+    expect(savedIssuanceScenario.steps[1].credentialDefinition).toBeNull()
     expect((<IssuanceScenario>savedIssuanceScenario).issuer).not.toBeNull()
     expect((<IssuanceScenario>savedIssuanceScenario).issuer!.name).toEqual(issuer.name)
     expect((<IssuanceScenario>savedIssuanceScenario).issuer!.credentialDefinitions.length).toEqual(1)
