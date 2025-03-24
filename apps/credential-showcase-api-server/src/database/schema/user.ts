@@ -16,6 +16,6 @@ export const users = pgTable('user', {
     .$onUpdate(() => new Date()),
 })
 
-export const userRelations = relations(users, ({ many })=>({
-  showcase: many(showcases)
+export const userRelations = relations(users, ({ many }) => ({
+  showcase: many(showcases),
 }))

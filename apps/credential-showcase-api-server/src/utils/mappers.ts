@@ -151,6 +151,7 @@ export const showcaseDTOFrom = (showcase: Showcase): ShowcaseDTO => {
     scenarios: showcase.scenarios.map(scenarioDTOFrom),
     bannerImage: showcase.bannerImage ? assetDTOFrom(showcase.bannerImage) : undefined,
     completionMessage: showcase.completionMessage || undefined,
+    createdBy: showcase.createdBy ? userDTOFrom(showcase.createdBy) : undefined,
   }
 }
 

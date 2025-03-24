@@ -272,7 +272,13 @@ describe('Database showcase repository tests', (): void => {
     expect(savedShowcase.bannerImage!.fileName).toEqual(asset.fileName)
     expect(savedShowcase.bannerImage!.description).toEqual(asset.description)
     expect(savedShowcase.bannerImage!.content).toStrictEqual(asset.content)
-    expect(savedShowcase.createdBy).toEqual(user.id)
+    expect(savedShowcase.createdBy).toEqual({
+      createdAt: expect.any(Date),
+      id: expect.any(String),
+      identifier: 'did:example.org',
+      identifierType: 'DID',
+      updatedAt: expect.any(Date),
+    })
   })
 
   it('Should throw error when saving showcase with no personas', async (): Promise<void> => {
@@ -601,6 +607,7 @@ describe('Database showcase repository tests', (): void => {
       credentialDefinitions: [unknownCredentialDefinitionId],
       personas: [persona1.id, persona2.id],
       bannerImage: null,
+      createdBy: savedShowcase.createdBy?.id,
     }
 
     await expect(repository.update(savedShowcase.id, updatedShowcase)).rejects.toThrowError(
