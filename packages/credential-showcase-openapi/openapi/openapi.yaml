@@ -1926,6 +1926,10 @@ components:
         propertyName: actionType
         mapping:
           ARIES_OOB: '#/components/schemas/AriesOOBAction'
+          ACCEPT_CREDENTIAL: '#/components/schemas/AcceptCredentialAction'
+          SHARE_CREDENTIAL: '#/components/schemas/ShareCredential'
+          SETUP_CONNECTION: '#/components/schemas/SetupConnection'
+          CHOOSE_WALLET: '#/components/schemas/ChooseWallet'
     StepActionRequest:
       type: object
       required:
@@ -2077,6 +2081,46 @@ components:
           items:
             type: string
           description: List of restrictions on the predicate
+    AcceptCredentialAction:
+      allOf:
+        - $ref: '#/components/schemas/StepAction'
+        - type: object
+          required:
+            - credentialDefinitionId
+          properties:
+            credentialDefinitionId:
+              type: string
+              description: Credential definition ID
+              example: 123e4567-e89b-12d3-a456-426614174456
+            connectionId:
+              type: string
+              description: Connection ID
+              example: 341c384b-3313-41ba-96a7-4f07329cd6b5
+    ShareCredential:
+      allOf:
+        - $ref: '#/components/schemas/StepAction'
+        - type: object
+          required:
+            - credentialDefinitionId
+          properties:
+            credentialDefinitionId:
+              type: string
+              description: Credential definition ID
+              example: 123e4567-e89b-12d3-a456-426614174456
+            connectionId:
+              type: string
+              description: Connection ID
+              example: 341c384b-3313-41ba-96a7-4f07329cd6b5
+    SetupConnection:
+      allOf:
+        - $ref: '#/components/schemas/StepAction'
+        - type: object
+      # TODO properties?
+    ChooseWallet:
+      allOf:
+        - $ref: '#/components/schemas/StepAction'
+        - type: object
+      # TODO properties?
 
     Persona:
       type: object
