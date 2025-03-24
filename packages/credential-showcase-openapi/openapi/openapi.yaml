@@ -1808,6 +1808,12 @@ components:
           type: string
           description: Optional sub-scenario for this step
           example: 123e4567-e89b-12d3-a456-434314174000
+        credentialDefinitionIdentifierType:
+          $ref: '#/components/schemas/IdentifierType'
+        credentialDefinitionIdentifier:
+          type: string
+          description: External identifier of this credential definition
+          example: did:sov:XUeUZauFLeBNofY3NhaZCB
         actions:
           type: array
           items:
@@ -1856,6 +1862,12 @@ components:
           type: string
           description: Optional sub-scenario for this step
           example: 123e4567-e89b-12d3-a456-434314174000
+        credentialDefinitionIdentifierType:
+          $ref: '#/components/schemas/IdentifierType'
+        credentialDefinitionIdentifier:
+          type: string
+          description: External identifier of this credential definition
+          example: did:sov:XUeUZauFLeBNofY3NhaZCB
         actions:
           type: array
           description: List of actions associated with this step

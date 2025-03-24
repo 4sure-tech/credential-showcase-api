@@ -26,6 +26,7 @@ import {
   Step,
   ScenarioType,
 } from '../../types'
+import CredentialDefinitionRepository from './CredentialDefinitionRepository'
 
 @Service()
 class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> {
@@ -35,6 +36,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
     private readonly issuerRepository: IssuerRepository,
     private readonly relyingPartyRepository: RelyingPartyRepository,
     private readonly assetRepository: AssetRepository,
+    private readonly credentialDefinitionRepository: CredentialDefinitionRepository,
   ) {}
 
   async create(scenario: NewScenario): Promise<Scenario> {
@@ -342,6 +344,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
               },
             },
             asset: true,
+            credentialDefinition: true,
           },
         },
         relyingParty: {
@@ -448,6 +451,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
               },
             },
             asset: true,
+            credentialDefinition: true,
           },
         },
         relyingParty: {
@@ -542,12 +546,16 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
       return Promise.reject(new BadRequestError('At least one action is required'))
     }
 
+    const credentialDefinitionResult = step.credentialDefinition
+      ? await this.credentialDefinitionRepository.findById(step.credentialDefinition)
+      : null
     const assetResult = step.asset ? await this.assetRepository.findById(step.asset) : null
     return (await this.databaseService.getConnection()).transaction(async (tx): Promise<Step> => {
       const [stepResult] = await tx
         .insert(steps)
         .values({
           ...step,
+          credentialDefinition: credentialDefinitionResult?.id,
           scenario: scenarioId,
         })
         .returning()
@@ -598,12 +606,16 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
       return Promise.reject(new BadRequestError('At least one action is required'))
     }
 
+    const credentialDefinitionResult = step?.credentialDefinition
+      ? await this.credentialDefinitionRepository.findById(step.credentialDefinition)
+      : null
     const assetResult = step.asset ? await this.assetRepository.findById(step.asset) : null
     return (await this.databaseService.getConnection()).transaction(async (tx): Promise<Step> => {
       const [stepResult] = await tx
         .update(steps)
         .set({
           ...step,
+          credentialDefinition: credentialDefinitionResult?.id,
           scenario: scenarioId,
         })
         .where(eq(steps.id, stepId))
@@ -657,6 +669,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
           },
         },
         asset: true,
+        credentialDefinition: true,
       },
     })
 
@@ -675,6 +688,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
       where: eq(steps.scenario, scenarioId),
       with: {
         asset: true,
+        credentialDefinition: true,
         actions: {
           with: {
             proofRequest: true,
