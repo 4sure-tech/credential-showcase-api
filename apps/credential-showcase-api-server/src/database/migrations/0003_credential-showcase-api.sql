@@ -10,6 +10,5 @@ CREATE TABLE "user" (
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-ALTER TABLE "credentialDefinition" ALTER COLUMN "icon" SET NOT NULL;--> statement-breakpoint
 ALTER TABLE "showcase" ADD COLUMN "created_by" uuid;--> statement-breakpoint
 ALTER TABLE "showcase" ADD CONSTRAINT "showcase_created_by_user_id_fk" FOREIGN KEY ("created_by") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;
