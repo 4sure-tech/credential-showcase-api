@@ -18,6 +18,7 @@ import {
   Showcase as ShowcaseDTO,
   Step as StepDTO,
   StepAction as StepActionDTO,
+  User as UserDTO,
 } from 'credential-showcase-openapi'
 import {
   AcceptCredentialAction,
@@ -38,6 +39,7 @@ import {
   ShareCredentialAction,
   Showcase,
   Step,
+  User,
   StepActionType,
   StepActionTypes,
 } from '../types'
@@ -226,6 +228,15 @@ export const showcaseDTOFrom = (showcase: Showcase): ShowcaseDTO => {
     scenarios: showcase.scenarios.map(scenarioDTOFrom),
     bannerImage: showcase.bannerImage ? assetDTOFrom(showcase.bannerImage) : undefined,
     completionMessage: showcase.completionMessage || undefined,
+    createdBy: showcase.createdBy ? userDTOFrom(showcase.createdBy) : undefined,
+  }
+}
+
+export const userDTOFrom = (user: User): UserDTO => {
+  return {
+    ...user,
+    identifierType: user.identifierType ?? undefined,
+    identifier: user.identifier ?? undefined,
   }
 }
 
