@@ -39,9 +39,9 @@ import {
   ShareCredentialAction,
   Showcase,
   Step,
-  User,
   StepActionType,
   StepActionTypes,
+  User,
 } from '../types'
 
 export const newAssetFrom = (asset: AssetRequestDTO): NewAsset => {
