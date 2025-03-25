@@ -168,11 +168,13 @@ export type Step = Omit<typeof steps.$inferSelect, 'asset'> & {
   actions: AriesOOBAction[]
   asset?: Asset | null
 }
-export type NewStep = Omit<typeof steps.$inferInsert, 'scenario'> & {
+export type NewStep = Omit<typeof steps.$inferInsert, 'scenario' | 'credentialDefinition'> & {
   asset?: string | null
   actions: NewAriesOOBAction[]
   subScenario?: string | null
   screenId?: string | null
+  credentialDefinitionIdentifierType?: IdentifierType
+  credentialDefinitionIdentifier?: string
 }
 
 export type AriesOOBAction = Omit<typeof stepActions.$inferSelect, 'proofRequest'> & {
