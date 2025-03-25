@@ -3,7 +3,14 @@ import { createExpressServer, useContainer } from 'routing-controllers'
 import { Container } from 'typedi'
 import PresentationScenarioController from '../PresentationScenarioController'
 import { Application } from 'express'
-import { AriesOOBActionRequest, IssuanceScenarioRequest, PresentationScenarioRequest, StepAction, StepRequest, StepType } from 'credential-showcase-openapi'
+import {
+  AriesOOBActionRequest,
+  IssuanceScenarioRequest,
+  PresentationScenarioRequest,
+  StepAction,
+  StepRequest,
+  StepType,
+} from 'credential-showcase-openapi'
 import { PGlite } from '@electric-sql/pglite'
 import AssetRepository from '../../database/repositories/AssetRepository'
 import CredentialSchemaRepository from '../../database/repositories/CredentialSchemaRepository'

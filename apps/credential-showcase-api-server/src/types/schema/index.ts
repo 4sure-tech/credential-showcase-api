@@ -41,7 +41,7 @@ export type CredentialDefinition = Omit<typeof credentialDefinitions.$inferSelec
 
 export type NewCredentialDefinition = Omit<typeof credentialDefinitions.$inferInsert, 'type'> & {
   type: CredentialType
-  icon?: string | null,
+  icon?: string | null
   representations?: NewCredentialRepresentation[] // TODO SHOWCASE-81 make required
   revocation?: NewRevocationInfo | null
   identifierType?: IdentifierType | null
@@ -170,8 +170,22 @@ export type NewPresentationScenario = Omit<typeof scenarios.$inferInsert, 'issue
   hidden: boolean
 }
 
-export type StepActionTypes = StepAction | AcceptCredentialAction | ShareCredentialAction | ButtonAction | AriesOOBAction | SetupConnectionAction | ChooseWalletAction
-export type NewStepActionTypes = NewStepAction | NewAcceptCredentialAction | NewShareCredentialAction | NewButtonAction | NewAriesOOBAction | NewSetupConnectionAction | NewChooseWalletAction
+export type StepActionTypes =
+  | StepAction
+  | AcceptCredentialAction
+  | ShareCredentialAction
+  | ButtonAction
+  | AriesOOBAction
+  | SetupConnectionAction
+  | ChooseWalletAction
+export type NewStepActionTypes =
+  | NewStepAction
+  | NewAcceptCredentialAction
+  | NewShareCredentialAction
+  | NewButtonAction
+  | NewAriesOOBAction
+  | NewSetupConnectionAction
+  | NewChooseWalletAction
 
 export type Step = Omit<typeof steps.$inferSelect, 'asset'> & {
   actions: StepActionTypes[]

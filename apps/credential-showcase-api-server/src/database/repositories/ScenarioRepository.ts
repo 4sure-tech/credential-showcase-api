@@ -154,7 +154,9 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
         })
         .returning()
 
-      await tx.insert(scenariosToPersonas).values(
+      await tx
+        .insert(scenariosToPersonas)
+        .values(
           scenario.personas.map((personaId: string) => ({
             scenario: scenarioResult.id,
             persona: personaId,
@@ -192,25 +194,27 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
       const stepActionsResult = await tx.insert(stepActions).values(flatActions).returning()
       const proofRequestsMap = await this.insertAriesProofRequestsForSteps(tx, scenario.steps, stepActionsResult)
 
-      const scenarioSteps = await Promise.all(stepsResult.map(async (stepResult) => ({
-        ...stepResult,
-        actions: stepActionsResult
-          .filter((sa: any) => sa.step === stepResult.id)
-          .map((action: any) =>
-            this.mapStepAction({
-              ...action,
-              proofRequest: proofRequestsMap.get(action.id) || null,
-            }),
-          ),
-        asset: (
-          await tx.query.assets.findMany({
-            where: inArray(
-              assets.id,
-              ([stepResult.asset] as (string | null)[]).filter((a): a is string => a !== null),
+      const scenarioSteps = await Promise.all(
+        stepsResult.map(async (stepResult) => ({
+          ...stepResult,
+          actions: stepActionsResult
+            .filter((sa: any) => sa.step === stepResult.id)
+            .map((action: any) =>
+              this.mapStepAction({
+                ...action,
+                proofRequest: proofRequestsMap.get(action.id) || null,
+              }),
             ),
-          })
-        )[0],
-      })))
+          asset: (
+            await tx.query.assets.findMany({
+              where: inArray(
+                assets.id,
+                ([stepResult.asset] as (string | null)[]).filter((a): a is string => a !== null),
+              ),
+            })
+          )[0],
+        })),
+      )
 
       return {
         id: scenarioResult.id,
@@ -280,7 +284,9 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
 
       await tx.delete(scenariosToPersonas).where(eq(scenariosToPersonas.scenario, scenarioId))
 
-      await tx.insert(scenariosToPersonas).values(
+      await tx
+        .insert(scenariosToPersonas)
+        .values(
           scenario.personas.map((personaId: string) => ({
             scenario: scenarioResult.id,
             persona: personaId,
@@ -320,23 +326,25 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
       const stepActionsResult = await tx.insert(stepActions).values(flatActions).returning()
       const proofRequestsMap = await this.insertAriesProofRequestsForSteps(tx, scenario.steps, stepActionsResult)
 
-      const scenarioSteps = await Promise.all(stepsResult.map(async (stepResult) => ({
-        ...stepResult,
-        actions: stepActionsResult
-          .filter((sa: any) => sa.step === stepResult.id)
-          .map((action: any) => ({
-            ...action,
-            proofRequest: proofRequestsMap.get(action.id) || null,
-          })),
-        asset: (
-          await tx.query.assets.findMany({
-            where: inArray(
-              assets.id,
-              ([stepResult.asset] as (string | null)[]).filter((a): a is string => a !== null),
-            ),
-          })
-        )[0],
-      })))
+      const scenarioSteps = await Promise.all(
+        stepsResult.map(async (stepResult) => ({
+          ...stepResult,
+          actions: stepActionsResult
+            .filter((sa: any) => sa.step === stepResult.id)
+            .map((action: any) => ({
+              ...action,
+              proofRequest: proofRequestsMap.get(action.id) || null,
+            })),
+          asset: (
+            await tx.query.assets.findMany({
+              where: inArray(
+                assets.id,
+                ([stepResult.asset] as (string | null)[]).filter((a): a is string => a !== null),
+              ),
+            })
+          )[0],
+        })),
+      )
 
       return {
         id: scenarioResult.id,
