@@ -1,4 +1,4 @@
-import { inArray, eq } from 'drizzle-orm'
+import { eq, inArray } from 'drizzle-orm'
 import { Service } from 'typedi'
 import { BadRequestError } from 'routing-controllers'
 import DatabaseService from '../../services/DatabaseService'
@@ -18,7 +18,8 @@ import {
   showcasesToPersonas,
   showcasesToScenarios,
 } from '../schema'
-import { Showcase, NewShowcase, RepositoryDefinition } from '../../types'
+import { NewShowcase, RepositoryDefinition, Showcase } from '../../types'
+import UserRepository from './UserRepository'
 
 @Service()
 class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> {
@@ -28,6 +29,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
     private readonly credentialDefinitionRepository: CredentialDefinitionRepository,
     private readonly scenarioRepository: ScenarioRepository,
     private readonly assetRepository: AssetRepository,
+    private readonly userRepository: UserRepository,
   ) {}
 
   async create(showcase: NewShowcase): Promise<Showcase> {
@@ -40,6 +42,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
     if (showcase.scenarios.length === 0) {
       return Promise.reject(new BadRequestError('At least one scenario is required'))
     }
+    const userResult = showcase?.createdBy ? await this.userRepository.findById(showcase.createdBy) : null
     const bannerImageResult = showcase.bannerImage ? await this.assetRepository.findById(showcase.bannerImage) : null
     const personaPromises = showcase.personas.map(async (persona) => await this.personaRepository.findById(persona))
     await Promise.all(personaPromises)
@@ -206,7 +209,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
       })
 
       return {
-        ...showcaseResult,
+        ...(showcaseResult as any), // TODO check this typing issue at a later point in time
         scenarios: scenariosResult.map((scenario) => ({
           ...scenario,
           steps: sortSteps(scenario.steps),
@@ -231,6 +234,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
         })),
         personas: personasResult,
         bannerImage: bannerImageResult,
+        createdBy: userResult,
       }
     })
   }
@@ -252,6 +256,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
       return Promise.reject(new BadRequestError('At least one scenario is required'))
     }
 
+    const userResult = showcase?.createdBy ? await this.userRepository.findById(showcase.createdBy) : null
     const bannerImageResult = showcase.bannerImage ? await this.assetRepository.findById(showcase.bannerImage) : null
 
     const personaPromises = showcase.personas.map(async (persona) => await this.personaRepository.findById(persona))
@@ -425,7 +430,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
       })
 
       return {
-        ...showcaseResult,
+        ...(showcaseResult as any), // TODO check this typing issue at a later point in time
         scenarios: scenariosResult.map((scenario) => ({
           ...scenario,
           steps: sortSteps(scenario.steps),
@@ -450,6 +455,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
         })),
         personas: personasResult,
         bannerImage: bannerImageResult,
+        createdBy: userResult,
       }
     })
   }
@@ -565,6 +571,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
             },
           },
           bannerImage: true,
+          createdBy: true,
         },
       })
       .prepare('statement_name')
@@ -576,7 +583,7 @@ class ShowcaseRepository implements RepositoryDefinition<Showcase, NewShowcase> 
     }
 
     return {
-      ...result,
+      ...(result as any), // TODO check this typing issue at a later point in time
       scenarios: result.scenarios.map((scenario: any) => ({
         ...(scenario.scenario as any),
         steps: sortSteps(scenario.scenario.steps),

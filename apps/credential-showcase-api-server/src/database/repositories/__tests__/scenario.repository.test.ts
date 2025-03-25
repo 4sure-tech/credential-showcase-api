@@ -261,28 +261,28 @@ describe('Database scenario repository tests', (): void => {
     expect(savedIssuanceScenario.steps[0].type).toEqual(issuanceScenario.steps[0].type)
     expect(savedIssuanceScenario.steps[0].credentialDefinition).toBeDefined()
     expect(savedIssuanceScenario.steps[0].credentialDefinition).toEqual(credentialDefinition.id)
-    expect(savedIssuanceScenario.steps[0].actions.length).toEqual(1)
-    expect(savedIssuanceScenario.steps[0].actions[0].id).toBeDefined()
-    expect(savedIssuanceScenario.steps[0].actions[0].title).toEqual(issuanceScenario.steps[0].actions[0].title)
-    expect(savedIssuanceScenario.steps[0].actions[0].actionType).toEqual(issuanceScenario.steps[0].actions[0].actionType)
-    expect(savedIssuanceScenario.steps[0].actions[0].text).toEqual(issuanceScenario.steps[0].actions[0].text)
-    expect(savedIssuanceScenario.steps[0].actions[0].proofRequest).not.toBeNull()
-    expect(savedIssuanceScenario.steps[0].actions[0].proofRequest!.attributes).not.toBeNull()
-    expect(savedIssuanceScenario.steps[0].actions[0].proofRequest!.attributes!.attribute1).toBeDefined()
-    expect(savedIssuanceScenario.steps[0].actions[0].proofRequest!.attributes!.attribute1.attributes!.length).toEqual(2)
-    expect(savedIssuanceScenario.steps[0].actions[0].proofRequest!.attributes!.attribute1.restrictions!.length).toEqual(2)
-    expect(savedIssuanceScenario.steps[0].actions[0].proofRequest!.predicates).not.toBeNull()
-    expect(savedIssuanceScenario.steps[0].actions[0].proofRequest!.predicates!.predicate1).toBeDefined()
-    expect(savedIssuanceScenario.steps[0].actions[0].proofRequest!.predicates!.predicate1.name).toEqual(
-      issuanceScenario.steps[0].actions[0].proofRequest!.predicates.predicate1.name,
+    expect(savedIssuanceScenario.steps[0].actions!.length).toEqual(1)
+    expect(savedIssuanceScenario.steps[0].actions![0].id).toBeDefined()
+    expect(savedIssuanceScenario.steps[0].actions![0].title).toEqual(issuanceScenario.steps[0].actions![0].title)
+    expect(savedIssuanceScenario.steps[0].actions![0].actionType).toEqual(issuanceScenario.steps[0].actions![0].actionType)
+    expect(savedIssuanceScenario.steps[0].actions![0].text).toEqual(issuanceScenario.steps[0].actions![0].text)
+    expect(savedIssuanceScenario.steps[0].actions![0].proofRequest).not.toBeNull()
+    expect(savedIssuanceScenario.steps[0].actions![0].proofRequest!.attributes).not.toBeNull()
+    expect(savedIssuanceScenario.steps[0].actions![0].proofRequest!.attributes!.attribute1).toBeDefined()
+    expect(savedIssuanceScenario.steps[0].actions![0].proofRequest!.attributes!.attribute1.attributes!.length).toEqual(2)
+    expect(savedIssuanceScenario.steps[0].actions![0].proofRequest!.attributes!.attribute1.restrictions!.length).toEqual(2)
+    expect(savedIssuanceScenario.steps[0].actions![0].proofRequest!.predicates).not.toBeNull()
+    expect(savedIssuanceScenario.steps[0].actions![0].proofRequest!.predicates!.predicate1).toBeDefined()
+    expect(savedIssuanceScenario.steps[0].actions![0].proofRequest!.predicates!.predicate1.name).toEqual(
+      issuanceScenario.steps[0].actions![0].proofRequest!.predicates.predicate1.name,
     )
-    expect(savedIssuanceScenario.steps[0].actions[0].proofRequest!.predicates!.predicate1.type).toEqual(
-      issuanceScenario.steps[0].actions[0].proofRequest!.predicates.predicate1.type,
+    expect(savedIssuanceScenario.steps[0].actions![0].proofRequest!.predicates!.predicate1.type).toEqual(
+      issuanceScenario.steps[0].actions![0].proofRequest!.predicates.predicate1.type,
     )
-    expect(savedIssuanceScenario.steps[0].actions[0].proofRequest!.predicates!.predicate1.value).toEqual(
-      issuanceScenario.steps[0].actions[0].proofRequest!.predicates.predicate1.value,
+    expect(savedIssuanceScenario.steps[0].actions![0].proofRequest!.predicates!.predicate1.value).toEqual(
+      issuanceScenario.steps[0].actions![0].proofRequest!.predicates.predicate1.value,
     )
-    expect(savedIssuanceScenario.steps[0].actions[0].proofRequest!.predicates!.predicate1.restrictions!.length).toEqual(2)
+    expect(savedIssuanceScenario.steps[0].actions![0].proofRequest!.predicates!.predicate1.restrictions!.length).toEqual(2)
     expect(savedIssuanceScenario.steps[0].asset).not.toBeNull()
     expect(savedIssuanceScenario.steps[0].asset!.mediaType).toEqual(asset.mediaType)
     expect(savedIssuanceScenario.steps[0].asset!.fileName).toEqual(asset.fileName)
@@ -422,11 +422,11 @@ describe('Database scenario repository tests', (): void => {
     expect(savedPresentationScenario.steps[0].title).toEqual(presentationScenario.steps[0].title)
     expect(savedPresentationScenario.steps[0].order).toEqual(presentationScenario.steps[0].order)
     expect(savedPresentationScenario.steps[0].type).toEqual(presentationScenario.steps[0].type)
-    expect(savedPresentationScenario.steps[0].actions.length).toEqual(1)
-    expect(savedPresentationScenario.steps[0].actions[0].id).toBeDefined()
-    expect(savedPresentationScenario.steps[0].actions[0].title).toEqual(presentationScenario.steps[0].actions[0].title)
-    expect(savedPresentationScenario.steps[0].actions[0].actionType).toEqual(presentationScenario.steps[0].actions[0].actionType)
-    expect(savedPresentationScenario.steps[0].actions[0].text).toEqual(presentationScenario.steps[0].actions[0].text)
+    expect(savedPresentationScenario.steps[0].actions!.length).toEqual(1)
+    expect(savedPresentationScenario.steps[0].actions![0].id).toBeDefined()
+    expect(savedPresentationScenario.steps[0].actions![0].title).toEqual(presentationScenario.steps[0].actions![0].title)
+    expect(savedPresentationScenario.steps[0].actions![0].actionType).toEqual(presentationScenario.steps[0].actions![0].actionType)
+    expect(savedPresentationScenario.steps[0].actions![0].text).toEqual(presentationScenario.steps[0].actions![0].text)
     expect(savedPresentationScenario.steps[0].asset).not.toBeNull()
     expect(savedPresentationScenario.steps[0].asset!.mediaType).toEqual(asset.mediaType)
     expect(savedPresentationScenario.steps[0].asset!.fileName).toEqual(asset.fileName)
@@ -973,23 +973,23 @@ describe('Database scenario repository tests', (): void => {
     expect(fromDb.hidden).toEqual(issuanceScenario.hidden)
     expect(fromDb.steps).toBeDefined()
     expect(fromDb.steps.length).toEqual(2)
-    expect(fromDb.steps[0].actions[0].proofRequest).not.toBeNull()
-    expect(fromDb.steps[0].actions[0].proofRequest!.attributes).not.toBeNull()
-    expect(fromDb.steps[0].actions[0].proofRequest!.attributes!.attribute1).toBeDefined()
-    expect(fromDb.steps[0].actions[0].proofRequest!.attributes!.attribute1.attributes!.length).toEqual(2)
-    expect(fromDb.steps[0].actions[0].proofRequest!.attributes!.attribute1.restrictions!.length).toEqual(2)
-    expect(fromDb.steps[0].actions[0].proofRequest!.predicates).not.toBeNull()
-    expect(fromDb.steps[0].actions[0].proofRequest!.predicates!.predicate1).toBeDefined()
-    expect(fromDb.steps[0].actions[0].proofRequest!.predicates!.predicate1.name).toEqual(
-      issuanceScenario.steps[0].actions[0].proofRequest!.predicates.predicate1.name,
+    expect(fromDb.steps[0].actions![0].proofRequest).not.toBeNull()
+    expect(fromDb.steps[0].actions![0].proofRequest!.attributes).not.toBeNull()
+    expect(fromDb.steps[0].actions![0].proofRequest!.attributes!.attribute1).toBeDefined()
+    expect(fromDb.steps[0].actions![0].proofRequest!.attributes!.attribute1.attributes!.length).toEqual(2)
+    expect(fromDb.steps[0].actions![0].proofRequest!.attributes!.attribute1.restrictions!.length).toEqual(2)
+    expect(fromDb.steps[0].actions![0].proofRequest!.predicates).not.toBeNull()
+    expect(fromDb.steps[0].actions![0].proofRequest!.predicates!.predicate1).toBeDefined()
+    expect(fromDb.steps[0].actions![0].proofRequest!.predicates!.predicate1.name).toEqual(
+      issuanceScenario.steps[0].actions![0].proofRequest!.predicates.predicate1.name,
     )
-    expect(fromDb.steps[0].actions[0].proofRequest!.predicates!.predicate1.type).toEqual(
-      issuanceScenario.steps[0].actions[0].proofRequest!.predicates.predicate1.type,
+    expect(fromDb.steps[0].actions![0].proofRequest!.predicates!.predicate1.type).toEqual(
+      issuanceScenario.steps[0].actions![0].proofRequest!.predicates.predicate1.type,
     )
-    expect(fromDb.steps[0].actions[0].proofRequest!.predicates!.predicate1.value).toEqual(
-      issuanceScenario.steps[0].actions[0].proofRequest!.predicates.predicate1.value,
+    expect(fromDb.steps[0].actions![0].proofRequest!.predicates!.predicate1.value).toEqual(
+      issuanceScenario.steps[0].actions![0].proofRequest!.predicates.predicate1.value,
     )
-    expect(fromDb.steps[0].actions[0].proofRequest!.predicates!.predicate1.restrictions!.length).toEqual(2)
+    expect(fromDb.steps[0].actions![0].proofRequest!.predicates!.predicate1.restrictions!.length).toEqual(2)
     expect(fromDb.personas).toBeDefined()
     expect(fromDb.personas.length).toEqual(2)
     expect(fromDb.personas[0].name).toEqual(persona1.name)
@@ -1396,33 +1396,33 @@ describe('Database scenario repository tests', (): void => {
     expect(updatedIssuanceScenarioResult.steps[0].title).toEqual(updatedIssuanceScenario.steps[0].title)
     expect(updatedIssuanceScenarioResult.steps[0].order).toEqual(updatedIssuanceScenario.steps[0].order)
     expect(updatedIssuanceScenarioResult.steps[0].type).toEqual(updatedIssuanceScenario.steps[0].type)
-    expect(updatedIssuanceScenarioResult.steps[0].actions.length).toEqual(2)
-    expect(updatedIssuanceScenarioResult.steps[0].actions[0].id).toBeDefined()
-    expect(updatedIssuanceScenarioResult.steps[0].actions[0].title).toEqual(updatedIssuanceScenario.steps[0].actions[0].title)
-    expect(updatedIssuanceScenarioResult.steps[0].actions[0].actionType).toEqual(updatedIssuanceScenario.steps[0].actions[0].actionType)
-    expect(updatedIssuanceScenarioResult.steps[0].actions[0].text).toEqual(updatedIssuanceScenario.steps[0].actions[0].text)
+    expect(updatedIssuanceScenarioResult.steps[0].actions!.length).toEqual(2)
+    expect(updatedIssuanceScenarioResult.steps[0].actions![0].id).toBeDefined()
+    expect(updatedIssuanceScenarioResult.steps[0].actions![0].title).toEqual(updatedIssuanceScenario.steps[0].actions![0].title)
+    expect(updatedIssuanceScenarioResult.steps[0].actions![0].actionType).toEqual(updatedIssuanceScenario.steps[0].actions![0].actionType)
+    expect(updatedIssuanceScenarioResult.steps[0].actions![0].text).toEqual(updatedIssuanceScenario.steps[0].actions![0].text)
     expect(updatedIssuanceScenarioResult.steps[0].asset).not.toBeNull()
     expect(updatedIssuanceScenarioResult.steps[0].asset!.mediaType).toEqual(asset.mediaType)
     expect(updatedIssuanceScenarioResult.steps[0].asset!.fileName).toEqual(asset.fileName)
     expect(updatedIssuanceScenarioResult.steps[0].asset!.description).toEqual(asset.description)
     expect(updatedIssuanceScenarioResult.steps[0].asset!.content).toStrictEqual(asset.content)
-    expect(updatedIssuanceScenarioResult.steps[0].actions[0].proofRequest).not.toBeNull()
-    expect(updatedIssuanceScenarioResult.steps[0].actions[0].proofRequest!.attributes).not.toBeNull()
-    expect(updatedIssuanceScenarioResult.steps[0].actions[0].proofRequest!.attributes!.attribute1).toBeDefined()
-    expect(updatedIssuanceScenarioResult.steps[0].actions[0].proofRequest!.attributes!.attribute1.attributes!.length).toEqual(2)
-    expect(updatedIssuanceScenarioResult.steps[0].actions[0].proofRequest!.attributes!.attribute1.restrictions!.length).toEqual(2)
-    expect(updatedIssuanceScenarioResult.steps[0].actions[0].proofRequest!.predicates).not.toBeNull()
-    expect(updatedIssuanceScenarioResult.steps[0].actions[0].proofRequest!.predicates!.predicate1).toBeDefined()
-    expect(updatedIssuanceScenarioResult.steps[0].actions[0].proofRequest!.predicates!.predicate1.name).toEqual(
-      issuanceScenario.steps[0].actions[0].proofRequest!.predicates.predicate1.name,
+    expect(updatedIssuanceScenarioResult.steps[0].actions![0].proofRequest).not.toBeNull()
+    expect(updatedIssuanceScenarioResult.steps[0].actions![0].proofRequest!.attributes).not.toBeNull()
+    expect(updatedIssuanceScenarioResult.steps[0].actions![0].proofRequest!.attributes!.attribute1).toBeDefined()
+    expect(updatedIssuanceScenarioResult.steps[0].actions![0].proofRequest!.attributes!.attribute1.attributes!.length).toEqual(2)
+    expect(updatedIssuanceScenarioResult.steps[0].actions![0].proofRequest!.attributes!.attribute1.restrictions!.length).toEqual(2)
+    expect(updatedIssuanceScenarioResult.steps[0].actions![0].proofRequest!.predicates).not.toBeNull()
+    expect(updatedIssuanceScenarioResult.steps[0].actions![0].proofRequest!.predicates!.predicate1).toBeDefined()
+    expect(updatedIssuanceScenarioResult.steps[0].actions![0].proofRequest!.predicates!.predicate1.name).toEqual(
+      issuanceScenario.steps[0].actions![0].proofRequest!.predicates.predicate1.name,
     )
-    expect(updatedIssuanceScenarioResult.steps[0].actions[0].proofRequest!.predicates!.predicate1.type).toEqual(
-      issuanceScenario.steps[0].actions[0].proofRequest!.predicates.predicate1.type,
+    expect(updatedIssuanceScenarioResult.steps[0].actions![0].proofRequest!.predicates!.predicate1.type).toEqual(
+      issuanceScenario.steps[0].actions![0].proofRequest!.predicates.predicate1.type,
     )
-    expect(updatedIssuanceScenarioResult.steps[0].actions[0].proofRequest!.predicates!.predicate1.value).toEqual(
-      issuanceScenario.steps[0].actions[0].proofRequest!.predicates.predicate1.value,
+    expect(updatedIssuanceScenarioResult.steps[0].actions![0].proofRequest!.predicates!.predicate1.value).toEqual(
+      issuanceScenario.steps[0].actions![0].proofRequest!.predicates.predicate1.value,
     )
-    expect(updatedIssuanceScenarioResult.steps[0].actions[0].proofRequest!.predicates!.predicate1.restrictions!.length).toEqual(2)
+    expect(updatedIssuanceScenarioResult.steps[0].actions![0].proofRequest!.predicates!.predicate1.restrictions!.length).toEqual(2)
     expect(updatedIssuanceScenarioResult.personas).toBeDefined()
     expect(updatedIssuanceScenarioResult.personas.length).toEqual(1)
     expect(updatedIssuanceScenarioResult.personas[0].name).toEqual(persona1.name)
@@ -2196,36 +2196,36 @@ describe('Database scenario repository tests', (): void => {
     expect(fromDb.steps[1].title).toEqual(step.title)
     expect(fromDb.steps[1].order).toEqual(step.order)
     expect(fromDb.steps[1].type).toEqual(step.type)
-    expect(fromDb.steps[1].actions.length).toEqual(2)
-    expect(fromDb.steps[1].actions[0].id).toBeDefined()
-    expect(fromDb.steps[1].actions[0].title).toEqual(step.actions[0].title)
-    expect(fromDb.steps[1].actions[0].actionType).toEqual(step.actions[0].actionType)
-    expect(fromDb.steps[1].actions[0].text).toEqual(step.actions[0].text)
+    expect(fromDb.steps[1].actions!.length).toEqual(2)
+    expect(fromDb.steps[1].actions![0].id).toBeDefined()
+    expect(fromDb.steps[1].actions![0].title).toEqual(step.actions![0].title)
+    expect(fromDb.steps[1].actions![0].actionType).toEqual(step.actions![0].actionType)
+    expect(fromDb.steps[1].actions![0].text).toEqual(step.actions![0].text)
     expect(fromDb.steps[1].asset).not.toBeNull()
     expect(fromDb.steps[1].asset!.mediaType).toEqual(asset.mediaType)
     expect(fromDb.steps[1].asset!.fileName).toEqual(asset.fileName)
     expect(fromDb.steps[1].asset!.description).toEqual(asset.description)
     expect(fromDb.steps[1].asset!.content).toStrictEqual(asset.content)
-    expect(fromDb.steps[1].actions[0].proofRequest).not.toBeNull()
-    expect(fromDb.steps[1].actions[0].proofRequest!.attributes).not.toBeNull()
-    expect(fromDb.steps[1].actions[0].proofRequest!.attributes!.attribute1).toBeDefined()
-    expect(fromDb.steps[1].actions[0].proofRequest!.attributes!.attribute1.attributes!.length).toEqual(2)
-    expect(fromDb.steps[1].actions[0].proofRequest!.attributes!.attribute1.restrictions!.length).toEqual(2)
-    expect(fromDb.steps[1].actions[0].proofRequest!.predicates).not.toBeNull()
-    expect(fromDb.steps[1].actions[0].proofRequest!.predicates!.predicate1).toBeDefined()
-    expect(fromDb.steps[1].actions[0].proofRequest!.predicates!.predicate1.name).toEqual(
-      issuanceScenario.steps[0].actions[0].proofRequest!.predicates.predicate1.name,
+    expect(fromDb.steps[1].actions![0].proofRequest).not.toBeNull()
+    expect(fromDb.steps[1].actions![0].proofRequest!.attributes).not.toBeNull()
+    expect(fromDb.steps[1].actions![0].proofRequest!.attributes!.attribute1).toBeDefined()
+    expect(fromDb.steps[1].actions![0].proofRequest!.attributes!.attribute1.attributes!.length).toEqual(2)
+    expect(fromDb.steps[1].actions![0].proofRequest!.attributes!.attribute1.restrictions!.length).toEqual(2)
+    expect(fromDb.steps[1].actions![0].proofRequest!.predicates).not.toBeNull()
+    expect(fromDb.steps[1].actions![0].proofRequest!.predicates!.predicate1).toBeDefined()
+    expect(fromDb.steps[1].actions![0].proofRequest!.predicates!.predicate1.name).toEqual(
+      issuanceScenario.steps[0].actions![0].proofRequest!.predicates.predicate1.name,
     )
-    expect(fromDb.steps[1].actions[0].proofRequest!.predicates!.predicate1.type).toEqual(
-      issuanceScenario.steps[0].actions[0].proofRequest!.predicates.predicate1.type,
+    expect(fromDb.steps[1].actions![0].proofRequest!.predicates!.predicate1.type).toEqual(
+      issuanceScenario.steps[0].actions![0].proofRequest!.predicates.predicate1.type,
     )
-    expect(fromDb.steps[1].actions[0].proofRequest!.predicates!.predicate1.value).toEqual(
-      issuanceScenario.steps[0].actions[0].proofRequest!.predicates.predicate1.value,
+    expect(fromDb.steps[1].actions![0].proofRequest!.predicates!.predicate1.value).toEqual(
+      issuanceScenario.steps[0].actions![0].proofRequest!.predicates.predicate1.value,
     )
-    expect(fromDb.steps[1].actions[0].proofRequest!.predicates!.predicate1.restrictions!.length).toEqual(2)
+    expect(fromDb.steps[1].actions![0].proofRequest!.predicates!.predicate1.restrictions!.length).toEqual(2)
   })
 
-  it('Should throw error when adding scenario step with no actions', async (): Promise<void> => {
+  it('Should not throw error when adding scenario step with no actions', async (): Promise<void> => {
     const issuanceScenario: NewIssuanceScenario = {
       name: 'example_name',
       description: 'example_description',
@@ -2288,7 +2288,27 @@ describe('Database scenario repository tests', (): void => {
       actions: [],
     }
 
-    await expect(repository.createStep(savedIssuanceScenario.id, step)).rejects.toThrowError(`At least one action is required`)
+    await expect(repository.createStep(savedIssuanceScenario.id, step)).resolves.toEqual({
+      asset: {
+        content: expect.any(Buffer),
+        createdAt: expect.any(Date),
+        description: 'some image',
+        fileName: 'image.png',
+        id: expect.any(String),
+        mediaType: 'image/png',
+        updatedAt: expect.any(Date),
+      },
+      createdAt: expect.any(Date),
+      description: 'example_description',
+      id: expect.any(String),
+      order: 2,
+      scenario: expect.any(String),
+      screenId: null,
+      subScenario: null,
+      title: 'example_title',
+      type: 'HUMAN_TASK',
+      updatedAt: expect.any(Date),
+    })
   })
 
   it('Should get scenario step by step id from database', async (): Promise<void> => {
@@ -2383,33 +2403,33 @@ describe('Database scenario repository tests', (): void => {
     expect(fromDb.title).toEqual(issuanceScenario.steps[0].title)
     expect(fromDb.order).toEqual(issuanceScenario.steps[0].order)
     expect(fromDb.type).toEqual(issuanceScenario.steps[0].type)
-    expect(fromDb.actions.length).toEqual(2)
-    expect(fromDb.actions[0].id).toBeDefined()
-    expect(fromDb.actions[0].title).toEqual(issuanceScenario.steps[0].actions[0].title)
-    expect(fromDb.actions[0].actionType).toEqual(issuanceScenario.steps[0].actions[0].actionType)
-    expect(fromDb.actions[0].text).toEqual(issuanceScenario.steps[0].actions[0].text)
+    expect(fromDb.actions!.length).toEqual(2)
+    expect(fromDb.actions![0].id).toBeDefined()
+    expect(fromDb.actions![0].title).toEqual(issuanceScenario.steps[0].actions![0].title)
+    expect(fromDb.actions![0].actionType).toEqual(issuanceScenario.steps[0].actions![0].actionType)
+    expect(fromDb.actions![0].text).toEqual(issuanceScenario.steps[0].actions![0].text)
     expect(fromDb.asset).not.toBeNull()
     expect(fromDb.asset!.mediaType).toEqual(asset.mediaType)
     expect(fromDb.asset!.fileName).toEqual(asset.fileName)
     expect(fromDb.asset!.description).toEqual(asset.description)
     expect(fromDb.asset!.content).toStrictEqual(asset.content)
-    expect(fromDb.actions[0].proofRequest).not.toBeNull()
-    expect(fromDb.actions[0].proofRequest!.attributes).not.toBeNull()
-    expect(fromDb.actions[0].proofRequest!.attributes!.attribute1).toBeDefined()
-    expect(fromDb.actions[0].proofRequest!.attributes!.attribute1.attributes!.length).toEqual(2)
-    expect(fromDb.actions[0].proofRequest!.attributes!.attribute1.restrictions!.length).toEqual(2)
-    expect(fromDb.actions[0].proofRequest!.predicates).not.toBeNull()
-    expect(fromDb.actions[0].proofRequest!.predicates!.predicate1).toBeDefined()
-    expect(fromDb.actions[0].proofRequest!.predicates!.predicate1.name).toEqual(
-      issuanceScenario.steps[0].actions[0].proofRequest!.predicates.predicate1.name,
+    expect(fromDb.actions![0].proofRequest).not.toBeNull()
+    expect(fromDb.actions![0].proofRequest!.attributes).not.toBeNull()
+    expect(fromDb.actions![0].proofRequest!.attributes!.attribute1).toBeDefined()
+    expect(fromDb.actions![0].proofRequest!.attributes!.attribute1.attributes!.length).toEqual(2)
+    expect(fromDb.actions![0].proofRequest!.attributes!.attribute1.restrictions!.length).toEqual(2)
+    expect(fromDb.actions![0].proofRequest!.predicates).not.toBeNull()
+    expect(fromDb.actions![0].proofRequest!.predicates!.predicate1).toBeDefined()
+    expect(fromDb.actions![0].proofRequest!.predicates!.predicate1.name).toEqual(
+      issuanceScenario.steps[0].actions![0].proofRequest!.predicates.predicate1.name,
     )
-    expect(fromDb.actions[0].proofRequest!.predicates!.predicate1.type).toEqual(
-      issuanceScenario.steps[0].actions[0].proofRequest!.predicates.predicate1.type,
+    expect(fromDb.actions![0].proofRequest!.predicates!.predicate1.type).toEqual(
+      issuanceScenario.steps[0].actions![0].proofRequest!.predicates.predicate1.type,
     )
-    expect(fromDb.actions[0].proofRequest!.predicates!.predicate1.value).toEqual(
-      issuanceScenario.steps[0].actions[0].proofRequest!.predicates.predicate1.value,
+    expect(fromDb.actions![0].proofRequest!.predicates!.predicate1.value).toEqual(
+      issuanceScenario.steps[0].actions![0].proofRequest!.predicates.predicate1.value,
     )
-    expect(fromDb.actions[0].proofRequest!.predicates!.predicate1.restrictions!.length).toEqual(2)
+    expect(fromDb.actions![0].proofRequest!.predicates!.predicate1.restrictions!.length).toEqual(2)
   })
 
   it('Should get all scenario steps from database', async (): Promise<void> => {
@@ -2514,11 +2534,11 @@ describe('Database scenario repository tests', (): void => {
     expect(fromDb[0].title).toEqual(issuanceScenario.steps[0].title)
     expect(fromDb[0].order).toEqual(issuanceScenario.steps[0].order)
     expect(fromDb[0].type).toEqual(issuanceScenario.steps[0].type)
-    expect(fromDb[0].actions.length).toEqual(1)
-    expect(fromDb[0].actions[0].id).toBeDefined()
-    expect(fromDb[0].actions[0].title).toEqual(issuanceScenario.steps[0].actions[0].title)
-    expect(fromDb[0].actions[0].actionType).toEqual(issuanceScenario.steps[0].actions[0].actionType)
-    expect(fromDb[0].actions[0].text).toEqual(issuanceScenario.steps[0].actions[0].text)
+    expect(fromDb[0].actions!.length).toEqual(1)
+    expect(fromDb[0].actions![0].id).toBeDefined()
+    expect(fromDb[0].actions![0].title).toEqual(issuanceScenario.steps[0].actions![0].title)
+    expect(fromDb[0].actions![0].actionType).toEqual(issuanceScenario.steps[0].actions![0].actionType)
+    expect(fromDb[0].actions![0].text).toEqual(issuanceScenario.steps[0].actions![0].text)
     expect(fromDb[0].asset).not.toBeNull()
     expect(fromDb[0].asset!.mediaType).toEqual(asset.mediaType)
     expect(fromDb[0].asset!.fileName).toEqual(asset.fileName)
@@ -2758,36 +2778,36 @@ describe('Database scenario repository tests', (): void => {
     expect(updatedStepResult.title).toEqual(updatedStep.title)
     expect(updatedStepResult.order).toEqual(updatedStep.order)
     expect(updatedStepResult.type).toEqual(updatedStep.type)
-    expect(updatedStepResult.actions.length).toEqual(2)
-    expect(updatedStepResult.actions[0].id).toBeDefined()
-    expect(updatedStepResult.actions[0].title).toEqual(updatedStep.actions[0].title)
-    expect(updatedStepResult.actions[0].actionType).toEqual(updatedStep.actions[0].actionType)
-    expect(updatedStepResult.actions[0].text).toEqual(updatedStep.actions[0].text)
+    expect(updatedStepResult.actions!.length).toEqual(2)
+    expect(updatedStepResult.actions![0].id).toBeDefined()
+    expect(updatedStepResult.actions![0].title).toEqual(updatedStep.actions![0].title)
+    expect(updatedStepResult.actions![0].actionType).toEqual(updatedStep.actions![0].actionType)
+    expect(updatedStepResult.actions![0].text).toEqual(updatedStep.actions![0].text)
     expect(updatedStepResult.asset).not.toBeNull()
     expect(updatedStepResult.asset!.mediaType).toEqual(asset.mediaType)
     expect(updatedStepResult.asset!.fileName).toEqual(asset.fileName)
     expect(updatedStepResult.asset!.description).toEqual(asset.description)
     expect(updatedStepResult.asset!.content).toStrictEqual(asset.content)
-    expect(updatedStepResult.actions[0].proofRequest).not.toBeNull()
-    expect(updatedStepResult.actions[0].proofRequest!.attributes).not.toBeNull()
-    expect(updatedStepResult.actions[0].proofRequest!.attributes!.attribute1).toBeDefined()
-    expect(updatedStepResult.actions[0].proofRequest!.attributes!.attribute1.attributes!.length).toEqual(2)
-    expect(updatedStepResult.actions[0].proofRequest!.attributes!.attribute1.restrictions!.length).toEqual(2)
-    expect(updatedStepResult.actions[0].proofRequest!.predicates).not.toBeNull()
-    expect(updatedStepResult.actions[0].proofRequest!.predicates!.predicate1).toBeDefined()
-    expect(updatedStepResult.actions[0].proofRequest!.predicates!.predicate1.name).toEqual(
-      issuanceScenario.steps[0].actions[0].proofRequest!.predicates.predicate1.name,
+    expect(updatedStepResult.actions![0].proofRequest).not.toBeNull()
+    expect(updatedStepResult.actions![0].proofRequest!.attributes).not.toBeNull()
+    expect(updatedStepResult.actions![0].proofRequest!.attributes!.attribute1).toBeDefined()
+    expect(updatedStepResult.actions![0].proofRequest!.attributes!.attribute1.attributes!.length).toEqual(2)
+    expect(updatedStepResult.actions![0].proofRequest!.attributes!.attribute1.restrictions!.length).toEqual(2)
+    expect(updatedStepResult.actions![0].proofRequest!.predicates).not.toBeNull()
+    expect(updatedStepResult.actions![0].proofRequest!.predicates!.predicate1).toBeDefined()
+    expect(updatedStepResult.actions![0].proofRequest!.predicates!.predicate1.name).toEqual(
+      issuanceScenario.steps[0].actions![0].proofRequest!.predicates.predicate1.name,
     )
-    expect(updatedStepResult.actions[0].proofRequest!.predicates!.predicate1.type).toEqual(
-      issuanceScenario.steps[0].actions[0].proofRequest!.predicates.predicate1.type,
+    expect(updatedStepResult.actions![0].proofRequest!.predicates!.predicate1.type).toEqual(
+      issuanceScenario.steps[0].actions![0].proofRequest!.predicates.predicate1.type,
     )
-    expect(updatedStepResult.actions[0].proofRequest!.predicates!.predicate1.value).toEqual(
-      issuanceScenario.steps[0].actions[0].proofRequest!.predicates.predicate1.value,
+    expect(updatedStepResult.actions![0].proofRequest!.predicates!.predicate1.value).toEqual(
+      issuanceScenario.steps[0].actions![0].proofRequest!.predicates.predicate1.value,
     )
-    expect(updatedStepResult.actions[0].proofRequest!.predicates!.predicate1.restrictions!.length).toEqual(2)
+    expect(updatedStepResult.actions![0].proofRequest!.predicates!.predicate1.restrictions!.length).toEqual(2)
   })
 
-  it('Should throw error when updating scenario step with no actions', async (): Promise<void> => {
+  it('Should not throw error when updating scenario step with no actions', async (): Promise<void> => {
     const issuanceScenario: NewIssuanceScenario = {
       name: 'example_name',
       description: 'example_description',
@@ -2847,9 +2867,27 @@ describe('Database scenario repository tests', (): void => {
       asset: savedIssuanceScenario.steps[0].asset!.id,
     }
 
-    await expect(repository.updateStep(savedIssuanceScenario.id, savedIssuanceScenario.steps[0].id, updatedStep)).rejects.toThrowError(
-      `At least one action is required`,
-    )
+    await expect(repository.updateStep(savedIssuanceScenario.id, savedIssuanceScenario.steps[0].id, updatedStep)).resolves.toEqual({
+      asset: {
+        content: expect.any(Buffer),
+        createdAt: expect.any(Date),
+        description: 'some image',
+        fileName: 'image.png',
+        id: expect.any(String),
+        mediaType: 'image/png',
+        updatedAt: expect.any(Date),
+      },
+      createdAt: expect.any(Date),
+      description: 'example_description',
+      id: expect.any(String),
+      order: 1,
+      scenario: expect.any(String),
+      screenId: null,
+      subScenario: null,
+      title: 'example_title',
+      type: 'HUMAN_TASK',
+      updatedAt: expect.any(Date),
+    })
   })
 
   it('Should add to scenario step action to database', async (): Promise<void> => {
@@ -2946,28 +2984,28 @@ describe('Database scenario repository tests', (): void => {
     expect(fromDb.steps).toBeDefined()
     expect(fromDb.steps.length).toEqual(1)
     expect(fromDb.steps[0].actions).toBeDefined()
-    expect(fromDb.steps[0].actions.length).toEqual(2)
-    expect(fromDb.steps[0].actions[1].id).toBeDefined()
-    expect(fromDb.steps[0].actions[1].title).toEqual(action.title)
-    expect(fromDb.steps[0].actions[1].actionType).toEqual(action.actionType)
-    expect(fromDb.steps[0].actions[1].text).toEqual(action.text)
-    expect(fromDb.steps[0].actions[1].proofRequest).not.toBeNull()
-    expect(fromDb.steps[0].actions[1].proofRequest!.attributes).not.toBeNull()
-    expect(fromDb.steps[0].actions[1].proofRequest!.attributes!.attribute1).toBeDefined()
-    expect(fromDb.steps[0].actions[1].proofRequest!.attributes!.attribute1.attributes!.length).toEqual(2)
-    expect(fromDb.steps[0].actions[1].proofRequest!.attributes!.attribute1.restrictions!.length).toEqual(2)
-    expect(fromDb.steps[0].actions[1].proofRequest!.predicates).not.toBeNull()
-    expect(fromDb.steps[0].actions[1].proofRequest!.predicates!.predicate1).toBeDefined()
-    expect(fromDb.steps[0].actions[1].proofRequest!.predicates!.predicate1.name).toEqual(
-      issuanceScenario.steps[0].actions[0].proofRequest!.predicates.predicate1.name,
+    expect(fromDb.steps[0].actions!.length).toEqual(2)
+    expect(fromDb.steps[0].actions![1].id).toBeDefined()
+    expect(fromDb.steps[0].actions![1].title).toEqual(action.title)
+    expect(fromDb.steps[0].actions![1].actionType).toEqual(action.actionType)
+    expect(fromDb.steps[0].actions![1].text).toEqual(action.text)
+    expect(fromDb.steps[0].actions![1].proofRequest).not.toBeNull()
+    expect(fromDb.steps[0].actions![1].proofRequest!.attributes).not.toBeNull()
+    expect(fromDb.steps[0].actions![1].proofRequest!.attributes!.attribute1).toBeDefined()
+    expect(fromDb.steps[0].actions![1].proofRequest!.attributes!.attribute1.attributes!.length).toEqual(2)
+    expect(fromDb.steps[0].actions![1].proofRequest!.attributes!.attribute1.restrictions!.length).toEqual(2)
+    expect(fromDb.steps[0].actions![1].proofRequest!.predicates).not.toBeNull()
+    expect(fromDb.steps[0].actions![1].proofRequest!.predicates!.predicate1).toBeDefined()
+    expect(fromDb.steps[0].actions![1].proofRequest!.predicates!.predicate1.name).toEqual(
+      issuanceScenario.steps[0].actions![0].proofRequest!.predicates.predicate1.name,
     )
-    expect(fromDb.steps[0].actions[1].proofRequest!.predicates!.predicate1.type).toEqual(
-      issuanceScenario.steps[0].actions[0].proofRequest!.predicates.predicate1.type,
+    expect(fromDb.steps[0].actions![1].proofRequest!.predicates!.predicate1.type).toEqual(
+      issuanceScenario.steps[0].actions![0].proofRequest!.predicates.predicate1.type,
     )
-    expect(fromDb.steps[0].actions[1].proofRequest!.predicates!.predicate1.value).toEqual(
-      issuanceScenario.steps[0].actions[0].proofRequest!.predicates.predicate1.value,
+    expect(fromDb.steps[0].actions![1].proofRequest!.predicates!.predicate1.value).toEqual(
+      issuanceScenario.steps[0].actions![0].proofRequest!.predicates.predicate1.value,
     )
-    expect(fromDb.steps[0].actions[1].proofRequest!.predicates!.predicate1.restrictions!.length).toEqual(2)
+    expect(fromDb.steps[0].actions![1].proofRequest!.predicates!.predicate1.restrictions!.length).toEqual(2)
   })
 
   it('Should get scenario step action by action id from database', async (): Promise<void> => {
@@ -3027,13 +3065,13 @@ describe('Database scenario repository tests', (): void => {
     const fromDb = await repository.findByStepActionId(
       savedIssuanceScenario.id,
       savedIssuanceScenario.steps[0].id,
-      savedIssuanceScenario.steps[0].actions[0].id,
+      savedIssuanceScenario.steps[0].actions![0].id,
     )
 
-    expect(fromDb.id).toEqual(savedIssuanceScenario.steps[0].actions[0].id)
-    expect(fromDb.title).toEqual(issuanceScenario.steps[0].actions[0].title)
-    expect(fromDb.actionType).toEqual(issuanceScenario.steps[0].actions[0].actionType)
-    expect(fromDb.text).toEqual(issuanceScenario.steps[0].actions[0].text)
+    expect(fromDb.id).toEqual(savedIssuanceScenario.steps[0].actions![0].id)
+    expect(fromDb.title).toEqual(issuanceScenario.steps[0].actions![0].title)
+    expect(fromDb.actionType).toEqual(issuanceScenario.steps[0].actions![0].actionType)
+    expect(fromDb.text).toEqual(issuanceScenario.steps[0].actions![0].text)
     expect(fromDb.proofRequest).not.toBeNull()
     expect(fromDb.proofRequest!.attributes).not.toBeNull()
     expect(fromDb.proofRequest!.attributes!.attribute1).toBeDefined()
@@ -3041,9 +3079,9 @@ describe('Database scenario repository tests', (): void => {
     expect(fromDb.proofRequest!.attributes!.attribute1.restrictions!.length).toEqual(2)
     expect(fromDb.proofRequest!.predicates).not.toBeNull()
     expect(fromDb.proofRequest!.predicates!.predicate1).toBeDefined()
-    expect(fromDb.proofRequest!.predicates!.predicate1.name).toEqual(issuanceScenario.steps[0].actions[0].proofRequest!.predicates.predicate1.name)
-    expect(fromDb.proofRequest!.predicates!.predicate1.type).toEqual(issuanceScenario.steps[0].actions[0].proofRequest!.predicates.predicate1.type)
-    expect(fromDb.proofRequest!.predicates!.predicate1.value).toEqual(issuanceScenario.steps[0].actions[0].proofRequest!.predicates.predicate1.value)
+    expect(fromDb.proofRequest!.predicates!.predicate1.name).toEqual(issuanceScenario.steps[0].actions![0].proofRequest!.predicates.predicate1.name)
+    expect(fromDb.proofRequest!.predicates!.predicate1.type).toEqual(issuanceScenario.steps[0].actions![0].proofRequest!.predicates.predicate1.type)
+    expect(fromDb.proofRequest!.predicates!.predicate1.value).toEqual(issuanceScenario.steps[0].actions![0].proofRequest!.predicates.predicate1.value)
     expect(fromDb.proofRequest!.predicates!.predicate1.restrictions!.length).toEqual(2)
   })
 
@@ -3137,9 +3175,9 @@ describe('Database scenario repository tests', (): void => {
     expect(fromDb).toBeDefined()
     expect(fromDb.length).toEqual(2)
     expect(fromDb[0].id).toBeDefined()
-    expect(fromDb[0].title).toEqual(issuanceScenario.steps[0].actions[0].title)
-    expect(fromDb[0].actionType).toEqual(issuanceScenario.steps[0].actions[0].actionType)
-    expect(fromDb[0].text).toEqual(issuanceScenario.steps[0].actions[0].text)
+    expect(fromDb[0].title).toEqual(issuanceScenario.steps[0].actions![0].title)
+    expect(fromDb[0].actionType).toEqual(issuanceScenario.steps[0].actions![0].actionType)
+    expect(fromDb[0].text).toEqual(issuanceScenario.steps[0].actions![0].text)
   })
 
   it('Should delete scenario step action from database', async (): Promise<void> => {
@@ -3226,14 +3264,14 @@ describe('Database scenario repository tests', (): void => {
 
     const savedIssuanceScenario = await repository.create(issuanceScenario)
     expect(savedIssuanceScenario).toBeDefined()
-    expect(savedIssuanceScenario.steps[0].actions).toBeDefined()
-    expect(savedIssuanceScenario.steps[0].actions.length).toEqual(2)
+    expect(savedIssuanceScenario.steps[0].actions!).toBeDefined()
+    expect(savedIssuanceScenario.steps[0].actions!.length).toEqual(2)
 
-    await repository.deleteStepAction(savedIssuanceScenario.id, savedIssuanceScenario.steps[0].id, savedIssuanceScenario.steps[0].actions[1].id)
+    await repository.deleteStepAction(savedIssuanceScenario.id, savedIssuanceScenario.steps[0].id, savedIssuanceScenario.steps[0].actions![1].id)
     const fromDb = await repository.findById(savedIssuanceScenario.id)
 
     expect(fromDb.steps[0].actions).toBeDefined()
-    expect(fromDb.steps[0].actions.length).toEqual(1)
+    expect(fromDb.steps[0].actions!.length).toEqual(1)
   })
 
   it('Should update scenario step action in database', async (): Promise<void> => {
@@ -3291,14 +3329,14 @@ describe('Database scenario repository tests', (): void => {
     expect(savedIssuanceScenario).toBeDefined()
 
     const updatedStepAction: NewAriesOOBAction = {
-      ...savedIssuanceScenario.steps[0].actions[0],
+      ...savedIssuanceScenario.steps[0].actions![0],
       title: 'new_title',
-      proofRequest: savedIssuanceScenario.steps[0].actions[0].proofRequest!,
+      proofRequest: savedIssuanceScenario.steps[0].actions![0].proofRequest!,
     }
     const updatedStepResult = await repository.updateStepAction(
       savedIssuanceScenario.id,
       savedIssuanceScenario.steps[0].id,
-      savedIssuanceScenario.steps[0].actions[0].id,
+      savedIssuanceScenario.steps[0].actions![0].id,
       updatedStepAction,
     )
 
@@ -3315,13 +3353,13 @@ describe('Database scenario repository tests', (): void => {
     expect(updatedStepResult.proofRequest!.predicates).not.toBeNull()
     expect(updatedStepResult.proofRequest!.predicates!.predicate1).toBeDefined()
     expect(updatedStepResult.proofRequest!.predicates!.predicate1.name).toEqual(
-      issuanceScenario.steps[0].actions[0].proofRequest!.predicates.predicate1.name,
+      issuanceScenario.steps[0].actions![0].proofRequest!.predicates.predicate1.name,
     )
     expect(updatedStepResult.proofRequest!.predicates!.predicate1.type).toEqual(
-      issuanceScenario.steps[0].actions[0].proofRequest!.predicates.predicate1.type,
+      issuanceScenario.steps[0].actions![0].proofRequest!.predicates.predicate1.type,
     )
     expect(updatedStepResult.proofRequest!.predicates!.predicate1.value).toEqual(
-      issuanceScenario.steps[0].actions[0].proofRequest!.predicates.predicate1.value,
+      issuanceScenario.steps[0].actions![0].proofRequest!.predicates.predicate1.value,
     )
     expect(updatedStepResult.proofRequest!.predicates!.predicate1.restrictions!.length).toEqual(2)
   })
