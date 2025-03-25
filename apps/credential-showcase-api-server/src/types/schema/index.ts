@@ -41,6 +41,7 @@ export type CredentialDefinition = Omit<typeof credentialDefinitions.$inferSelec
 
 export type NewCredentialDefinition = Omit<typeof credentialDefinitions.$inferInsert, 'type'> & {
   type: CredentialType
+  icon?: string | null,
   representations?: NewCredentialRepresentation[] // TODO SHOWCASE-81 make required
   revocation?: NewRevocationInfo | null
   identifierType?: IdentifierType | null
@@ -129,6 +130,11 @@ export enum StepType {
 
 export enum StepActionType {
   ARIES_OOB = 'ARIES_OOB',
+  ACCEPT_CREDENTIAL = 'ACCEPT_CREDENTIAL',
+  SHARE_CREDENTIAL = 'SHARE_CREDENTIAL',
+  SETUP_CONNECTION = 'SETUP_CONNECTION',
+  CHOOSE_WALLET = 'CHOOSE_WALLET',
+  BUTTON = 'BUTTON',
 }
 
 export enum ScenarioType {
@@ -164,22 +170,75 @@ export type NewPresentationScenario = Omit<typeof scenarios.$inferInsert, 'issue
   hidden: boolean
 }
 
+export type StepActionTypes = StepAction | AcceptCredentialAction | ShareCredentialAction | ButtonAction | AriesOOBAction | SetupConnectionAction | ChooseWalletAction
+export type NewStepActionTypes = NewStepAction | NewAcceptCredentialAction | NewShareCredentialAction | NewButtonAction | NewAriesOOBAction | NewSetupConnectionAction | NewChooseWalletAction
+
 export type Step = Omit<typeof steps.$inferSelect, 'asset'> & {
-  actions: AriesOOBAction[]
+  actions: StepActionTypes[]
   asset?: Asset | null
 }
 export type NewStep = Omit<typeof steps.$inferInsert, 'scenario'> & {
   asset?: string | null
-  actions: NewAriesOOBAction[]
+  actions: NewStepActionTypes[]
   subScenario?: string | null
   screenId?: string | null
 }
 
+export type StepAction = typeof stepActions.$inferSelect
+export type NewStepAction = Omit<typeof stepActions.$inferInsert, 'step'>
+
+export type AcceptCredentialAction = Omit<typeof stepActions.$inferSelect, 'goToStep'> & {
+  actionType: StepActionType.ACCEPT_CREDENTIAL
+  credentialDefinitionId: string
+  connectionId?: string | null
+}
+export type NewAcceptCredentialAction = Omit<typeof stepActions.$inferInsert, 'step' | 'goToStep'> & {
+  actionType: StepActionType.ACCEPT_CREDENTIAL
+  credentialDefinitionId: string
+  connectionId?: string | null
+}
+
+export type ShareCredentialAction = Omit<typeof stepActions.$inferSelect, 'goToStep'> & {
+  actionType: StepActionType.SHARE_CREDENTIAL
+  credentialDefinitionId: string
+  connectionId?: string | null
+}
+export type NewShareCredentialAction = Omit<typeof stepActions.$inferInsert, 'step' | 'goToStep'> & {
+  actionType: StepActionType.SHARE_CREDENTIAL
+  credentialDefinitionId: string
+  connectionId?: string | null
+}
+
+export type ButtonAction = Omit<typeof stepActions.$inferSelect, 'credentialDefinitionId' | 'connectionId'> & {
+  actionType: StepActionType.BUTTON
+  goToStep?: string | null
+}
+export type NewButtonAction = Omit<typeof stepActions.$inferInsert, 'step' | 'credentialDefinitionId' | 'connectionId'> & {
+  actionType: StepActionType.BUTTON
+  goToStep?: string | null
+}
+
 export type AriesOOBAction = Omit<typeof stepActions.$inferSelect, 'proofRequest'> & {
+  actionType: StepActionType.ARIES_OOB
   proofRequest?: AriesProofRequest | null
 }
 export type NewAriesOOBAction = Omit<typeof stepActions.$inferInsert, 'step' | 'proofRequest'> & {
+  actionType: StepActionType.ARIES_OOB
   proofRequest: NewAriesProofRequest
+}
+
+export type SetupConnectionAction = Omit<typeof stepActions.$inferSelect, 'credentialDefinitionId' | 'connectionId' | 'goToStep'> & {
+  actionType: StepActionType.SETUP_CONNECTION
+}
+export type NewSetupConnectionAction = Omit<typeof stepActions.$inferInsert, 'step' | 'credentialDefinitionId' | 'connectionId' | 'goToStep'> & {
+  actionType: StepActionType.SETUP_CONNECTION
+}
+
+export type ChooseWalletAction = Omit<typeof stepActions.$inferSelect, 'credentialDefinitionId' | 'connectionId' | 'goToStep'> & {
+  actionType: StepActionType.CHOOSE_WALLET
+}
+export type NewChooseWalletAction = Omit<typeof stepActions.$inferInsert, 'step' | 'credentialDefinitionId' | 'connectionId' | 'goToStep'> & {
+  actionType: StepActionType.CHOOSE_WALLET
 }
 
 export type AriesRequestCredentialAttribute = {
@@ -199,7 +258,6 @@ export type NewAriesProofRequest = Omit<typeof ariesProofRequests.$inferInsert, 
 
 export type Showcase = Omit<typeof showcases.$inferSelect, 'bannerImage'> & {
   scenarios: Scenario[]
-  credentialDefinitions: CredentialDefinition[]
   personas: Persona[]
   bannerImage?: Asset | null
 }

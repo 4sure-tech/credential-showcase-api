@@ -1,6 +1,11 @@
 import {
+  AcceptCredentialAction as AcceptCredentialActionDTO,
+  AriesOOBAction as AriesOOBActionDTO,
+  AriesProofRequest as AriesProofRequestDTO,
   Asset as AssetDTO,
-  AssetRequest,
+  AssetRequest as AssetRequestDTO,
+  ButtonAction as ButtonActionDTO,
+  ChooseWalletAction as ChooseWalletActionDTO,
   CredentialDefinition as CredentialDefinitionDTO,
   CredentialSchema as CredentialSchemaDTO,
   IssuanceScenario as IssuanceScenarioDTO,
@@ -8,11 +13,17 @@ import {
   Persona as PersonaDTO,
   PresentationScenario as PresentationScenarioDTO,
   RelyingParty as RelyingPartyDTO,
+  SetupConnectionAction as SetupConnectionActionDTO,
+  ShareCredentialAction as ShareCredentialActionDTO,
   Showcase as ShowcaseDTO,
   Step as StepDTO,
+  StepAction as StepActionDTO,
 } from 'credential-showcase-openapi'
 import {
+  AcceptCredentialAction,
+  AriesOOBAction,
   Asset,
+  ButtonAction,
   CredentialDefinition,
   CredentialSchema,
   IssuanceScenario,
@@ -24,11 +35,14 @@ import {
   RelyingParty,
   Scenario,
   ScenarioType,
+  ShareCredentialAction,
   Showcase,
   Step,
+  StepActionType,
+  StepActionTypes,
 } from '../types'
 
-export const newAssetFrom = (asset: AssetRequest): NewAsset => {
+export const newAssetFrom = (asset: AssetRequestDTO): NewAsset => {
   return {
     ...asset,
     content: Buffer.from(asset.content),
@@ -123,9 +137,73 @@ export const scenarioDTOFrom = (scenario: Scenario): IssuanceScenarioDTO | Prese
   }
 }
 
+export const stepActionDTOFrom = (stepAction: StepActionTypes): StepActionDTO => {
+  const baseAction = {
+    id: stepAction.id,
+    actionType: stepAction.actionType,
+    title: stepAction.title,
+    text: stepAction.text,
+    createdAt: stepAction.createdAt,
+    updatedAt: stepAction.updatedAt,
+  }
+
+  // Handle specific action types with their unique properties
+  switch (stepAction.actionType) {
+    case StepActionType.ACCEPT_CREDENTIAL: {
+      const action = stepAction as AcceptCredentialAction
+      const acceptCredentialDTO: AcceptCredentialActionDTO = {
+        ...baseAction,
+        credentialDefinitionId: action.credentialDefinitionId,
+        connectionId: action.connectionId || undefined,
+      }
+      return acceptCredentialDTO
+    }
+    case StepActionType.SHARE_CREDENTIAL: {
+      const action = stepAction as ShareCredentialAction
+      const shareCredentialDTO: ShareCredentialActionDTO = {
+        ...baseAction,
+        credentialDefinitionId: action.credentialDefinitionId,
+        connectionId: action.connectionId || undefined,
+      }
+      return shareCredentialDTO
+    }
+    case StepActionType.BUTTON: {
+      const action = stepAction as ButtonAction
+      const buttonDTO: ButtonActionDTO = {
+        ...baseAction,
+        goToStep: action.goToStep || undefined,
+      }
+      return buttonDTO
+    }
+    case StepActionType.ARIES_OOB: {
+      const action = stepAction as AriesOOBAction
+      const ariesOOBDTO: AriesOOBActionDTO = {
+        ...baseAction,
+        proofRequest: action.proofRequest as AriesProofRequestDTO, // FIXME, no idea how yet
+      }
+      return ariesOOBDTO
+    }
+    case StepActionType.CHOOSE_WALLET: {
+      const chooseWalletDTO: ChooseWalletActionDTO = {
+        ...baseAction,
+      }
+      return chooseWalletDTO
+    }
+    case StepActionType.SETUP_CONNECTION: {
+      const setupConnectionDTO: SetupConnectionActionDTO = {
+        ...baseAction,
+      }
+      return setupConnectionDTO
+    }
+    default:
+      throw Error(`Unknown step action action type: ${stepAction['actionType']}`)
+  }
+}
+
 export const stepDTOFrom = (step: Step): StepDTO => {
   return {
     ...step,
+    actions: step.actions.map(stepActionDTOFrom),
     asset: step.asset ? assetDTOFrom(step.asset) : undefined,
     subScenario: step.subScenario || undefined,
     screenId: step.screenId || undefined,
@@ -145,7 +223,6 @@ export const showcaseDTOFrom = (showcase: Showcase): ShowcaseDTO => {
   return {
     ...showcase,
     personas: showcase.personas.map(personaDTOFrom),
-    credentialDefinitions: showcase.credentialDefinitions.map(credentialDefinitionDTOFrom),
     scenarios: showcase.scenarios.map(scenarioDTOFrom),
     bannerImage: showcase.bannerImage ? assetDTOFrom(showcase.bannerImage) : undefined,
     completionMessage: showcase.completionMessage || undefined,

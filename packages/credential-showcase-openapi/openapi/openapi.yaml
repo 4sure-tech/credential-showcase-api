@@ -1893,8 +1893,8 @@ components:
         - actionType
         - title
         - text
-        - createdAt
-        - updatedAt
+#        - createdAt  FIXME This gives issues with the individual step types, they do not all have *Request variants yet
+#        - updatedAt
       properties:
         id:
           type: string
@@ -1952,7 +1952,12 @@ components:
       discriminator:
         propertyName: actionType
         mapping:
-          ARIES_OOB: '#/components/schemas/AriesOOBActionRequest'
+          ARIES_OOB: '#/components/schemas/AriesOOBAction'
+          ACCEPT_CREDENTIAL: '#/components/schemas/AcceptCredentialAction'
+          SHARE_CREDENTIAL: '#/components/schemas/ShareCredentialAction'
+          SETUP_CONNECTION: '#/components/schemas/SetupConnectionAction'
+          CHOOSE_WALLET: '#/components/schemas/ChooseWalletAction'
+          BUTTON: '#/components/schemas/ButtonAction'
     StepActionsResponse:
       properties:
         actions:
@@ -1988,8 +1993,8 @@ components:
         - id
         - attributes
         - predicates
-        - createdAt
-        - updatedAt
+#        - createdAt FIXME This gives issues with the individual step types, they do not all have *Request variants yet
+#        - updatedAt
       properties:
         attributes:
           type: object
@@ -3003,11 +3008,6 @@ components:
           description: List of scenarios in this showcase
           items:
             $ref: '#/components/schemas/Scenario'
-        credentialDefinitions:
-          type: array
-          description: List of credential definitions used in this showcase
-          items:
-            $ref: '#/components/schemas/CredentialDefinition'
         personas:
           type: object
           description: List of personas involved in this showcase

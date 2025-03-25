@@ -252,7 +252,6 @@ describe('Database showcase repository tests', (): void => {
     expect(savedShowcase.status).toEqual(showcase.status)
     expect(savedShowcase.hidden).toEqual(showcase.hidden)
     expect(savedShowcase.scenarios.length).toEqual(2)
-    expect(savedShowcase.credentialDefinitions.length).toEqual(2)
     expect(savedShowcase.personas.length).toEqual(2)
     expect(savedShowcase.bannerImage!.id).toBeDefined()
     expect(savedShowcase.bannerImage!.mediaType).toEqual(asset.mediaType)
@@ -386,7 +385,6 @@ describe('Database showcase repository tests', (): void => {
     expect(fromDb.status).toEqual(showcase.status)
     expect(fromDb.hidden).toEqual(showcase.hidden)
     expect(fromDb.scenarios.length).toEqual(2)
-    expect(fromDb.credentialDefinitions.length).toEqual(2)
     expect(fromDb.personas.length).toEqual(2)
   })
 
@@ -465,7 +463,6 @@ describe('Database showcase repository tests', (): void => {
     expect(updatedShowcase.status).toEqual(showcase.status)
     expect(updatedShowcase.hidden).toEqual(showcase.hidden)
     expect(updatedShowcase.scenarios.length).toEqual(2)
-    expect(updatedShowcase.credentialDefinitions.length).toEqual(2)
     expect(updatedShowcase.personas.length).toEqual(2)
   })
 

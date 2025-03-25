@@ -1,6 +1,5 @@
 import { boolean, index, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
-import { showcasesToCredentialDefinitions } from './showcasesToCredentialDefinitions'
 import { showcasesToPersonas } from './showcasesToPersonas'
 import { showcaseStatusPg } from './showcaseStatus'
 import { ShowcaseStatus } from '../../types'
@@ -30,7 +29,6 @@ export const showcases = pgTable(
 export const showcaseRelations = relations(showcases, ({ many, one }) => ({
   scenarios: many(showcasesToScenarios),
   personas: many(showcasesToPersonas),
-  credentialDefinitions: many(showcasesToCredentialDefinitions),
   bannerImage: one(assets, {
     fields: [showcases.bannerImage],
     references: [assets.id],
