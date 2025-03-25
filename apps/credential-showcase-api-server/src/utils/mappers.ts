@@ -10,6 +10,7 @@ import {
   RelyingParty as RelyingPartyDTO,
   Showcase as ShowcaseDTO,
   Step as StepDTO,
+  User as UserDTO,
 } from 'credential-showcase-openapi'
 import {
   Asset,
@@ -26,6 +27,7 @@ import {
   ScenarioType,
   Showcase,
   Step,
+  User,
 } from '../types'
 
 export const newAssetFrom = (asset: AssetRequest): NewAsset => {
@@ -149,6 +151,15 @@ export const showcaseDTOFrom = (showcase: Showcase): ShowcaseDTO => {
     scenarios: showcase.scenarios.map(scenarioDTOFrom),
     bannerImage: showcase.bannerImage ? assetDTOFrom(showcase.bannerImage) : undefined,
     completionMessage: showcase.completionMessage || undefined,
+    createdBy: showcase.createdBy ? userDTOFrom(showcase.createdBy) : undefined,
+  }
+}
+
+export const userDTOFrom = (user: User): UserDTO => {
+  return {
+    ...user,
+    identifierType: user.identifierType ?? undefined,
+    identifier: user.identifier ?? undefined,
   }
 }
 
