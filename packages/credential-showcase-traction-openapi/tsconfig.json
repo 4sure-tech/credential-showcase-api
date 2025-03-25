@@ -6,12 +6,5 @@
     "declarationDir": "dist",
     "noUnusedLocals": false
   },
-  "references": [
-    {
-      "path": "../credential-showcase-openapi"
-    },
-    {
-      "path": "../credential-showcase-traction-openapi"
-    }
-  ]
+  "references": []
 }

@@ -2456,6 +2456,12 @@ components:
           type: string
           description: Organization the issuer belongs to
           example: Acme Corporation
+        identifierType:
+          $ref: '#/components/schemas/IdentifierType'
+        identifier:
+          type: string
+          description: External identifier of this issuer
+          example: did:sov:XUeUZauFLeBNofY3NhaZCB
         logo:
           $ref: '#/components/schemas/Asset'
         credentialDefinitions:
@@ -2663,7 +2669,7 @@ components:
           $ref: '#/components/schemas/IdentifierType'
         identifier:
           type: string
-          description: External identifier of this issuer
+          description: External identifier of this credential definition
           example: did:sov:XUeUZauFLeBNofY3NhaZCB
         version:
           type: string

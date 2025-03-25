@@ -10,43 +10,45 @@ The **Credential Showcase Traction Adapter** bridges the **Interactive Digital C
 
 ### 💡 Purpose
 
-- Translate data model actions (e.g., credential definitions, flows) into **Traction/ACA-Py** operations.
-- Decouple the builder’s core REST API from credential technology details, future-proofing for multiple adapter implementations.
+- Translate data model actions (e.g., credential definitions, flows) into **Traction/ACA-Py** operations
+- Decouple the builder's core REST API from credential technology details, future-proofing for multiple adapter implementations
 
 ### ⚙️ Core Functionalities
 
-- **Asynchronous Messaging:** Uses a message broker (e.g., RabbitMQ) to handle data exchange, improving fault tolerance.
-- **Credential Definition Synchronization:** Converts scenario approvals in the Showcase Builder into the creation of credential definitions in Traction/ACA-Py.
-- **Event-Driven Architecture:** Processes only the messages it can handle, simplifying horizontal scaling and maintainability.
-- **Error Handling & Consistency:** Ensures durable message delivery and logs all failures for quick resolution.
-
-### 🏆 Key Benefits
-
-- **Flexibility:** Adapters can be swapped or extended to support different credential formats (e.g., SD-JWT, OID4VCI).
-- **Scalability:** Asynchronous flow decouples the builder from real-time dependencies.
-- **Resilience:** Durable messaging to handle temporary outages without data loss.
+- **Asynchronous Messaging:** Uses AMQP 1.0 messaging (via RabbitMQ) to handle data exchange, improving fault tolerance
+- **Credential Definition Synchronization:** Converts credential definitions in the Showcase Builder into schemas and credential definitions in Traction/ACA-Py
+- **Event-Driven Architecture:** Processes only the messages it can handle, simplifying horizontal scaling and maintainability
+- **Error Handling & Consistency:** Ensures durable message delivery and logs all failures for quick resolution
 
 ## 📁 Project Structure
 
 ```
 credential-showcase-traction-adapter/
 ├── src/
-│   └── index.ts          # Main entry point
+│   ├── index.ts                  # Main entry point
+│   ├── message-processor.ts      # AMQP message processing
+│   ├── environment.ts            # Environment configuration
+│   ├── types.ts                  # Shared type definitions
+│   ├── mappers/
+│   │   └── credential-definition.ts # Mapping between data models
+│   └── services/
+│       ├── service-manager.ts    # Manages tenant/wallet sessions
+│       └── traction-service.ts   # Traction API integration
 ├── __tests__/
-│   └── rabbit-mq.test.ts # Temporary test for RabbitMQ
-├── dist/                 # Compiled output
-├── package.json          # Project configuration
-├── tsconfig.json         # TypeScript configuration
-└── README.md             # Project documentation
+│   └── message-processor.test.ts # Integration tests for messaging
+├── dist/                         # Compiled output
+├── package.json                  # Project configuration
+├── tsconfig.json                 # TypeScript configuration
+└── README.md                     # Project documentation
 ```
 
 ## 🛠️ Tech Stack
 
 - **Language:** TypeScript
-- **Framework:** Express
-- **Messaging:** rhea, rhea-promise
-- **Dependency Injection:** typedi
+- **Messaging:** rhea, rhea-promise (AMQP 1.0 clients)
+- **Caching:** lru-cache (for tenant session management)
 - **Testing:** Jest, Testcontainers (@testcontainers/rabbitmq)
+- **Dependencies:** credential-showcase-openapi, credential-showcase-traction-openapi
 
 ## 📦 Package Management
 
@@ -70,12 +72,6 @@ pnpm build
 pnpm test
 ```
 
-For CI/CD pipelines:
-
-```bash
-pnpm test:ci
-```
-
 ### Start the Project
 
 ```bash
@@ -84,39 +80,59 @@ pnpm start
 
 ## 🧪 Testing
 
-A temporary test for RabbitMQ is located at:
+The project includes integration tests for the RabbitMQ messaging functionality:
 
 ```
-packages/credential-showcase-traction-adapter/src/__tests__/rabbit-mq.test.ts
+src/__tests__/message-processor.test.ts
 ```
 
-We use **Jest** with **Testcontainers** to spin up RabbitMQ containers.
+These tests verify:
 
----
+- Message processing for valid credential definitions
+- Error handling for invalid messages (missing actions, tenants, etc.)
+- RabbitMQ connectivity and durability
 
 ## 🔬 Advanced Topics
 
-### Decoupling & Multiple Adapters
+### Message Processing Workflow
 
-This adapter design enables multiple credential technologies by decoupling the core REST API from specific implementations. Messages describe high-level actions (like issuing or verifying), and this adapter listens for any it can handle (currently Traction/ACA-Py). Future adapters for different transport or credential formats could subscribe to the same broker with minimal changes.
+1. The adapter listens to a configurable AMQP topic (default: `SHOWCASE_CMD`)
+2. Messages contain credential definitions and actions (e.g., `store-credentialdef`)
+3. Required headers include `tenantId`, `action`, and optionally `apiUrlBase`, `walletId`, and `accessTokenEnc`
+4. The processor validates messages and routes them to appropriate handlers
 
-### Synchronization
+### Traction Service Integration
 
-The adapter mostly handles one-way provisioning of scenarios and credential definitions into Traction/ACA-Py. If messages cannot be delivered or processed, the system logs the failures and retains the messages until they can be retried. Two-way sync is not yet in scope, but could be added later by incorporating callback messages into the builder’s REST API.
+The adapter provides several credential operations:
+
+- Schema creation and lookup
+- Credential definition creation and lookup
+- Tenant token management
+- Wallet token management
+
+### Tenant/Wallet Session Management
+
+A service manager provides:
+
+- LRU caching of tenant sessions
+- Configurable TTL and cache sizes
+- Token refreshing for existing sessions
 
 ### Error Handling
 
-Durable messaging ensures errors do not cause data loss. When the adapter encounters issues (e.g., invalid payloads or unavailable Traction APIs), it immediately throws errors and logs them for administrators. Because the process is asynchronous, the REST API remains responsive. Operators can replay messages or fix data if needed.
+Durable messaging ensures errors do not cause data loss:
+
+- Invalid messages are rejected with descriptive errors
+- Processing failures are logged with contextual details
+- Message acceptance only occurs after successful processing
 
 ### Eventual Consistency
 
-Since communication between the Showcase Builder and this adapter is asynchronous, the system is eventually consistent rather than transactionally consistent. Flows and credential definitions remain in a “pending” state until the adapter successfully updates the Traction/ACA-Py layer. We do not rely on XA transactions; instead, we rely on a robust queueing mechanism, clear error reporting, and possible replay of failed messages to ensure data eventually aligns across services.
-
----
+Since communication between the Showcase Builder and this adapter is asynchronous, the system is eventually consistent rather than transactionally consistent. Flows and credential definitions remain in a "pending" state until the adapter successfully updates the Traction/ACA-Py layer.
 
 ## 📖 Documentation
 
-More details on flows, data models, and API usage can be found in the main **Interactive Digital Credential Showcase Builder** documentation, including the proposed architecture and design strategies for multi-tenant, multi-credential environments.
+For more details on flows, data models, and API usage, please refer to the main **Interactive Digital Credential Showcase Builder** documentation.
 
 ## 🏷️ License
 

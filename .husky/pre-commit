@@ -1,1 +1,4 @@
 pnpm prettier
+
+# Stage the files that were modified by prettier
+git add -u

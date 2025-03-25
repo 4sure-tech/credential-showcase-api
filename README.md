@@ -10,6 +10,14 @@ the backend server for the Credential Showcase application. It provides REST API
 
 Defines the OpenAPI specification for the Credential Showcase application. It provides the API contract for the backend services and can be used to generate client code, validate requests, and document the API.
 
+# credential-showcase-traction-openapi
+
+Defines the OpenAPI specification for the Traction backend and contains the generated client code for that.
+
+# credential-showcase-traction-adapter
+
+Picks up Credential Showcase messages from a AMQ v1.0 message broker and translates the actions to Traction API calls
+
 # credential-showcase-ts-sdk
 
 Contains the generated TypeScript SDK client code for interacting with the Credential Showcase API. It provides a set of functions and utilities to connect with the backend services.

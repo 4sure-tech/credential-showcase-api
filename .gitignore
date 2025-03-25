@@ -53,6 +53,7 @@ test/*.js
 
 # Ignore Open API generated packages
 packages/credential-showcase-openapi/src
+packages/credential-showcase-traction-openapi/src
 packages/**/dist
 packages/**/target
 /packages/*/dist
@@ -61,3 +62,4 @@ packages/**/target
 **/.env
 **/.env.*
 !**/.env.example
+

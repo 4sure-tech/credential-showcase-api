@@ -1,5 +1,5 @@
 {
-  "name": "credential-showcase-traction-adapter",
+  "name": "credential-showcase-adapter-client-api",
   "version": "0.1.0",
   "source": "src/index.ts",
   "main": "dist/index.js",
@@ -11,21 +11,14 @@
     "generate-key": "ts-node src/util/CypherUtil.ts generate-key"
   },
   "dependencies": {
-    "bs58": "^6.0.0",
     "credential-showcase-openapi": "workspace:*",
-    "credential-showcase-traction-openapi": "workspace:*",
-    "express": "^4.21.2",
-    "lru-cache": "^11.0.2",
+    "bs58": "^6.0.0",
     "rhea": "^3.0.3",
     "rhea-promise": "^3.0.3",
-    "supertest": "^7.0.0",
     "typedi": "^0.10.0"
   },
   "devDependencies": {
-    "@testcontainers/rabbitmq": "^10.18.0",
-    "@types/express": "^5.0.0",
-    "testcontainers": "^10.18.0",
-    "uuid": "^11.1.0"
+    "@types/node": "^22.13.1"
   },
   "files": [
     "dist/**/*",

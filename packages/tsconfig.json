@@ -4,6 +4,7 @@
     { "path": "credential-showcase-openapi" },
     { "path": "credential-showcase-ts-model" },
     { "path": "credential-showcase-ts-sdk" },
+    { "path": "credential-showcase-traction-openapi" },
     { "path": "credential-showcase-traction-adapter" }
   ]
 }
