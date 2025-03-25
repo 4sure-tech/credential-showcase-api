@@ -52,6 +52,11 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
     const personaPromises = scenario.personas.map(async (persona) => await this.personaRepository.findById(persona))
     await Promise.all(personaPromises)
 
+    const updatedSteps = await Promise.all(scenario.steps.map(async (step: NewStep) => ({
+      ...step,
+      credentialDefinition: step?.credentialDefinitionIdentifier && step?.credentialDefinitionIdentifierType ? await this.credentialDefinitionRepository.findIdByIdentifier(step.credentialDefinitionIdentifier, step.credentialDefinitionIdentifierType) : null
+    })))
+
     const scenarioType = isIssuanceScenario(scenario) ? ScenarioType.ISSUANCE : ScenarioType.PRESENTATION
 
     const scenarioPartyResult: Issuer | RelyingParty = isIssuanceScenario(scenario)
@@ -105,7 +110,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
       const stepsResult = await tx
         .insert(steps)
         .values(
-          scenario.steps.map((step: NewStep) => ({
+          updatedSteps.map((step: NewStep) => ({
             ...step,
             scenario: scenarioResult.id,
           })),
@@ -205,6 +210,11 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
     const personaPromises = scenario.personas.map(async (persona) => await this.personaRepository.findById(persona))
     await Promise.all(personaPromises)
 
+    const updatedSteps = await Promise.all(scenario.steps.map(async (step: NewStep) => ({
+        ...step,
+        credentialDefinition: step.credentialDefinitionIdentifier && step.credentialDefinitionIdentifierType ? await this.credentialDefinitionRepository.findIdByIdentifier(step.credentialDefinitionIdentifier, step.credentialDefinitionIdentifierType): null
+      })))
+
     const scenarioType = isIssuanceScenario(scenario) ? ScenarioType.ISSUANCE : ScenarioType.PRESENTATION
 
     const scenarioPartyResult: Issuer | RelyingParty = isIssuanceScenario(scenario)
@@ -264,7 +274,7 @@ class ScenarioRepository implements RepositoryDefinition<Scenario, NewScenario> 
       const stepsResult = await tx
         .insert(steps)
         .values(
-          scenario.steps.map((step: NewStep) => ({
+          updatedSteps.map((step: NewStep) => ({
             ...step,
             scenario: scenarioResult.id,
           })),

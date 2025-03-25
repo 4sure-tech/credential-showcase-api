@@ -166,7 +166,8 @@ describe('Database scenario repository tests', (): void => {
           order: 1,
           type: StepType.HUMAN_TASK,
           asset: asset.id,
-          credentialDefinition: credentialDefinition.id,
+          credentialDefinitionIdentifierType: credentialDefinition.identifierType,
+          credentialDefinitionIdentifier: credentialDefinition.identifier,
           actions: [
             {
               title: 'example_title',
@@ -331,6 +332,8 @@ describe('Database scenario repository tests', (): void => {
           order: 1,
           type: StepType.HUMAN_TASK,
           asset: asset.id,
+          credentialDefinitionIdentifierType: credentialDefinition.identifierType,
+          credentialDefinitionIdentifier: credentialDefinition.identifier,
           actions: [
             {
               title: 'example_title',
@@ -422,6 +425,8 @@ describe('Database scenario repository tests', (): void => {
     expect(savedPresentationScenario.steps[0].title).toEqual(presentationScenario.steps[0].title)
     expect(savedPresentationScenario.steps[0].order).toEqual(presentationScenario.steps[0].order)
     expect(savedPresentationScenario.steps[0].type).toEqual(presentationScenario.steps[0].type)
+    expect(savedPresentationScenario.steps[0].credentialDefinition).toBeDefined()
+    expect(savedPresentationScenario.steps[0].credentialDefinition).toEqual(credentialDefinition.id)
     expect(savedPresentationScenario.steps[0].actions!.length).toEqual(1)
     expect(savedPresentationScenario.steps[0].actions![0].id).toBeDefined()
     expect(savedPresentationScenario.steps[0].actions![0].title).toEqual(presentationScenario.steps[0].actions![0].title)
@@ -432,6 +437,7 @@ describe('Database scenario repository tests', (): void => {
     expect(savedPresentationScenario.steps[0].asset!.fileName).toEqual(asset.fileName)
     expect(savedPresentationScenario.steps[0].asset!.description).toEqual(asset.description)
     expect(savedPresentationScenario.steps[0].asset!.content).toStrictEqual(asset.content)
+    expect(savedPresentationScenario.steps[1].credentialDefinition).toBeNull()
     expect((<PresentationScenario>savedPresentationScenario).relyingParty).not.toBeNull()
     expect((<PresentationScenario>savedPresentationScenario).relyingParty!.name).toEqual(relyingParty.name)
     expect((<PresentationScenario>savedPresentationScenario).relyingParty!.credentialDefinitions.length).toEqual(1)
@@ -1314,6 +1320,8 @@ describe('Database scenario repository tests', (): void => {
           order: 1,
           type: StepType.HUMAN_TASK,
           asset: asset.id,
+          credentialDefinitionIdentifierType: credentialDefinition.identifierType,
+          credentialDefinitionIdentifier: credentialDefinition.identifier,
           actions: [
             {
               title: 'example_title1',
@@ -1396,6 +1404,8 @@ describe('Database scenario repository tests', (): void => {
     expect(updatedIssuanceScenarioResult.steps[0].title).toEqual(updatedIssuanceScenario.steps[0].title)
     expect(updatedIssuanceScenarioResult.steps[0].order).toEqual(updatedIssuanceScenario.steps[0].order)
     expect(updatedIssuanceScenarioResult.steps[0].type).toEqual(updatedIssuanceScenario.steps[0].type)
+    expect(savedIssuanceScenario.steps[0].credentialDefinition).toBeDefined()
+    expect(savedIssuanceScenario.steps[0].credentialDefinition).toBeNull()
     expect(updatedIssuanceScenarioResult.steps[0].actions!.length).toEqual(2)
     expect(updatedIssuanceScenarioResult.steps[0].actions![0].id).toBeDefined()
     expect(updatedIssuanceScenarioResult.steps[0].actions![0].title).toEqual(updatedIssuanceScenario.steps[0].actions![0].title)
@@ -1423,6 +1433,7 @@ describe('Database scenario repository tests', (): void => {
       issuanceScenario.steps[0].actions![0].proofRequest!.predicates.predicate1.value,
     )
     expect(updatedIssuanceScenarioResult.steps[0].actions![0].proofRequest!.predicates!.predicate1.restrictions!.length).toEqual(2)
+    expect(savedIssuanceScenario.steps[1].credentialDefinition).toBeNull()
     expect(updatedIssuanceScenarioResult.personas).toBeDefined()
     expect(updatedIssuanceScenarioResult.personas.length).toEqual(1)
     expect(updatedIssuanceScenarioResult.personas[0].name).toEqual(persona1.name)
@@ -2120,6 +2131,8 @@ describe('Database scenario repository tests', (): void => {
       order: 2,
       type: StepType.HUMAN_TASK,
       asset: asset.id,
+      credentialDefinitionIdentifierType: credentialDefinition.identifierType,
+      credentialDefinitionIdentifier: credentialDefinition.identifier,
       actions: [
         {
           title: 'example_title1',
@@ -2196,6 +2209,7 @@ describe('Database scenario repository tests', (): void => {
     expect(fromDb.steps[1].title).toEqual(step.title)
     expect(fromDb.steps[1].order).toEqual(step.order)
     expect(fromDb.steps[1].type).toEqual(step.type)
+    expect(fromDb.steps[1].credentialDefinition).not.toBeNull()
     expect(fromDb.steps[1].actions!.length).toEqual(2)
     expect(fromDb.steps[1].actions![0].id).toBeDefined()
     expect(fromDb.steps[1].actions![0].title).toEqual(step.actions![0].title)
@@ -2299,6 +2313,7 @@ describe('Database scenario repository tests', (): void => {
         updatedAt: expect.any(Date),
       },
       createdAt: expect.any(Date),
+      credentialDefinition: null,
       description: 'example_description',
       id: expect.any(String),
       order: 2,
@@ -2661,6 +2676,8 @@ describe('Database scenario repository tests', (): void => {
           order: 1,
           type: StepType.HUMAN_TASK,
           asset: asset.id,
+          credentialDefinitionIdentifierType: credentialDefinition.identifierType,
+          credentialDefinitionIdentifier: credentialDefinition.identifier,
           actions: [
             {
               title: 'example_title',
@@ -2706,6 +2723,8 @@ describe('Database scenario repository tests', (): void => {
     const updatedStep: NewStep = {
       ...savedIssuanceScenario.steps[0],
       title: 'new_title',
+      credentialDefinitionIdentifierType: credentialDefinition.identifierType,
+      credentialDefinitionIdentifier: credentialDefinition.identifier,
       actions: [
         {
           title: 'example_title1',
@@ -2778,6 +2797,8 @@ describe('Database scenario repository tests', (): void => {
     expect(updatedStepResult.title).toEqual(updatedStep.title)
     expect(updatedStepResult.order).toEqual(updatedStep.order)
     expect(updatedStepResult.type).toEqual(updatedStep.type)
+    expect(updatedStepResult.credentialDefinition).toBeDefined()
+    expect(updatedStepResult.credentialDefinition).toEqual(credentialDefinition.id)
     expect(updatedStepResult.actions!.length).toEqual(2)
     expect(updatedStepResult.actions![0].id).toBeDefined()
     expect(updatedStepResult.actions![0].title).toEqual(updatedStep.actions![0].title)
@@ -2878,6 +2899,7 @@ describe('Database scenario repository tests', (): void => {
         updatedAt: expect.any(Date),
       },
       createdAt: expect.any(Date),
+      credentialDefinition: null,
       description: 'example_description',
       id: expect.any(String),
       order: 1,
